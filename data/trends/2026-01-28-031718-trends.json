@@ -1,0 +1,364 @@
+{
+  "generated_at": "2026-01-28T03:17:18.351884+00:00",
+  "source": "trendspyg",
+  "method": "trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "patrick kane",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T03:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=patrick kane&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXGBzJDXRjtKNpGdavLH4gKmwPwwn7uPaTXSIF0MhVYsDPzJzzpYFZIo9vhlg",
+        "source": "NHL.com"
+      },
+      "news_articles": [
+        {
+          "headline": "Kane ties Modano for U.S.-born player points mark in Red Wings loss to Kings",
+          "url": "https://www.nhl.com/news/los-angeles-kings-detroit-red-wings-game-recap-january-27-2026",
+          "source": "NHL.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXGBzJDXRjtKNpGdavLH4gKmwPwwn7uPaTXSIF0MhVYsDPzJzzpYFZIo9vhlg"
+        },
+        {
+          "headline": "Patrick Kane ties Mike Modano as top U.S. scorer, but Red Wings fall",
+          "url": "https://www.freep.com/story/sports/nhl/red-wings/2026/01/27/detroit-red-wings-game-score-recap-los-angeles-kings-patrick-kane-mike-modano/88381746007/",
+          "source": "Detroit Free Press",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSmga-0K2W8BxnjVuVsbhTkVE6jmmUVvATCYJFAcBzpfi9lMM63LFNJOGek9io"
+        },
+        {
+          "headline": "Patrick Kane ties career points record for an American in Red Wings loss",
+          "url": "https://www.mlive.com/redwings/2026/01/patrick-kane-ties-career-points-record-for-an-american-in-red-wings-loss.html",
+          "source": "MLive.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSDJ27EyRdw2C5cIxXHctuO7DsIMv_dD5chlgpXecVCd0f7mJ2SPQ7adVdumWI"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "nhl standings",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "5000+",
+      "published_at": "2026-01-28T02:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=nhl standings&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ1POQvaqC_EpIAnR5SMbuvZtnUofkX4uwe7JtimNcPLjeuyoTg316aFp7N534",
+        "source": "The New York Times"
+      },
+      "news_articles": [
+        {
+          "headline": "NHL 2025-26 Stanley Cup playoff chances and projected standings - The Athletic",
+          "url": "https://www.nytimes.com/athletic/6694758/2026/01/25/nhl-2025-26-stanley-cup-playoff-chances-and-projected-standings/",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ1POQvaqC_EpIAnR5SMbuvZtnUofkX4uwe7JtimNcPLjeuyoTg316aFp7N534"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "sharks vs canucks",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T02:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sharks vs canucks&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRtlZWU9UlgU_M2ivJapjJvARReyO_D7wzWSo0bLumct7Vl-s5Bjr3YJ1pESlc",
+        "source": "NHL.com"
+      },
+      "news_articles": [
+        {
+          "headline": "Sharks at Canucks projected lineups",
+          "url": "https://www.nhl.com/news/san-jose-sharks-vancouver-canucks-game-preview-january-27-2026",
+          "source": "NHL.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRtlZWU9UlgU_M2ivJapjJvARReyO_D7wzWSo0bLumct7Vl-s5Bjr3YJ1pESlc"
+        },
+        {
+          "headline": "Sharks vs. Canucks Prediction, Odds, Picks - Jan. 27",
+          "url": "https://www.foxsports.com/articles/nhl/sharks-vs-canucks-prediction-odds-picks-jan-27",
+          "source": "FOX Sports",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRTmgBhwdGtpsnYJlnth6Jt7reysjI8cIsxOcMu69MrgkfeGoOJy9cHm5G_KIM"
+        },
+        {
+          "headline": "Scenes from morning skate: Lekkerim\u00e4ki gets his shot as Canucks shake up lines vs. Sharks",
+          "url": "https://canucksarmy.com/news/scenes-morning-skate-opportunity-knocks-jonathan-lekkerimaki-vancouver-canucks-host-macklin-celebrini-san-jose-sharks",
+          "source": "Canucks Army",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8kE7Z4PaXuo1EdE5qP7gjSlFR2jn35mYGrLs6dOalbf2CMWOTYMBuOHdc34U"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "sri lanka",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "10000+",
+      "published_at": "2026-01-28T02:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sri lanka&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSNX3fQR8vqM49m7xMOf9OO6nE7eXn9M_eCOEvgfL6zPdGQ5kK4EDBfmoYCHKk",
+        "source": "BBC"
+      },
+      "news_articles": [
+        {
+          "headline": "Sri Lanka vs England: Joe Root and Harry Brook centuries take tourists to ODI series win",
+          "url": "https://www.bbc.com/sport/cricket/articles/cdrepyep6rpo",
+          "source": "BBC",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSNX3fQR8vqM49m7xMOf9OO6nE7eXn9M_eCOEvgfL6zPdGQ5kK4EDBfmoYCHKk"
+        },
+        {
+          "headline": "Harry Brook blasts England to 2-1 series victory",
+          "url": "https://www.espncricinfo.com/series/england-in-sri-lanka-2025-26-1507712/sri-lanka-vs-england-3rd-odi-1507718/match-report",
+          "source": "ESPNcricinfo",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTMGK0Dt3x9VDb_j5si9u5_AxxXAIw5yCbvlYryBmsIaA3Z3BtwU3ow7_rQe2o"
+        },
+        {
+          "headline": "Sri Lanka v England: second men\u2019s cricket one-day international \u2013 as it happened",
+          "url": "https://www.theguardian.com/sport/live/2026/jan/24/sri-lanka-v-england-second-mens-cricket-one-day-international-live",
+          "source": "The Guardian",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSuXlCAmCa136fUAP-r0FeNW-avrColGAhtC9fj96VU9dE6Tn_k6XGUUoP4_8w"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "tyler tanner",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T02:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=tyler tanner&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQuF5D1gS96zfRiwjTXvrqVWHZupNDBA63AMMVenqV9MxAvyVnMGwj1yp3mE14",
+        "source": "On3"
+      },
+      "news_articles": [
+        {
+          "headline": "Vanderbilt PG Tyler Tanner is playing at an All-American level",
+          "url": "https://www.on3.com/teams/kentucky-wildcats/news/vanderbilt-pg-tyler-tanner-playing-all-american-level/",
+          "source": "On3",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQuF5D1gS96zfRiwjTXvrqVWHZupNDBA63AMMVenqV9MxAvyVnMGwj1yp3mE14"
+        },
+        {
+          "headline": "Scouting Vanderbilt Guard Tyler Tanner",
+          "url": "https://sportsbusinessclassroom.com/scouting-vanderbilt-guard-tyler-tanner/",
+          "source": "Sports Business Classroom",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQWE6wV8NfSYOvBW4V8k0BIPeD-nzvBrcNKdNN9XIhOlLivYcxYvHGcLvqJGws"
+        },
+        {
+          "headline": "Tyler Tanner headlines Vanderbilt basketball: What to know about point guard",
+          "url": "https://www.tennessean.com/story/sports/college/vanderbilt/2026/01/24/tyler-tanner-vanderbilt-basketball-height-stats/88306761007/",
+          "source": "The Tennessean",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRL1ZFXU7HNT8IONE0cbBgjfYFuH7-YA8FT0sPWumqSSuj9hvq3chDN5mioUAI"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "capitals vs kraken",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T02:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=capitals vs kraken&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTLrSsyFvyAhC9Wpl62vOClXcYk_5_AmXPaMr1geNeZuZXqmrb91bVWJi-GyCc",
+        "source": "NHL.com"
+      },
+      "news_articles": [
+        {
+          "headline": "Capitals (25-21-7) vs. Kraken (23-19-9) | 7:00 p.m.",
+          "url": "https://www.nhl.com/kraken/news/seattle-kraken-vs-washington-capitals-game-preview-projected-lines-0127-gd",
+          "source": "NHL.com",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTLrSsyFvyAhC9Wpl62vOClXcYk_5_AmXPaMr1geNeZuZXqmrb91bVWJi-GyCc"
+        },
+        {
+          "headline": "Capitals vs. Kraken Prediction, Odds, Picks - Jan. 27",
+          "url": "https://www.foxsports.com/articles/nhl/capitals-vs-kraken-prediction-odds-picks-jan-27",
+          "source": "FOX Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTf0auZbhOmTTWL3RdiulrDuj67O75YU9tt8W9YSLxWAo2j3pinXdfWUHCvM2o"
+        },
+        {
+          "headline": "Game Day 52: Kraken Vs Capitals Lineup",
+          "url": "https://sports.yahoo.com/videos/game-day-51-kraken-vs-191120056.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSfJ_pNy3CSzHPRCdwUrLNcG6SR8GjO4aLoTGOz79SF4bLk6Wldo5YBwrhRd3k"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "uswnt",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-28T02:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=uswnt&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS4xVoBQSf7ygYtmXt_w3YU-UT7CUQslc3ygUzEiE3StOL_kg033gnMTAbHvTQ",
+        "source": "US Soccer"
+      },
+      "news_articles": [
+        {
+          "headline": "Five Things to Know: USWNT vs. Chile",
+          "url": "https://www.ussoccer.com/stories/2026/01/five-things-to-know-uswnt-vs-chile-jan-27-santa-barbara-california",
+          "source": "US Soccer",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS4xVoBQSf7ygYtmXt_w3YU-UT7CUQslc3ygUzEiE3StOL_kg033gnMTAbHvTQ"
+        },
+        {
+          "headline": "USWNT vs. Chile live stream: Where to watch U.S. Soccer online",
+          "url": "https://www.cbssports.com/soccer/news/uswnt-emma-hayes-chile-friendly-u-s-soccer/",
+          "source": "CBS Sports",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ3-L8sM-gtOeMMetkfJK80lAiY7HlyLJZYLl6y_-DduyHU6Wu8PU1lco1QiQA"
+        },
+        {
+          "headline": "Emma Hayes to overhaul USWNT lineup for Chile friendly",
+          "url": "https://www.espn.com/soccer/story/_/id/47738193/emma-hayes-overhaul-uswnt-lineup-chile-friendly",
+          "source": "ESPN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRV8-h9-wBhN5eV4pigVV9knVMYvAKIHsvLkY1VeGIzmnOSp0f10c46-FtRdIM"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "paul george",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T02:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=paul george&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDEeah51c-fqVqs2N6Ub_M895X-0JjsI5tZb_pR7FynalBoZnT0-J6ATJzaec",
+        "source": "HoopsHype"
+      },
+      "news_articles": [
+        {
+          "headline": "Paul George and Joel Embiid are AVAILABLE",
+          "url": "https://www.hoopshype.com/story/sports/nba/rumors/2026/01/27/paul-george-and-joel-embiid-are-available/88387208007/",
+          "source": "HoopsHype",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDEeah51c-fqVqs2N6Ub_M895X-0JjsI5tZb_pR7FynalBoZnT0-J6ATJzaec"
+        },
+        {
+          "headline": "Live Updates: Tyrese Maxey's 76ers face Kyle Kuzma's Bucks on NBC and Peacock",
+          "url": "https://www.nba.com/news/live-updates-tyrese-maxeys-76ers-face-kyle-kuzmas-bucks-on-nbc-and-peacock",
+          "source": "NBA",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcScnrXEFqJe4b1ZereREx7c8H3257RkgPrscJ7dHL9jQfsfxZJ1zBy0jMaO4kQ"
+        },
+        {
+          "headline": "Joel Embiid questionable for Sixers-Bucks on Tuesday; Paul George probable",
+          "url": "https://www.phillyvoice.com/sixers-news-analysis-injury-report-vs-bucks-joel-embiid-paul-george-nba-rumors-quentin-grimes/",
+          "source": "PhillyVoice",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRgxPOfP73pDIYYyO4NP8yxdZrc7Y7AVwTRbeyrgjPwIGq4nOOl5WoZMZVw0kg"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "anthony davis",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T02:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=anthony davis&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSCfOvtlkEF8kKV3uleGBxps-xVwYAQYapl4QpiJV8UpAimwi3yVH2m06-BKao",
+        "source": "Dallas News"
+      },
+      "news_articles": [
+        {
+          "headline": "Why Anthony Davis could still be on the Mavericks beyond the NBA trade deadline",
+          "url": "https://www.dallasnews.com/sports/mavericks/2026/01/27/dallas-mavericks-anthony-davis-rich-paul-nba-trade-deadline/",
+          "source": "Dallas News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSCfOvtlkEF8kKV3uleGBxps-xVwYAQYapl4QpiJV8UpAimwi3yVH2m06-BKao"
+        },
+        {
+          "headline": "The Mavericks and the upcoming NBA trade deadline: What I\u2019m hearing",
+          "url": "https://www.nytimes.com/athletic/6997836/2026/01/26/mavericks-trade-deadline-player-demand-davis-marshall/",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTv4Fo0wa1KGTvaUw4tJT5P1-1jx-TdO7SJurDHh_VlwFDfmDWkrC2vehVW17Y"
+        },
+        {
+          "headline": "Anthony Davis Trade Rumors Update and Mavs Ownership's Stance on Potential Deadline Deal",
+          "url": "https://bleacherreport.com/articles/25371147-anthony-davis-trade-rumors-update-and-mavs-ownerships-stance-potential-deadline-deal",
+          "source": "Bleacher Report",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSNIGVJC2R5M-2pgxUUzFg9Il1HFxOIYFZ_vd0FCGrQ2j0lRdUgHT40sLxNB8M"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "florida panthers",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T02:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=florida panthers&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrJtAksuqIGExqVeuCGTyycIfO6bmoCRG7PK-77qiaN02kViLkHcKJO-sFGl8",
+        "source": "Litter Box Cats"
+      },
+      "news_articles": [
+        {
+          "headline": "Gameday 52: Florida Panthers vs Utah Mammoth",
+          "url": "https://www.litterboxcats.com/florida-panthers-vs-utah-mammoth-gameday-52-2025-26-nhl-schedule/",
+          "source": "Litter Box Cats",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSrJtAksuqIGExqVeuCGTyycIfO6bmoCRG7PK-77qiaN02kViLkHcKJO-sFGl8"
+        },
+        {
+          "headline": "Mammoth at Panthers projected lineups",
+          "url": "https://www.nhl.com/news/utah-mammoth-florida-panthers-game-preview-january-27-2026",
+          "source": "NHL.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRtlZWU9UlgU_M2ivJapjJvARReyO_D7wzWSo0bLumct7Vl-s5Bjr3YJ1pESlc"
+        },
+        {
+          "headline": "Panthers vs. Mammoth Prediction, Odds, Picks - Jan. 27",
+          "url": "https://www.foxsports.com/articles/nhl/panthers-vs-mammoth-prediction-odds-picks-jan-27",
+          "source": "FOX Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQTB2z5IPdaB89uN_TMy-Mr-0Vs93eeJmzNVQut8GJ7zI4LBorLHcdLA7CqowM"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "patrick kane",
+    "nhl standings",
+    "sharks vs canucks",
+    "sri lanka",
+    "tyler tanner",
+    "capitals vs kraken",
+    "uswnt",
+    "paul george",
+    "anthony davis",
+    "florida panthers"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}

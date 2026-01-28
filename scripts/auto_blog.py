@@ -7,8 +7,6 @@ import json
 import logging
 import os
 import re
-import shlex
-import subprocess
 import sys
 import time
 from dataclasses import dataclass
@@ -75,7 +73,7 @@ DEFAULT_YOUTUBE_SEARCH_ENABLED = True
 DEFAULT_YOUTUBE_MAX_RESULTS = 4
 DEFAULT_YOUTUBE_MAX_PER_QUERY = 2
 DEFAULT_GOOGLE_IMAGE_ENABLED = True
-DEFAULT_GOOGLE_IMAGE_MODEL = "imagen-4.0-generate-001"
+DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-3-pro-image-preview"
 DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO = "16:9"
 CONTENT_JSON_SCHEMA = (
     "Required JSON keys: summary (2-3 sentences), key_points (array of 3-5 strings), "
@@ -183,9 +181,6 @@ class AutomationConfig:
     astro_root: Path
     content_dir: Path
     hero_base_dir: Path
-    nanobanana_cmd: str | None
-    nanobanana_args: str | None
-    nanobanana_required: bool
     user_agent: str
     scrape_timeout: int
     scrape_delay_sec: float
@@ -384,10 +379,6 @@ def _build_config() -> AutomationConfig:
     content_dir = astro_root / "src" / "content" / "blog"
     hero_base_dir = astro_root / "public" / "images" / "posts"
 
-    nanobanana_cmd = env.get("NANOBANANA_CMD")
-    nanobanana_args = env.get("NANOBANANA_ARGS")
-    nanobanana_required = _parse_bool(env.get("NANOBANANA_REQUIRED"), True)
-
     user_agent = env.get("SCRAPE_USER_AGENT", DEFAULT_USER_AGENT)
     scrape_timeout = _parse_int(env.get("SCRAPE_TIMEOUT_SEC"), DEFAULT_SCRAPE_TIMEOUT)
     scrape_delay_sec = _parse_float(env.get("SCRAPE_DELAY_SEC"), DEFAULT_SCRAPE_DELAY_SEC)
@@ -429,9 +420,6 @@ def _build_config() -> AutomationConfig:
         astro_root=astro_root,
         content_dir=content_dir,
         hero_base_dir=hero_base_dir,
-        nanobanana_cmd=nanobanana_cmd.strip() if nanobanana_cmd else None,
-        nanobanana_args=nanobanana_args.strip() if nanobanana_args else None,
-        nanobanana_required=nanobanana_required,
         user_agent=user_agent,
         scrape_timeout=scrape_timeout,
         scrape_delay_sec=scrape_delay_sec,
@@ -1156,6 +1144,11 @@ def _search_web_tavily(
         return []
     if not config.tavily_api_key:
         return []
+    logging.info(
+        "Tavily search query: %s (max_results=%s)",
+        query,
+        max_results,
+    )
     payload: dict[str, object] = {
         "api_key": config.tavily_api_key,
         "query": query,
@@ -1207,6 +1200,7 @@ def _search_web_tavily(
                 "snippet": snippet,
             }
         )
+    logging.info("Tavily search results: %s (query=%s)", len(results), query)
     return results
 
 
@@ -1217,6 +1211,11 @@ def _extract_web_content_tavily(
 ) -> list[dict]:
     if not urls or not config.tavily_api_key:
         return []
+    logging.info(
+        "Tavily extract request: %s urls (max_characters=%s)",
+        len(urls),
+        config.max_source_chars,
+    )
     payload = {
         "api_key": config.tavily_api_key,
         "urls": urls,
@@ -1258,6 +1257,10 @@ def _extract_web_content_tavily(
                 "content": content,
             }
         )
+    if not results:
+        logging.warning("Tavily extract returned no results for %s urls", len(urls))
+    else:
+        logging.info("Tavily extract results: %s/%s", len(results), len(urls))
     return results
 
 
@@ -1412,9 +1415,11 @@ def _fetch_sources_from_candidates(
     max_sources: int | None = None,
 ) -> list[dict]:
     if not config.tavily_api_key:
+        logging.info("Tavily API key missing; skip content extraction.")
         return []
     sources: list[dict] = []
     total_chars = 0
+    hit_char_limit = False
     normalized_candidates: list[dict] = []
     candidate_by_url: dict[str, dict] = {}
     for candidate in candidates:
@@ -1426,6 +1431,18 @@ def _fetch_sources_from_candidates(
         normalized_candidates.append(candidate)
     limit = max_sources
     batch_size = 5 if limit is None else max(1, min(5, limit))
+    total_candidates = len(normalized_candidates)
+    if total_candidates == 0:
+        logging.info("No valid candidates to extract.")
+        return []
+    logging.info(
+        "Extracting content from %s candidates (limit=%s, batch_size=%s).",
+        total_candidates,
+        limit if limit is not None else "none",
+        batch_size,
+    )
+    missing_extracts = 0
+    empty_content = 0
     index = 0
     while index < len(normalized_candidates):
         if limit is not None and len(sources) >= limit:
@@ -1438,7 +1455,13 @@ def _fetch_sources_from_candidates(
                 batch_urls.append(url)
         if not batch_urls:
             continue
+        logging.info("Tavily extract batch: %s urls", len(batch_urls))
         extracted = _extract_web_content_tavily(batch_urls, config=config)
+        logging.info(
+            "Tavily extract batch results: %s/%s",
+            len(extracted),
+            len(batch_urls),
+        )
         extracted_map = {
             _normalize_url_for_dedupe(item.get("url", "")): item for item in extracted
         }
@@ -1448,13 +1471,21 @@ def _fetch_sources_from_candidates(
             normalized = _normalize_url_for_dedupe(url)
             item = extracted_map.get(normalized)
             if not item:
+                missing_extracts += 1
                 continue
             content = str(item.get("content") or "").strip()
             if not content:
+                empty_content += 1
                 continue
             cleaned = _truncate(re.sub(r"\s+", " ", content), config.max_source_chars)
             if total_chars >= config.max_total_source_chars:
                 cleaned = ""
+                if not hit_char_limit:
+                    logging.info(
+                        "Reached max_total_source_chars (%s); skipping remaining content.",
+                        config.max_total_source_chars,
+                    )
+                    hit_char_limit = True
             else:
                 remaining = config.max_total_source_chars - total_chars
                 if len(cleaned) > remaining:
@@ -1473,6 +1504,14 @@ def _fetch_sources_from_candidates(
                     "origin": candidate.get("origin"),
                 }
             )
+    logging.info(
+        "Extracted sources: %s (missing=%s, empty=%s, chars=%s/%s)",
+        len(sources),
+        missing_extracts,
+        empty_content,
+        total_chars,
+        config.max_total_source_chars,
+    )
     return sources
 
 
@@ -2051,13 +2090,16 @@ def _generate_hero_image_google(prompt: str, output_path: Path, config: Automati
     model = config.google_image_model or DEFAULT_GOOGLE_IMAGE_MODEL
     safe_prompt = _force_ascii(prompt).strip() or "Abstract tech illustration"
     payload = {
-        "instances": [{"prompt": safe_prompt}],
-        "parameters": {
-            "sampleCount": 1,
-            "aspectRatio": config.google_image_aspect_ratio or DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO,
+        "contents": [{"parts": [{"text": safe_prompt}]}],
+        "generationConfig": {
+            "responseModalities": ["TEXT", "IMAGE"],
+            "imageConfig": {
+                "aspectRatio": config.google_image_aspect_ratio
+                or DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO
+            },
         },
     }
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:predict"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     request = Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
@@ -2073,49 +2115,43 @@ def _generate_hero_image_google(prompt: str, output_path: Path, config: Automati
     except Exception as exc:
         logging.warning("Google image generation failed: %s", exc)
         return False
-    predictions = data.get("predictions")
-    if not isinstance(predictions, list):
+    candidates = data.get("candidates")
+    if not isinstance(candidates, list):
         return False
-    for prediction in predictions:
-        if not isinstance(prediction, dict):
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
             continue
-        b64 = prediction.get("bytesBase64Encoded")
-        if not b64 and isinstance(prediction.get("image"), dict):
-            b64 = prediction["image"].get("bytesBase64Encoded")
-        if not b64 and isinstance(prediction.get("imageBytes"), dict):
-            b64 = prediction["imageBytes"].get("bytesBase64Encoded")
-        if not b64:
+        content = candidate.get("content")
+        if not isinstance(content, dict):
             continue
-        try:
-            image_bytes = base64.b64decode(b64)
-        except Exception:
+        parts = content.get("parts")
+        if not isinstance(parts, list):
             continue
-        output_path.write_bytes(image_bytes)
-        return True
+        for part in parts:
+            if not isinstance(part, dict):
+                continue
+            inline = part.get("inlineData")
+            if inline is None:
+                inline = part.get("inline_data")
+            if not isinstance(inline, dict):
+                continue
+            b64 = inline.get("data") or inline.get("bytesBase64Encoded")
+            if not b64:
+                continue
+            try:
+                image_bytes = base64.b64decode(b64)
+            except Exception:
+                continue
+            output_path.write_bytes(image_bytes)
+            return True
     return False
 
 
 def _generate_hero_image(prompt: str, output_path: Path, config: AutomationConfig) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if _generate_hero_image_google(prompt, output_path, config):
-        logging.info("Hero image generated via Google Imagen.")
+        logging.info("Hero image generated via Gemini image model.")
         return
-    if config.nanobanana_cmd:
-        cmd = [config.nanobanana_cmd]
-        if config.nanobanana_args:
-            cmd += shlex.split(config.nanobanana_args)
-        cmd += ["--prompt", prompt, "--output", str(output_path)]
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        if result.returncode == 0 and output_path.exists():
-            logging.info("Hero image generated via nanobanana.")
-            return
-        if config.nanobanana_required:
-            raise RuntimeError(
-                f"Nanobanana failed (required): {result.stderr.strip() or 'unknown error'}"
-            )
-        logging.warning("Nanobanana failed: %s", result.stderr.strip())
-    elif config.nanobanana_required:
-        raise RuntimeError("Nanobanana command is required but not configured.")
 
     placeholder = config.astro_root / "src" / "assets" / "blog-placeholder-5.jpg"
     if placeholder.exists():
@@ -2394,22 +2430,53 @@ def _gather_sources_for_topic(
     topic: dict,
     research_plan: dict,
 ) -> list[dict]:
+    keyword = str(topic.get("keyword") or "").strip() or "unknown"
+    logging.info("Gathering sources for topic: %s", keyword)
     candidates = _candidate_sources_from_topic(topic)
-    if config.search_web_enabled and config.tavily_api_key:
-        queries = _ensure_list_of_strings(research_plan.get("queries"))[:8]
-        added = 0
-        for query in queries:
-            results = _search_web_tavily(
-                query,
-                max_results=config.search_web_max_per_query,
-                config=config,
+    logging.info("Seed candidates from topic: %s", len(candidates))
+    web_added_total = 0
+    if config.search_web_enabled:
+        if not config.tavily_api_key:
+            logging.warning(
+                "Web search enabled but TAVILY_API_KEY missing; skipping Tavily search."
             )
-            candidates.extend(results)
-            added += len(results)
-            if added >= config.search_web_max_results:
-                break
+        else:
+            queries = _ensure_list_of_strings(research_plan.get("queries"))[:8]
+            logging.info("Web search queries: %s", len(queries))
+            logging.info(
+                "Web search settings: depth=%s include_answer=%s",
+                config.search_web_depth,
+                config.search_web_include_answer,
+            )
+            if config.search_web_include_domains:
+                logging.info(
+                    "Web search include domains: %s",
+                    ", ".join(config.search_web_include_domains),
+                )
+            if config.search_web_exclude_domains:
+                logging.info(
+                    "Web search exclude domains: %s",
+                    ", ".join(config.search_web_exclude_domains),
+                )
+            added = 0
+            for query in queries:
+                results = _search_web_tavily(
+                    query,
+                    max_results=config.search_web_max_per_query,
+                    config=config,
+                )
+                candidates.extend(results)
+                added += len(results)
+                web_added_total += len(results)
+                if added >= config.search_web_max_results:
+                    break
+            logging.info("Web search added: %s results", web_added_total)
+    else:
+        logging.info("Web search disabled; skipping Tavily search.")
+    rss_added_total = 0
     if config.search_rss_enabled:
         queries = _ensure_list_of_strings(research_plan.get("queries"))[:8]
+        logging.info("RSS search queries: %s", len(queries))
         added = 0
         for query in queries:
             results = _search_news_rss(
@@ -2421,17 +2488,29 @@ def _gather_sources_for_topic(
             )
             candidates.extend(results)
             added += len(results)
+            rss_added_total += len(results)
             if added >= config.search_rss_max_results:
                 break
+        logging.info("RSS search added: %s results", rss_added_total)
+    else:
+        logging.info("RSS search disabled; skipping RSS search.")
+    pre_dedupe = len(candidates)
     candidates = _dedupe_candidates(candidates)
+    logging.info("Candidates after dedupe: %s (from %s)", len(candidates), pre_dedupe)
     sources = _fetch_sources_from_candidates(
         candidates,
         config,
         max_sources=config.max_evidence_sources,
     )
     min_sources = min(3, config.max_evidence_sources)
+    logging.info("Sources extracted: %s (min_required=%s)", len(sources), min_sources)
     if len(sources) >= min_sources:
         return sources
+    logging.warning(
+        "Insufficient sources (%s < %s); running rescue plan.",
+        len(sources),
+        min_sources,
+    )
     rescue = _rescue_research_plan(
         config,
         writer,
@@ -2441,6 +2520,9 @@ def _gather_sources_for_topic(
     )
     rescue_queries = _ensure_list_of_strings(rescue.get("queries"))[:6]
     if rescue_queries:
+        logging.info("Rescue queries: %s", len(rescue_queries))
+        rescue_web_added = 0
+        rescue_rss_added = 0
         if config.search_web_enabled and config.tavily_api_key:
             added = 0
             for query in rescue_queries:
@@ -2451,8 +2533,10 @@ def _gather_sources_for_topic(
                 )
                 candidates.extend(results)
                 added += len(results)
+                rescue_web_added += len(results)
                 if added >= config.search_web_max_results:
                     break
+            logging.info("Rescue web search added: %s results", rescue_web_added)
         if config.search_rss_enabled:
             added = 0
             for query in rescue_queries:
@@ -2465,14 +2549,20 @@ def _gather_sources_for_topic(
                 )
                 candidates.extend(results)
                 added += len(results)
+                rescue_rss_added += len(results)
                 if added >= config.search_rss_max_results:
                     break
+            logging.info("Rescue RSS search added: %s results", rescue_rss_added)
         candidates = _dedupe_candidates(candidates)
+        logging.info("Candidates after rescue dedupe: %s", len(candidates))
         sources = _fetch_sources_from_candidates(
             candidates,
             config,
             max_sources=config.max_evidence_sources,
         )
+        logging.info("Sources after rescue: %s", len(sources))
+    else:
+        logging.warning("Rescue plan returned no queries.")
     return sources
 
 

@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-01-28T02:52:26.637192+00:00",
+  "source": "trendspyg",
+  "method": "trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "pegula",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=pegula&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQIXMEqtR7vpwCyuNtynEVUIif_EGySlYoCw-EQ0mNV_kIbga5qYAKNMVFg3Io",
+        "source": "WTA Tennis"
+      },
+      "news_articles": [
+        {
+          "headline": "Australian Open quarterfinals: Anisimova or Pegula? Swiatek or Rybakina?",
+          "url": "https://www.wtatennis.com/news/4440187/australian-open-quarterfinals-anisimova-or-pegula-swiatek-or-rybakina",
+          "source": "WTA Tennis",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQIXMEqtR7vpwCyuNtynEVUIif_EGySlYoCw-EQ0mNV_kIbga5qYAKNMVFg3Io"
+        },
+        {
+          "headline": "Australian Open 2026: How to watch the Jessica Pegula vs. Amanda Anisimova match tonight",
+          "url": "https://sports.yahoo.com/tennis/article/australian-open-2026-how-to-watch-the-jessica-pegula-vs-amanda-anisimova-match-tonight-184415249.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSukEGCEzJEPmTqZ_yjH7vbvWL0qtxJ6rktYcxDpqwJIsa0iNngOvChVkIkON4"
+        },
+        {
+          "headline": "Amanda Anisimova Defeats Wang Xinyu, Narrowly Escapes Amanda Anisimova",
+          "url": "https://defector.com/amanda-anisimova-defeats-wang-xinyu-narrowly-escapes-amanda-anisimova",
+          "source": "Defector",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS5NfMBb6qNF1v5BPDG_3WxRDtCtmrewVOC-OXbXbt_iVzdtO2VT7T1TJy59u8"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "sabres",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sabres&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsDSEFChYSYVd1AzKN55RtzW8yv-DO9T-PK1f6zFt7N-alE8q1S9PEKqeC7sY",
+        "source": "NHL.com"
+      },
+      "news_articles": [
+        {
+          "headline": "Sabres at Maple Leafs | How to watch, lineup notes, and storylines",
+          "url": "https://www.nhl.com/sabres/news/buffalo-sabres-toronto-maple-leafs-preview-how-to-watch",
+          "source": "NHL.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsDSEFChYSYVd1AzKN55RtzW8yv-DO9T-PK1f6zFt7N-alE8q1S9PEKqeC7sY"
+        },
+        {
+          "headline": "Game night: Sabres in Toronto to face Maple Leafs",
+          "url": "https://www.audacy.com/wgr550/sports/sabres/game-night-sabres-in-toronto-to-face-maple-leafs",
+          "source": "Audacy",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR4Fd38xG6bOyAxgnK655fMv0RZUDz3tUng6Acbh2lF_rXGxH53hvWewY6_254"
+        },
+        {
+          "headline": "Maple Leafs notebook: Berube meets with leaders ahead of must-win",
+          "url": "https://www.sportsnet.ca/nhl/article/maple-leafs-notebook-berube-meets-with-leaders-ahead-of-must-win/",
+          "source": "Sportsnet.ca",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYZzdB6zXkg54ichyRlKU6tWjyFFKqQIndNLvEZEpqoEpHHXLhow5RcVA1k04"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "creighton basketball",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=creighton basketball&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcROc-svNhuH6Ch0PYL9o92VjZOBsDM4LA0HVs9FwiqNmR7uIOucLaeQKyj5F_4",
+        "source": "Yahoo Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Marquette vs Creighton: Game updates, prediction, odds and TV info",
+          "url": "https://sports.yahoo.com/articles/marquette-vs-creighton-game-updates-013002726.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcROc-svNhuH6Ch0PYL9o92VjZOBsDM4LA0HVs9FwiqNmR7uIOucLaeQKyj5F_4"
+        },
+        {
+          "headline": "BIG EAST GAME THREAD: Marquette vs Creighton",
+          "url": "https://www.anonymouseagle.com/marquette-mens-basketball/34804/how-to-watch-golden-eagles-big-east-game-creighton-bluejays-time-television-odds-fan-discussion",
+          "source": "Anonymous Eagle",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQWRj7u1WFQ1zb8u6EDVmVhol8_9bSUxh_3A-FgWC7ucNzt9-S6R5lQ68IqhGI"
+        },
+        {
+          "headline": "Marquette Golden Eagles vs Creighton Bluejays Picks and Predictions (Jan 27, 2026)",
+          "url": "https://www.scoresandstats.com/previews/basketball/ncaab/marquette-golden-eagles-vs-creighton-bluejays-72663/",
+          "source": "Scores And Stats",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSxgBhD9KqJ1HTp3ttIXJZVwCJg4XWI1tD2gOR_h8805EjznzHHOQCUfhq_WhQ"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "amanda anisimova",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=amanda anisimova&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSIV0d66te3BBvGY39-b548m_AihIa9hhoqCJ1-66dzvTMISGWbLcqVlnrga0U",
+        "source": "Fox News"
+      },
+      "news_articles": [
+        {
+          "headline": "Amanda Anisimova defends right to avoid 'clickbait' questions about US politics at Australian Open",
+          "url": "https://www.foxnews.com/sports/amanda-anisimova-defends-right-avoid-clickbait-questions-about-us-politics-australian-open",
+          "source": "Fox News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSIV0d66te3BBvGY39-b548m_AihIa9hhoqCJ1-66dzvTMISGWbLcqVlnrga0U"
+        },
+        {
+          "headline": "Amanda Anisimova attempts to clarify online controversies in Australian Open press conference",
+          "url": "https://www.tennis.com/news/articles/amanda-anisimova-attempts-to-clarify-online-controversies-in-australian-open-press-conference",
+          "source": "Tennis.com",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTyRUTKjAfK49mht0h-nE5f4m65CLX1wm9o6-qz3-0-nMHakUe-Q_iSXLV7l4Q"
+        },
+        {
+          "headline": "American tennis star pushes back on critics over flag answer: \u2018It\u2019s not factual\u2019",
+          "url": "https://www.nj.com/sports/2026/01/american-tennis-star-pushes-back-on-critics-over-flag-answer-its-not-factual.html",
+          "source": "NJ.com",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR5a5_qeBm0Nq08qamR4ZcSw7wnTXMX7aG03hVbkOG6riFM00FSH_TpmLxlch4"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "ilhan omar net worth",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=ilhan omar net worth&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdaJWFCFqYhzvIX8lNu35ohvMbqJ8eClbJ5I-nd0hqy_3xR-fyDNtX3pFzc8E",
+        "source": "The New York Times"
+      },
+      "news_articles": [
+        {
+          "headline": "Under Biden Administration, Justice Dept. Began Examining Ilhan Omar\u2019s Finances",
+          "url": "https://www.nytimes.com/2026/01/26/us/politics/ilhan-omar-investigation-finances.html",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdaJWFCFqYhzvIX8lNu35ohvMbqJ8eClbJ5I-nd0hqy_3xR-fyDNtX3pFzc8E"
+        },
+        {
+          "headline": "Justice Department is Investigating Ilhan Omar: See Odds for Congresswoman to be Charged with Federal Crime",
+          "url": "https://federalnewsnetwork.com/prediction-markets/2026/01/justice-department-investigating-ilhan-omar-see-odds-charged-with-federal-crime/",
+          "source": "Federal News Network",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSk1vGWIuf-PxRdpAVFrzRuFFpw3pwlCjqkRUML6tdlBYa9AWxAKuWqimaxrVM"
+        },
+        {
+          "headline": "Trump Claims Ilhan Omar Is Worth $44M. Here\u2019s Why That\u2019s Highly Unlikely.",
+          "url": "https://www.forbes.com/sites/zacheverson/2026/01/27/ilhan-omar-trump-net-worth-disclosure-30-44-million/",
+          "source": "Forbes",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx5wYX_SUvtbcxCWmH_iZdP1Wc3WjOzJA2-UNJRvPFcSkWOG5qBL9ILcTax5M"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "chrissy teigen",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=chrissy teigen&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRnAC-WtOP_bQDNZmSdOslNBZqtOhfiBVZKNZtqk8BEfFcVYpW-iuItvloM3lw",
+        "source": "USA Today"
+      },
+      "news_articles": [
+        {
+          "headline": "Chrissy Teigen reveals she relapsed, explains why she got sober again",
+          "url": "https://www.usatoday.com/story/entertainment/celebrities/2026/01/27/chrissy-teigen-relapse-sobriety-alcoholism/88386887007/",
+          "source": "USA Today",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRnAC-WtOP_bQDNZmSdOslNBZqtOhfiBVZKNZtqk8BEfFcVYpW-iuItvloM3lw"
+        },
+        {
+          "headline": "Chrissy Teigen reveals why she quit drinking again after falling off the wagon",
+          "url": "https://pagesix.com/2026/01/27/celebrity-news/chrissy-teigen-says-she-quit-drinking-again-after-falling-off-the-wagon/",
+          "source": "Page Six",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSCz6unyDaLaK6Qf30NHjapjII2BpwPW1p_hIZDExB1Fnrjn4Htw9Ya51DS-9A"
+        },
+        {
+          "headline": "Chrissy Teigen Quit Drinking Again After Carl Radke Sobriety Talk",
+          "url": "https://www.usmagazine.com/celebrity-news/news/chrissy-teigen-quit-drinking-again-after-carl-radke-sobriety-talk/",
+          "source": "Us Weekly",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTYzWOFd-SFJYdj1cvqusa18FyRyHsQp-WslE38Q3aYakltzIZ3UWm-OBxuiDQ"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "lauri markkanen",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=lauri markkanen&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS3ejyNdByFw0C7oJ0szdao1I0yw3RETpkSKM0MGuqHcSienset-pxmmQN0Hr8",
+        "source": "Hoops Rumors"
+      },
+      "news_articles": [
+        {
+          "headline": "Jazz\u2019s Lauri Markkanen Expected To Return Tuesday",
+          "url": "https://www.hoopsrumors.com/2026/01/jazzs-lauri-markkanen-expected-to-return-tuesday.html",
+          "source": "Hoops Rumors",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS3ejyNdByFw0C7oJ0szdao1I0yw3RETpkSKM0MGuqHcSienset-pxmmQN0Hr8"
+        },
+        {
+          "headline": "Lauri Markkanen (illness) to return Tuesday",
+          "url": "https://www.fantasypros.com/nba/news/567512/lauri-markkanen-illness-to-return-tuesday.php",
+          "source": "FantasyPros",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZT6ni08QpTqASlZPWItfDUROOSQeqiAaFRVn3Ywmdb-bCCLwQvJx1tHnJ3Vs"
+        },
+        {
+          "headline": "Lauri Markkanen Sidelined for Fourth Straight Game - NBA News | Fantasy Basketball",
+          "url": "https://www.rotoballer.com/player-news/lauri-markkanen-sidelined-for-fourth-straight-game/1800349",
+          "source": "RotoBaller",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRktoNhIhvqvbUYyx4YG15mSokdgrtrhxcyqS0YsHoeZ0hPCEjBtx2D3vm4ZEs"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "rasmus dahlin",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T02:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=rasmus dahlin&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRRKtIp7J51LkscwSbSC-2jHhlhZrOdcZdINncAweggw7hcg2pJghMQaie1Bco",
+        "source": "WIVB News 4"
+      },
+      "news_articles": [
+        {
+          "headline": "Sabres fans show support for Rasmus Dahlin",
+          "url": "https://www.wivb.com/sports/buffalo-sabres/sabres-fans-show-support-for-rasmus-dahlin/",
+          "source": "WIVB News 4",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRRKtIp7J51LkscwSbSC-2jHhlhZrOdcZdINncAweggw7hcg2pJghMQaie1Bco"
+        },
+        {
+          "headline": "NHL Star's Fianc\u00e9e Reveals Pregnancy Loss, Says Baby Played a 'Vital Role'",
+          "url": "https://people.com/nhl-star-fiancee-reveals-pregnancy-loss-says-baby-played-a-vital-role-in-her-life-11892763",
+          "source": "People.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdlMzGd51tIH_yszCI8jSR4vleCLmlBEKxt4twXj6ieLOh_vyiO76r5Thv8Ho"
+        },
+        {
+          "headline": "Rasmus Dahlin's Fiancee Reveals Pregnancy Loss After Heart Transplant",
+          "url": "https://www.usmagazine.com/entertainment/news/rasmus-dahlins-fiancee-reveals-pregnancy-loss-after-heart-transplant/",
+          "source": "Us Weekly",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_WxuLXAJIgApIxtXPAxC1NlppJfm7oIaSuijBBSLo4dejWpgPYv7iwDyHk58"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "dayton basketball",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T02:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=dayton basketball&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTMKgvAn2xLlQx_NiqOOe5p_pH4dPvnioIFDHN3ynbKfStMZNl9cosm2iZijOY",
+        "source": "University of Dayton Athletics"
+      },
+      "news_articles": [
+        {
+          "headline": "#UDMBB Welcomes Rhode Island To UD Arena Tuesday Night",
+          "url": "https://daytonflyers.com/news/2026/1/26/mens-basketball-udmbb-welcomes-rhode-island-to-ud-arena-tuesday-night.aspx",
+          "source": "University of Dayton Athletics",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTMKgvAn2xLlQx_NiqOOe5p_pH4dPvnioIFDHN3ynbKfStMZNl9cosm2iZijOY"
+        },
+        {
+          "headline": "Dayton basketball: How to watch Flyers matchup vs. Rhode Island",
+          "url": "https://www.daytondailynews.com/sports/university-of-dayton-flyers/dayton-basketball-how-to-watch-flyers-matchup-vs-rhode-island/DAJPPDSAK5HB5IRDAEPQKMROZQ/",
+          "source": "Dayton Daily News",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS7Ow95zYWJCBroG0BjttzEQbu0B4MAeYi8YgWuTth-nGq2UiGGr4UVoR5WpWM"
+        },
+        {
+          "headline": "Rhode Island vs Dayton Prediction, Odds & Best Bets Today \u2013 NCAAB, Jan. 27",
+          "url": "https://sports.betmgm.com/en/blog/ncaab/rhode-island-dayton-prediction-odds-picks-jan-27-college-basketball-jaa/",
+          "source": "sports.betmgm.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEkBh50N8JiDhQVyUxulggCHhoe1rAPTYze0HM8Voxm0IqPK4CGYz08amPbZM"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "clippers vs jazz",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-28T02:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=clippers vs jazz&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRtYogiAKM5c9XUZIVFl1KjvSuQUZsPiH8IYUNd9OUTu-3hrLob-UfYti_9_iU",
+        "source": "SLC Dunk"
+      },
+      "news_articles": [
+        {
+          "headline": "Preview: Nurkic\u2019s storm passes through SLC against LA Clippers",
+          "url": "https://www.slcdunk.com/utah-jazz-game-coverage/66357/preview-nurkics-storm-passes-through-slc-against-la-clippers",
+          "source": "SLC Dunk",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRtYogiAKM5c9XUZIVFl1KjvSuQUZsPiH8IYUNd9OUTu-3hrLob-UfYti_9_iU"
+        },
+        {
+          "headline": "How to watch Clippers vs. Jazz: TV channel and streaming options for January 27",
+          "url": "https://www.nytimes.com/athletic/7002484/2026/01/27/how-to-watch-clippers-vs-jazz-tv-channel-and-streaming-options-for-january-27/",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR71HuFP7sQ9K54-6cJQuzpc4ISEqDJDmHiVCsPuIZheSVEp09lmgpHOrj6I8E"
+        },
+        {
+          "headline": "Final Injury Report for Clippers-Jazz: Will Kawhi Leonard, Lauri Markkanen Play?",
+          "url": "https://athlonsports.com/nba/los-angeles-clippers/final-injury-report-for-clippers-jazz-will-kawhi-leonard-lauri-markkanen-play",
+          "source": "Athlon Sports",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQRtpo-Z1QCIUQW7dw7p46VYcZ2eZegeaiRp1-8NcpBE1FBJ6Yyd1CJ_ORc_h8"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "pegula",
+    "sabres",
+    "creighton basketball",
+    "amanda anisimova",
+    "ilhan omar net worth",
+    "chrissy teigen",
+    "lauri markkanen",
+    "rasmus dahlin",
+    "dayton basketball",
+    "clippers vs jazz"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}
