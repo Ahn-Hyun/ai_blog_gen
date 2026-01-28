@@ -61,13 +61,76 @@ jobs:
 
       - name: Generate posts
         env:
-          ASTRO_ROOT: ${{ github.workspace }}/ai_blog_v1_astro
-          STATE_PATH: ${{ github.workspace }}/ai_blog_v1_astro/.ai_state/published.json
+          ASTRO_ROOT: ${{ vars.ASTRO_ROOT || format('{0}/ai_blog_v1_astro', github.workspace) }}
+          STATE_PATH: ${{ vars.STATE_PATH || format('{0}/ai_blog_v1_astro/.ai_state/published.json', github.workspace) }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
-          POST_DRAFT: "false"
+          POST_INTERVAL_HOURS: ${{ vars.POST_INTERVAL_HOURS }}
+          MAX_TOPIC_RANK: ${{ vars.MAX_TOPIC_RANK }}
+          TREND_REGIONS: ${{ vars.TREND_REGIONS }}
+          TREND_SOURCE: ${{ vars.TREND_SOURCE }}
+          TREND_WINDOW_HOURS: ${{ vars.TREND_WINDOW_HOURS }}
+          TREND_METHOD: ${{ vars.TREND_METHOD }}
+          TREND_LIMIT: ${{ vars.TREND_LIMIT }}
+          TREND_SLEEP_SEC: ${{ vars.TREND_SLEEP_SEC }}
+          CSV_SORT_BY: ${{ vars.CSV_SORT_BY }}
+          HIGH_INTENT_REGIONS: ${{ vars.HIGH_INTENT_REGIONS }}
+          HIGH_INTENT_TREND_SOURCE: ${{ vars.HIGH_INTENT_TREND_SOURCE }}
+          HIGH_INTENT_TREND_WINDOW_HOURS: ${{ vars.HIGH_INTENT_TREND_WINDOW_HOURS }}
+          HIGH_INTENT_TREND_METHOD: ${{ vars.HIGH_INTENT_TREND_METHOD }}
+          HIGH_INTENT_TREND_LIMIT: ${{ vars.HIGH_INTENT_TREND_LIMIT }}
+          HIGH_INTENT_TREND_SLEEP_SEC: ${{ vars.HIGH_INTENT_TREND_SLEEP_SEC }}
+          HIGH_INTENT_CSV_SORT_BY: ${{ vars.HIGH_INTENT_CSV_SORT_BY }}
+          HIGH_INTENT_MAX_TOPIC_RANK: ${{ vars.HIGH_INTENT_MAX_TOPIC_RANK }}
+          HIGH_INTENT_TREND_CATEGORIES: ${{ vars.HIGH_INTENT_TREND_CATEGORIES }}
+          HIGH_INTENT_ALLOW_RSS_FALLBACK: ${{ vars.HIGH_INTENT_ALLOW_RSS_FALLBACK }}
+          HIGH_INTENT_RSS_MIN_MATCHES: ${{ vars.HIGH_INTENT_RSS_MIN_MATCHES }}
+          HIGH_INTENT_CSV_ACTIVE_ONLY: ${{ vars.HIGH_INTENT_CSV_ACTIVE_ONLY }}
+          HIGH_INTENT_CSV_DOWNLOAD_DIR: ${{ vars.HIGH_INTENT_CSV_DOWNLOAD_DIR }}
+          HIGH_INTENT_CSV_MAX_RETRIES: ${{ vars.HIGH_INTENT_CSV_MAX_RETRIES }}
+          HIGH_INTENT_CSV_RETRY_DELAY_SEC: ${{ vars.HIGH_INTENT_CSV_RETRY_DELAY_SEC }}
+          RSS_INCLUDE_IMAGES: ${{ vars.RSS_INCLUDE_IMAGES }}
+          RSS_INCLUDE_ARTICLES: ${{ vars.RSS_INCLUDE_ARTICLES }}
+          RSS_MAX_ARTICLES_PER_TREND: ${{ vars.RSS_MAX_ARTICLES_PER_TREND }}
+          RSS_CACHE: ${{ vars.RSS_CACHE }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GEMINI_MODEL_CONTENT: ${{ vars.GEMINI_MODEL_CONTENT }}
+          GEMINI_MODEL_META: ${{ vars.GEMINI_MODEL_META }}
+          GEMINI_TEMPERATURE: ${{ vars.GEMINI_TEMPERATURE }}
+          GEMINI_MAX_TOKENS: ${{ vars.GEMINI_MAX_TOKENS }}
+          GEMINI_TIMEOUT_SEC: ${{ vars.GEMINI_TIMEOUT_SEC }}
+          SEARCH_WEB_ENABLED: ${{ vars.SEARCH_WEB_ENABLED }}
+          SEARCH_WEB_MAX_RESULTS: ${{ vars.SEARCH_WEB_MAX_RESULTS }}
+          SEARCH_WEB_MAX_PER_QUERY: ${{ vars.SEARCH_WEB_MAX_PER_QUERY }}
+          SEARCH_WEB_DEPTH: ${{ vars.SEARCH_WEB_DEPTH }}
+          SEARCH_WEB_INCLUDE_ANSWER: ${{ vars.SEARCH_WEB_INCLUDE_ANSWER }}
+          SEARCH_WEB_INCLUDE_DOMAINS: ${{ vars.SEARCH_WEB_INCLUDE_DOMAINS }}
+          SEARCH_WEB_EXCLUDE_DOMAINS: ${{ vars.SEARCH_WEB_EXCLUDE_DOMAINS }}
+          YOUTUBE_SEARCH_ENABLED: ${{ vars.YOUTUBE_SEARCH_ENABLED }}
+          YOUTUBE_MAX_RESULTS: ${{ vars.YOUTUBE_MAX_RESULTS }}
+          YOUTUBE_MAX_PER_QUERY: ${{ vars.YOUTUBE_MAX_PER_QUERY }}
+          GOOGLE_IMAGE_ENABLED: ${{ vars.GOOGLE_IMAGE_ENABLED }}
+          GOOGLE_IMAGE_MODEL: ${{ vars.GOOGLE_IMAGE_MODEL }}
+          GOOGLE_IMAGE_ASPECT_RATIO: ${{ vars.GOOGLE_IMAGE_ASPECT_RATIO }}
+          CONTENT_LANGUAGE: ${{ vars.CONTENT_LANGUAGE }}
+          CONTENT_TONE: ${{ vars.CONTENT_TONE }}
+          USE_MULTI_AGENT: ${{ vars.USE_MULTI_AGENT }}
+          QUALITY_GATE_REVISIONS: ${{ vars.QUALITY_GATE_REVISIONS }}
+          SEARCH_RSS_ENABLED: ${{ vars.SEARCH_RSS_ENABLED }}
+          SEARCH_RSS_MAX_RESULTS: ${{ vars.SEARCH_RSS_MAX_RESULTS }}
+          SEARCH_RSS_MAX_PER_QUERY: ${{ vars.SEARCH_RSS_MAX_PER_QUERY }}
+          MAX_EVIDENCE_SOURCES: ${{ vars.MAX_EVIDENCE_SOURCES }}
+          BLOG_DOMAIN: ${{ vars.BLOG_DOMAIN }}
+          POST_DRAFT: ${{ vars.POST_DRAFT }}
+          FALLBACK_CATEGORY: ${{ vars.FALLBACK_CATEGORY }}
+          FALLBACK_TAGS: ${{ vars.FALLBACK_TAGS }}
+          SCRAPE_DELAY_SEC: ${{ vars.SCRAPE_DELAY_SEC }}
+          SCRAPE_MAX_RETRIES: ${{ vars.SCRAPE_MAX_RETRIES }}
+          SCRAPE_BACKOFF_SEC: ${{ vars.SCRAPE_BACKOFF_SEC }}
+          FINAL_REVIEW_ENABLED: ${{ vars.FINAL_REVIEW_ENABLED }}
+          FINAL_REVIEW_REVISIONS: ${{ vars.FINAL_REVIEW_REVISIONS }}
         run: |
           python scripts/auto_blog.py --once --pipeline "${{ steps.pipeline.outputs.pipeline }}"
 
