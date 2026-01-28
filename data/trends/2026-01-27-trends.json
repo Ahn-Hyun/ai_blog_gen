@@ -1,0 +1,362 @@
+{
+  "generated_at": "2026-01-27T09:24:05.019205+00:00",
+  "source": "trendspyg",
+  "method": "realtime_trending_searches",
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 20,
+    "cache": false
+  },
+  "items": [
+    {
+      "keyword": "alex de minaur",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T09:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=alex de minaur&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQq26rgE1JsfmkxVeF4QOB79CxflDot4oYqTFCxY00OkCb1Alylfo2ZHnL8p5M",
+        "source": "The Guardian"
+      },
+      "news_articles": [
+        {
+          "headline": "How Alex de Minaur can beat Carlos Alcaraz in Australian Open quarter-final",
+          "url": "https://www.theguardian.com/sport/blog/2026/jan/26/alex-de-minaur-carlos-alcaraz-australian-open-quarter-final-tennis",
+          "source": "The Guardian",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQq26rgE1JsfmkxVeF4QOB79CxflDot4oYqTFCxY00OkCb1Alylfo2ZHnL8p5M"
+        },
+        {
+          "headline": "\u2018Locked in\u2019 De Minaur brushes aside Bublik to set up Alcaraz clash",
+          "url": "https://ausopen.com/articles/news/locked-de-minaur-brushes-aside-bublik-set-alcaraz-clash",
+          "source": "Australian Open",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRr9eskPIH_XId3_vu3rroFi5xqzR9jwByrnfqyFN-xLHNoE1a1nfwgl8V9KFY"
+        },
+        {
+          "headline": "De Minaur: Tired of Being a Punching Bag",
+          "url": "https://tennisnow.com/de-minaur-tired-of-being-a-punching-bag/",
+          "source": "Tennis Now",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ7NszfxlT-xldkP4vGpmazyUgQmYJKA7CmESgEGA2sSkK8666mSTZsusSrN70"
+        }
+      ]
+    },
+    {
+      "keyword": "freeze warning",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "5000+",
+      "published_at": "2026-01-27T09:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=freeze warning&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTBchU9lelUFHnoOMFUxShtYAjWIWZ9t37N6j5LKdLa2wxRKpoGS2kBZlgdiZY",
+        "source": "WKMG"
+      },
+      "news_articles": [
+        {
+          "headline": "Frigid Florida air! When\u2019s the last time it was this cold for this long in Orlando?",
+          "url": "https://www.clickorlando.com/weather/2026/01/26/frigid-florida-air-whens-the-last-time-it-was-this-cold-for-this-long-in-orlando/",
+          "source": "WKMG",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTBchU9lelUFHnoOMFUxShtYAjWIWZ9t37N6j5LKdLa2wxRKpoGS2kBZlgdiZY"
+        },
+        {
+          "headline": "Model hints at snow flurries north of Orlando as Florida braces for extended freeze",
+          "url": "https://www.wesh.com/article/florida-snow-flurries-possible-orlando-extended-winter-freeze/70144390",
+          "source": "WESH",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTice5bg7kRQS8WBIMOQNdK7WlI0MXnLF4LAZD7zkQXKY2mRKEz5R8-UlqFJ4c"
+        },
+        {
+          "headline": "Orlando weather: Colder temperatures returning to Central Florida",
+          "url": "https://www.fox35orlando.com/news/orlando-weather-colder-temperatures-returning-central-florida",
+          "source": "FOX 35 Orlando",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTXg7xtEdiQd8aazb4JT5jjD0gIpZExu8PtiULYSp3nijAENjeDwivKjooNZiM"
+        }
+      ]
+    },
+    {
+      "keyword": "coco gauff",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "10000+",
+      "published_at": "2026-01-27T08:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=coco gauff&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRtaV4MbFQ3yfKD7qrIDLVmrI4nbM80Iy2H4UtFocUkVDT-ZVxfi8jrzqTK3FI",
+        "source": "BBC"
+      },
+      "news_articles": [
+        {
+          "headline": "Australian Open 2026 LIVE: Coco Gauff vs Elina Svitolina - scores, radio & updates",
+          "url": "https://www.bbc.com/sport/tennis/live/c9q1z8y87z9t",
+          "source": "BBC",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRtaV4MbFQ3yfKD7qrIDLVmrI4nbM80Iy2H4UtFocUkVDT-ZVxfi8jrzqTK3FI"
+        },
+        {
+          "headline": "Australian Open 2026 quarter-finals: Svitolina destroys Gauff, Alcaraz v De Minaur to follow \u2013 live",
+          "url": "https://www.theguardian.com/sport/live/2026/jan/27/australian-open-2026-gauff-svitolina-alcaraz-de-minaur-live?page=with:block-697880b58f084db219d7ec57",
+          "source": "The Guardian",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR-ZLHmnGjjidtqPNdwvxKJkbjk6S3RhfYQOX2pSBbAIN430OXoHyPs8j8_zG0"
+        },
+        {
+          "headline": "Svitolina routs Gauff in 59 minutes; into first Australian Open semifinal",
+          "url": "https://www.wtatennis.com/news/4440054/svitolina-routs-gauff-in-59-minutes-into-first-australian-open-semifinal",
+          "source": "WTA Tennis",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQwXuzgMDRffIyobkll65yQ2CZaiHk2Yu5Wpzp2DDtjFIPq5k0NGk7VYvAB6h8"
+        }
+      ]
+    },
+    {
+      "keyword": "wonder man release date",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T08:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=wonder man release date&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvuROwPlx38TO-H8FTN0xmkjyPOlEKN7buGDdUJUsE6Gj2aIPl9rAhOTQbc4c",
+        "source": "Los Angeles Times"
+      },
+      "news_articles": [
+        {
+          "headline": "\u2018Wonder Man\u2019 shows, again, why the MCU is superior on TV with a grounded Hollywood story",
+          "url": "https://www.latimes.com/entertainment-arts/tv/story/2026-01-26/wonder-man-review-marvel-disney",
+          "source": "Los Angeles Times",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvuROwPlx38TO-H8FTN0xmkjyPOlEKN7buGDdUJUsE6Gj2aIPl9rAhOTQbc4c"
+        },
+        {
+          "headline": "What You Need to Know Before Watching \u2018Wonder Man\u2019",
+          "url": "https://www.theringer.com/2026/01/26/marvel/what-you-need-to-know-before-watching-wonder-man-mcu",
+          "source": "The Ringer",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSCu3qrjQyJthjKu2NxrPH3i-mQUO94UF7lE81dwPHlM9HOUZEmFL5uy9ew2E8"
+        },
+        {
+          "headline": "As Marvel pivots back to the Avengers, Wonder Man goes its own way",
+          "url": "https://www.theverge.com/entertainment/866197/wonder-man-review-mcu-disney-plus",
+          "source": "The Verge",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlTK4v32o32LcoXqZRaYEsQ59KL2WTmhsf_OdUbeQLXgWHn1pOS8rj6a7CtZI"
+        }
+      ]
+    },
+    {
+      "keyword": "john force racing",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T08:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=john force racing&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRmlK5G25QkVRd8HQJhtQhcF6gxsVdEVmKu87YG0A6x_SSKYRpjM2rhqilSTtg",
+        "source": "NHRA"
+      },
+      "news_articles": [
+        {
+          "headline": "John Force Racing confirms crew chief line-up for 2026 NHRA season",
+          "url": "https://www.nhra.com/news/2026/john-force-racing-confirms-crew-chief-line-2026-nhra-season",
+          "source": "NHRA",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRmlK5G25QkVRd8HQJhtQhcF6gxsVdEVmKu87YG0A6x_SSKYRpjM2rhqilSTtg"
+        },
+        {
+          "headline": "VANDERGRIFF EMBRACES FUNNY CAR CHALLENGE AT JOHN FORCE RACING",
+          "url": "https://competitionplus.com/vandergriff-embraces-funny-car-challenge-at-john-force-racing/",
+          "source": "Competition Plus",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuHlkb5oci7IpgqK61nIQsNFnc_UyvdwoxQAaKDNzkRt5qw_1Q0EqP4uRGj2o"
+        },
+        {
+          "headline": "WADE: New Dynamic At John Force Racing",
+          "url": "https://speedsport.com/drag-racing/nhra/wade-new-dynamic-at-john-force-racing/",
+          "source": "speed sport",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG6EDu9T8XYQcZccT6NYa1N7lNauDOXBb_aMSgONe341aljnzxFRS1dbBcwEc"
+        }
+      ]
+    },
+    {
+      "keyword": "resident evil requiem",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T08:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=resident evil requiem&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQKE8Rudyn2vKc_PEmUs8SIeaVHpqoYNKxrBBgm37LTKQor3EHPl4HAQnbwriA",
+        "source": "Mashable"
+      },
+      "news_articles": [
+        {
+          "headline": "'Resident Evil: Requiem' might actually get to have its cake and eat it too",
+          "url": "https://mashable.com/article/resident-evil-requiem-hands-on-impressions-preview",
+          "source": "Mashable",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQKE8Rudyn2vKc_PEmUs8SIeaVHpqoYNKxrBBgm37LTKQor3EHPl4HAQnbwriA"
+        },
+        {
+          "headline": "\u2018Resident Evil Requiem\u2019 Devs Talk \u201cVital\u201d Return to Raccoon City, Tease \u201cUmbrella Curse\u201d, Claire And Ada & Pairing Leon Kennedy With A New Leading Lady",
+          "url": "https://deadline.com/2026/01/resident-evil-9-interview-1236696589/",
+          "source": "Deadline",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTFj38E6Q8yCvNfbA83wnQ2bVRRGNY6ieF1FhFFkFeE1B1DSo8Q-zroJyZw9hY"
+        },
+        {
+          "headline": "Resident Evil Requiem Is Two Games in One (and a Lot of Fun)",
+          "url": "https://news.xbox.com/en-us/2026/01/26/resident-evil-requiem-preview/",
+          "source": "Xbox Wire",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT_I88Ro93NjMtg5Ge0qes8eIrcwx8PpF2XZTynCbWYmvHjNJz0vNUdegag-bs"
+        }
+      ]
+    },
+    {
+      "keyword": "terraria 1.4.5",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T08:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=terraria 1.4.5&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSTYFJ1pwVyw4oWc1gJG5t23Zf0KJwq5NCMXqiT3Peuf6ZtpF5y1Q1IS5O5mS0",
+        "source": "IGN"
+      },
+      "news_articles": [
+        {
+          "headline": "Terraria's Bigger and Boulder 1.4.5 Update Is Almost Here, and This Teaser Has Fans More Excited Than Ever",
+          "url": "https://www.ign.com/articles/terrarias-bigger-and-boulder-145-update-is-almost-here-and-this-teaser-has-fans-more-excited-than-ever",
+          "source": "IGN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSTYFJ1pwVyw4oWc1gJG5t23Zf0KJwq5NCMXqiT3Peuf6ZtpF5y1Q1IS5O5mS0"
+        },
+        {
+          "headline": "15 years after release: Update 1.4.5 for \"Terraria\" is ready to go",
+          "url": "https://www.heise.de/en/news/15-years-after-release-Update-1-4-5-for-Terraria-is-ready-to-go-11153655.html",
+          "source": "heise online",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3mmOpJC0KvHNbi82LYhAG-3UGHNPJH5qeURKyScgOLlnw0_m0faizfkBIeLU"
+        },
+        {
+          "headline": "Female Team Kicks \"Toxic\" Gamer from Marvel Rivals Tournament - He Became a Community Star and Was Supported Even by Developers",
+          "url": "https://ixbt.games/en/news/2026/01/25/zenskaia-komanda-vygnala-toksicnogo-geimera-s-turnira-marvel-rivals-on-stal-zvezdoi-soobshhestva-i-ego-podderzali-daze-razrabotciki.html",
+          "source": "IXBT.games",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRMq7XQF5n2AhIq83zaW3uJmA7tFLH19TttZqeyPHwbnkV8ccDfsg69-VG5opk"
+        }
+      ]
+    },
+    {
+      "keyword": "nba golden state warriors",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "20000+",
+      "published_at": "2026-01-27T07:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=nba golden state warriors&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQF1FuIvZbw9a3K6xo1hSGQBcFQgLYUAFfjhz2xc24kLf4_YhA-2OrWG1c_cD0",
+        "source": "ESPN"
+      },
+      "news_articles": [
+        {
+          "headline": "Curry, Green, Edwards out for Warriors vs. Wolves matchup",
+          "url": "https://www.espn.com/nba/story/_/id/47738886/curry-green-edwards-warriors-vs-wolves-monday",
+          "source": "ESPN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQF1FuIvZbw9a3K6xo1hSGQBcFQgLYUAFfjhz2xc24kLf4_YhA-2OrWG1c_cD0"
+        },
+        {
+          "headline": "Shorthanded Warriors can't keep up with Timberwolves in 108-83 loss",
+          "url": "https://sports.yahoo.com/articles/shorthanded-warriors-cant-keep-timberwolves-081636701.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQJ-CBQyAP0D0fJtffHIEeSF5ZIctvUF9n98t_lUvBSrMdXSfY-tf6fYup1yKo"
+        },
+        {
+          "headline": "Steph Curry, Draymond Green ruled out for Warriors' rematch vs. Timberwolves",
+          "url": "https://www.nbcsportsbayarea.com/nba/golden-state-warriors/steph-curry-draymond-green-injury-timberwolves/1910391/",
+          "source": "NBC Sports Bay Area & California",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2jJrx_xKea-FKG9lXXw9htNdGyuNrWh8cXHegfknPWI8tCqZaKqt6jfQ1Qq4"
+        }
+      ]
+    },
+    {
+      "keyword": "solo hunters codes",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T07:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=solo hunters codes&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQI6MTw4QRQ1ZxxJQytaZRefa50cXOCnqKvgTISPfi7IbCul4Fq1ieJtStm_gA",
+        "source": "IGN"
+      },
+      "news_articles": [
+        {
+          "headline": "Best Classes Tier List",
+          "url": "https://www.ign.com/wikis/solo-hunters-roblox/Best_Classes_Tier_List",
+          "source": "IGN",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQI6MTw4QRQ1ZxxJQytaZRefa50cXOCnqKvgTISPfi7IbCul4Fq1ieJtStm_gA"
+        },
+        {
+          "headline": "Solo Hunters Roblox redeem codes for January 26, 2026: Unlock free gems, stat resets and class rerolls",
+          "url": "https://m.economictimes.com/news/new-updates/solo-hunters-roblox-redeem-codes-for-january-26-2026-unlock-free-gems-stat-resets-and-class-rerolls/articleshow/127537959.cms",
+          "source": "The Economic Times",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWkZv1rOuqEMjhYYJmVVHPchTqNyJeuZDwa1N9zlW1sA3BovVK2-j9uHBM5_g"
+        },
+        {
+          "headline": "The Official Solo Hunters Trello and Discord Link",
+          "url": "https://beebom.com/solo-hunters-trello-and-discord-link/",
+          "source": "Beebom",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTTdWsxjmdqJ44OTJgHn5lYZ1cgCy6dZlctwYUT0r6zaPaevKHz1eBxRejmozE"
+        }
+      ]
+    },
+    {
+      "keyword": "china coup",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T07:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=china coup&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIRIZoLvJa9yqllxP6q8yXXnN0C1A2vo7ZsQXmraphOj3cRqsWowJobgnd_p8",
+        "source": "BBC"
+      },
+      "news_articles": [
+        {
+          "headline": "Zhang Youxia: Purge of China's top general leaves military in crisis",
+          "url": "https://www.bbc.com/news/articles/c8d0l0g8yz5o",
+          "source": "BBC",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIRIZoLvJa9yqllxP6q8yXXnN0C1A2vo7ZsQXmraphOj3cRqsWowJobgnd_p8"
+        },
+        {
+          "headline": "Exclusive | China\u2019s Top General Accused of Giving Nuclear Secrets to U.S. - WSJ",
+          "url": "https://www.wsj.com/world/china/chinas-top-general-accused-of-giving-nuclear-secrets-to-u-s-b8f59dae?gaa_at=eafs&gaa_n=AWEtsqcxvzsL3xr1ST2Ud-FIeLvLlrxyCB_WmeAZHYXosvXn59TZWwdi_mvt&gaa_ts=6978871a&gaa_sig=XIh2s7w73fnGgeeky5d2et3A11yQ0iYthEOyUu4CDRwi_dLrN1ZmR9NyFuRevnbknFmY9hrun0JLIezbuPKTCw%3D%3D",
+          "source": "The Wall Street Journal",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRrSvVheL_p9f9-CwI5_Eq7lLt5KWqIPlda0n8sB4VaPwEEaB1f5ztZWZZSZQk"
+        },
+        {
+          "headline": "Fate of China\u2019s top general more likely to do with power struggle than corruption",
+          "url": "https://www.theguardian.com/world/2026/jan/26/china-top-general-zhang-youxia-power-struggle-corruption",
+          "source": "The Guardian",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS1zee1ZDBbrKHEUjl95Ejq_QRsFB4Xs0cwofbpIZp9urWePMeyLCwOORLaXm0"
+        }
+      ]
+    }
+  ],
+  "unique_keywords": [
+    "alex de minaur",
+    "freeze warning",
+    "coco gauff",
+    "wonder man release date",
+    "john force racing",
+    "resident evil requiem",
+    "terraria 1.4.5",
+    "nba golden state warriors",
+    "solo hunters codes",
+    "china coup"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}

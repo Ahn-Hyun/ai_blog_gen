@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-01-27T11:28:15.665517+00:00",
+  "source": "trendspyg",
+  "method": "realtime_trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "where is lawrence jones on fox and friends",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=where is lawrence jones on fox and friends&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8HBHVqvIApRf4-AYx980FFo4UavxXcadHB6pwT-wThEhHdwL9R9E8Yi9pQWc",
+        "source": "USA Today"
+      },
+      "news_articles": [
+        {
+          "headline": "'Fox & Friends' host Lawrence Jones speaks out on absence from show",
+          "url": "https://www.usatoday.com/story/entertainment/tv/2026/01/26/lawrence-jones-fox-friends-absence-eye-surgery/88362977007/",
+          "source": "USA Today",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8HBHVqvIApRf4-AYx980FFo4UavxXcadHB6pwT-wThEhHdwL9R9E8Yi9pQWc"
+        },
+        {
+          "headline": "Fox News host explains weeks-long absence from breakfast show",
+          "url": "https://www.the-independent.com/bulletin/culture/fox-news-lawrence-jones-health-b2907732.html",
+          "source": "The Independent",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRsBzBF8W8gytStNMhge95-1cRNLgOwtTIWTsnrzkzwecXwXD9KwRyiZd1gQks"
+        },
+        {
+          "headline": "Lawrence Jones opens up about recent \u2018Fox & Friends\u2019 hiatus",
+          "url": "https://rollingout.com/2026/01/26/lawrence-jones-fox-and-friends-hiatus/",
+          "source": "Rolling Out",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSo5De_QIUyubvgkc8TxhUjx2aorcda9cbpLGw4pt3XuFXa_LQBtVtPje5H84Q"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "school.closings",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=school.closings&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb7GweG87KNmCzFiKpbN5TF1n50afWF8DZX1ddxDFSjRAE6Lm5m2h6jh01A1U",
+        "source": "10tv.com"
+      },
+      "news_articles": [
+        {
+          "headline": "School closings, delays: Central Ohio districts announce closures for Tuesday",
+          "url": "https://www.10tv.com/article/news/local/school-closings-delays-tomorrow-columbus-central-ohio-tuesday-january-27/530-9fd83ae9-2a70-477b-991f-b0cee1dee105",
+          "source": "10tv.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb7GweG87KNmCzFiKpbN5TF1n50afWF8DZX1ddxDFSjRAE6Lm5m2h6jh01A1U"
+        },
+        {
+          "headline": "LIST: Schools closing, moving to virtual learning Tuesday as cold wind chills settle in",
+          "url": "https://www.wlwt.com/article/greater-cincinnati-schools-closing-snow-ice-tuesday-jan-27/70141004",
+          "source": "WLWT",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRzqnbCQwZPuH4h7IhOBkHCe1BcTkJp-u6iobKnYRDorAx47QltN8ZLH4p9i9k"
+        },
+        {
+          "headline": "Is there school Tuesday? Columbus and central Ohio closings for Jan. 27, 2026",
+          "url": "https://www.nbc4i.com/news/local-news/central-ohio-news/is-there-school-tuesday-columbus-and-central-ohio-closings-for-jan-27-2026/",
+          "source": "NBC4 WCMH-TV",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR69PWdvCXX7gc0eG3fa3Y4dReuzB3N2HEFx7zuP61RKc44U6ikFMZegKQmggE"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "penguin",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=penguin&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlsLwQe4PYYLp9mBBvb0IFbQJx0gkao-FmamqOxXFbdmPOGWPyQ_eflooD-_o",
+        "source": "NDTV"
+      },
+      "news_articles": [
+        {
+          "headline": "Why A Lone Nihilist Penguin's Clip From A 2007 Documentary Is Going Viral In 2026",
+          "url": "https://www.ndtv.com/lifestyle/why-a-lone-nihilist-penguins-clip-from-a-2007-documentary-is-going-viral-in-2026-10881871",
+          "source": "NDTV",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlsLwQe4PYYLp9mBBvb0IFbQJx0gkao-FmamqOxXFbdmPOGWPyQ_eflooD-_o"
+        },
+        {
+          "headline": "TikTok\u2019s \u2018Nihilistic Penguin\u2019 Meme, Explained",
+          "url": "https://www.forbes.com/sites/danidiplacido/2026/01/26/tiktoks-nihilistic-penguin-meme-explained/",
+          "source": "Forbes",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQMfdM72M2aK12aqipUH9j0XvaBSWUu23xPzJetC5i_CllC_yzG2OmNVH7JUcI"
+        },
+        {
+          "headline": "Explained: Why is a penguin\u2019s 'death march' going viral? Know the meaning behind 'Nihilist Penguin' meme",
+          "url": "https://timesofindia.indiatimes.com/etimes/trending/explained-why-is-a-penguins-death-march-going-viral-know-the-meaning-behind-nihilist-penguin-meme/articleshow/127449160.cms",
+          "source": "The Times of India",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTAvOpnRLR_G7yuzn0Ro6icBoFl2jhSk562IPcpkBjIIow1IHoG5LIYbQ13JX8"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "sofia falcone",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sofia falcone&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRuIONOvtFkdOy1EusJaTdJ-Eq-56B_tWNeMW5NRyha70pCZUFokag2ZyGMI_Q",
+        "source": "Yahoo"
+      },
+      "news_articles": [
+        {
+          "headline": "The Penguin breakout star Cristina Milioti says Sofia Falcone is \"definitively not\" in The Batman 2",
+          "url": "https://www.yahoo.com/entertainment/tv/articles/penguin-breakout-star-cristina-milioti-225639409.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRuIONOvtFkdOy1EusJaTdJ-Eq-56B_tWNeMW5NRyha70pCZUFokag2ZyGMI_Q"
+        },
+        {
+          "headline": "The Penguin: Cristin Milioti Gives Disappointing DC Return Update",
+          "url": "https://www.superherohype.com/tv/649015-the-penguin-cristin-milioti-disappointing-dc-return-update",
+          "source": "SuperHeroHype",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHQ13kom3Zwmi5HEEDfqllXvzsGP2ZPO30w-4MsC_UAC4JOtq7yUYwgDOXew0"
+        },
+        {
+          "headline": "\"What are you doing?\": Interstellar Star Can\u2019t Wrap His Head Around \u2018The Penguin\u2019 Season 2 Limbo",
+          "url": "https://fandomwire.com/interstellar-star-topher-grace-cant-wrap-his-head-around-the-penguin-season-2-limbo/",
+          "source": "FandomWire",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR7QRbAohBFJOorTSJKMYncByX3bUj1WpPe3BDyK9PmxwInBj42yM2Wt_2UD2E"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "ups stock",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=ups stock&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSkCTO0yDd8cl6aW_LBtzMw_Zl1dt10-cep_1hSVCJYLpSqrlL7Cra9gT2--z8",
+        "source": "Bloomberg"
+      },
+      "news_articles": [
+        {
+          "headline": "UPS Sees Better-Than-Expected 2026 Sales Amid Network Overhaul",
+          "url": "https://www.bloomberg.com/news/articles/2026-01-27/ups-sees-better-than-expected-2026-sales-amid-network-overhaul",
+          "source": "Bloomberg",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSkCTO0yDd8cl6aW_LBtzMw_Zl1dt10-cep_1hSVCJYLpSqrlL7Cra9gT2--z8"
+        },
+        {
+          "headline": "Is United Parcel Stock (UPS) a Buy Ahead of Q4 Earnings?",
+          "url": "https://www.tipranks.com/news/is-united-parcel-stock-ups-a-buy-ahead-of-q4-earnings",
+          "source": "TipRanks",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT38kRoK_kqWC2CPIXUqsbA_umgFQwlbIemU9hkyr_ckOdabIJ5oaC97mF6vA0"
+        },
+        {
+          "headline": "UnitedHealth's Q4 revenue jumps 12% to $113.2B",
+          "url": "https://breakingthenews.net/Article/UnitedHealth's-Q4-revenue-jumps-12-to-dollar113.2B/65548916",
+          "source": "Breaking The News",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTa_kZ2stLn8hjXpuQXgeTGYEv2NlB4zehM05KToUd9sfCAQKV9nqHgSH_eGSI"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "closings today",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=closings today&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQkts_hTcGUfW_3QHOMkoSZkBzVGUXyr7L88DJ_MjqtHs6BeGeBttRrMl6EzXw",
+        "source": "WAVE News"
+      },
+      "news_articles": [
+        {
+          "headline": "JCPS declares traditional snow days for Monday and Tuesday",
+          "url": "https://www.wave3.com/2026/01/25/jcps-declares-traditional-snow-days-monday-tuesday/",
+          "source": "WAVE News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQkts_hTcGUfW_3QHOMkoSZkBzVGUXyr7L88DJ_MjqtHs6BeGeBttRrMl6EzXw"
+        },
+        {
+          "headline": "LIST | School, business closures due to winter storm",
+          "url": "https://www.wlky.com/article/school-business-church-closures-list-louisville/70119337",
+          "source": "WLKY",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS38nbrR42BYdMXCQ0Rh548hRXzN95w5MOp37gnJ3bopR1XPNBlD0NDWSvFCH0"
+        },
+        {
+          "headline": "SNOW FOX | Additional business, child care and church closings/delays for Jan. 26-27",
+          "url": "https://www.wdrb.com/news/snow-fox-additional-business-child-care-and-church-closings-delays-for-jan-26-27/article_b20a2028-a777-4250-93a5-42ff465d653b.html",
+          "source": "WDRB",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQM7dZllOVk1-wT900ZrOMTNwixTXazdtHj2R88JBKE_huY2j6Q9Id8bfRLeFc"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "frank reich",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=frank reich&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSQ3W6RNkaMayjgiclJRiOPOZRs2jOW_btQJyADEzE_d6EkGiqlDvnlJnvBSfk",
+        "source": "NBC Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Report: Jets are working on a deal to hire Frank Reich",
+          "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/report-jets-are-working-on-a-deal-to-hire-frank-reich",
+          "source": "NBC Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSQ3W6RNkaMayjgiclJRiOPOZRs2jOW_btQJyADEzE_d6EkGiqlDvnlJnvBSfk"
+        },
+        {
+          "headline": "Aaron Glenn mulling offensive coordinator change in Jets\u2019 turnover-filled offseason",
+          "url": "https://nypost.com/2026/01/25/sports/aaron-glenn-mulling-jets-offensive-coordinator-change/",
+          "source": "New York Post",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRbJCXvB7Hdw8Kx-oKhCcpd0rI_ivyhhZhslOYa-zcfphBRubiP-J6BvnhP-cg"
+        },
+        {
+          "headline": "Sources: Jets considering change to Tanner Engstrand's role; OC doesn't anticipate calling plays in 2026",
+          "url": "https://sny.tv/articles/jets-aaron-glenn-considering-change-oc-tanner-engstrand-role",
+          "source": "SNY",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Rd73cNMLYShX8Psyq9IrPvprWwx3WCOCqOZ-ZPMRzpY-wBhuZmoBGK-Xa0c"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "is school closed today",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=is school closed today&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmpqvwfiYD934PmjhZF2b5sqK_Xo-jGEq6oT7DGSa3wZdxfgA9R70jAqEtRm0",
+        "source": "RochesterFirst"
+      },
+      "news_articles": [
+        {
+          "headline": "RCSD closes schools Tuesday for second day in a row",
+          "url": "https://www.rochesterfirst.com/community/rcsd/rcsd-closes-schools-tuesday-for-second-day-in-a-row/",
+          "source": "RochesterFirst",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmpqvwfiYD934PmjhZF2b5sqK_Xo-jGEq6oT7DGSa3wZdxfgA9R70jAqEtRm0"
+        },
+        {
+          "headline": "Winter storm forces school, mall closures in Rochester. See the latest closings",
+          "url": "https://www.democratandchronicle.com/story/weather/2026/01/25/winter-storm-forces-school-mall-closures-in-rochester-ny-see-the-latest-closings/88349208007/",
+          "source": "Democrat and Chronicle",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRypL-e_wjAPgrs6FKgCdHVPGdzQ8L_Ds5ttt7ZlC-4E2m-gLFa1kDyfKyPWYI"
+        },
+        {
+          "headline": "Buffalo Public Schools, Niagara Falls schools closed Monday",
+          "url": "https://www.wivb.com/news/local-news/buffalo-public-schools-niagara-falls-schools-closed-monday/",
+          "source": "WIVB News 4",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTh1c8kDIAo8PWP4d28vvmIzlRJUAexKA1Jwhnh4C30x8Y8KpoP9B58sp9UBWU"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "australian open results",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=australian open results&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRn4HpkO_6zu3ZBl2_s1-VRZIzFSNfhzJ7i9niAQT8m4VYEzF3GDj6NJKoniDg",
+        "source": "Yahoo Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Australian Open 2026: Ben Shelton rallies after slow start, Jannik Sinner, Novak Djokovic and Iga Swiatek advance",
+          "url": "https://sports.yahoo.com/tennis/article/australian-open-2026-ben-shelton-rallies-after-slow-start-jannik-sinner-novak-djokovic-and-iga-swiatek-advance-135433976.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRn4HpkO_6zu3ZBl2_s1-VRZIzFSNfhzJ7i9niAQT8m4VYEzF3GDj6NJKoniDg"
+        },
+        {
+          "headline": "Ruud makes timely exit from Australian Open as Shelton storms into last eight",
+          "url": "https://www.theguardian.com/sport/2026/jan/26/casper-ruud-wife-pregnant-ben-shelton-australian-open-jannik-sinner",
+          "source": "The Guardian",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSTQ4tLFURnUMfY8E0RvQ-D0Qa-40TBn95X3ukQBRZpLBAQeajdW1wjIyoq7rk"
+        },
+        {
+          "headline": "Australian Open 2026 recap: Jannik Sinner, Iga Swiatek and Ben Shelton among fourth-round winners",
+          "url": "https://www.bbc.com/sport/tennis/live/c867z80122xt",
+          "source": "BBC",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQUjv5rjbRWgJu0GH_XhJ_YYrDFgppPOTo_LSLjL5jfuWmymtQUTR6AxeYjkjk"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "alerta por fr\u00edo extremo",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=alerta por fr\u00edo extremo&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRygG2X3Shg3hdFPrU_5XAnDu1LvnWQRhcJEoS5Lx4PHE74dSO3z_l6VbRfxrc",
+        "source": "Univision"
+      },
+      "news_articles": [
+        {
+          "headline": "Estos son los albergues que siguen disponibles en el condado Harris por el fr\u00edo extremo",
+          "url": "https://www.univision.com/local/houston-kxln/cuales-albergues-siguen-disponibles-en-el-condado-harris-por-el-frio-extremo-video",
+          "source": "Univision",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRygG2X3Shg3hdFPrU_5XAnDu1LvnWQRhcJEoS5Lx4PHE74dSO3z_l6VbRfxrc"
+        },
+        {
+          "headline": "Austin niega rumores de operaciones de ICE en refugios durante tormenta de hielo",
+          "url": "https://telemundoaustin.com/news/local/austin-niega-rumores-de-operaciones-de-ice-en-refugios-durante-tormenta-de-hielo",
+          "source": "Telemundo Austin!",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcThLZFbLYnV5ON7zqGvGt8rE3qisDMIdoot1c3XXbXGNbAHbUwO43m8rFOxob0"
+        },
+        {
+          "headline": "Abre centro de calentamiento en Houston ante temperaturas congelantes",
+          "url": "https://www.telemundohouston.com/noticias/local/abre-centro-de-calentamiento-en-houston-ante-temperaturas-congelantes/2540196/",
+          "source": "Telemundo Houston",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQwAOQmNN2ivC0iuh3ITOSDZ5Cm4ZcJqo3hnfQh0Q-tXVdXMXiPQewSlP10WCA"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "where is lawrence jones on fox and friends",
+    "school.closings",
+    "penguin",
+    "sofia falcone",
+    "ups stock",
+    "closings today",
+    "frank reich",
+    "is school closed today",
+    "australian open results",
+    "alerta por fr\u00edo extremo"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}

@@ -1,0 +1,370 @@
+{
+  "generated_at": "2026-01-28T02:08:30.136644+00:00",
+  "source": "trendspyg",
+  "method": "trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "kansas state vs west virginia",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=kansas state vs west virginia&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcStJW2FZRvViNA7iV_1gV8_0gj5rmPv_q7Lyo84Kv4r1Tlw7UUGFgxCrNBCkH0",
+        "source": "WV MetroNews"
+      },
+      "news_articles": [
+        {
+          "headline": "Mountaineers look to continue winning ways at home in matchup with Kansas State",
+          "url": "https://wvmetronews.com/2026/01/26/mountaineers-look-to-continue-winning-ways-at-home-in-matchup-with-kansas-state/",
+          "source": "WV MetroNews",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcStJW2FZRvViNA7iV_1gV8_0gj5rmPv_q7Lyo84Kv4r1Tlw7UUGFgxCrNBCkH0"
+        },
+        {
+          "headline": "2025-26 Kansas State MBB: Game 21 at WVU",
+          "url": "https://sports.yahoo.com/articles/2025-26-kansas-state-mbb-010000770.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQSdglX4DscOOrSk6GXE-ExkpOsu5i4eYGyoyYf52yywmY9pyrXZdRfPbcnfos"
+        },
+        {
+          "headline": "K-State Wildcats vs. WVU Mountaineers: Basketball game time, odds & prediction",
+          "url": "https://www.kansas.com/sports/college/big-12/kansas-state/article314459509.html",
+          "source": "Wichita Eagle",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTx-Ss7RbybMeMeOcDgP2lMCcmuK3OOcXb6wZKu6LJwFYr5MNrrhmkQCkztqbk"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "ray j",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=ray j&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRidVjWPFA6v1KCsMk0GxdKlGHPukOnXcv6oPcIEmMe9Rty2--A7wAL6Pp0mxQ",
+        "source": "The Root"
+      },
+      "news_articles": [
+        {
+          "headline": "Ray J Breaks His Silence on Some Scary Health News",
+          "url": "https://www.theroot.com/ray-j-breaks-his-silence-on-some-scary-health-news-2000086560",
+          "source": "The Root",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRidVjWPFA6v1KCsMk0GxdKlGHPukOnXcv6oPcIEmMe9Rty2--A7wAL6Pp0mxQ"
+        },
+        {
+          "headline": "Ray J reveals terrifying health update after he\u2019s rushed to hospital with pneumonia and chest pain",
+          "url": "https://www.the-sun.com/entertainment/15848913/ray-j-terrifying-health-update-heart-hospital/",
+          "source": "The US Sun",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtIjB8mRzUeemsLexliqfw0Mu37dwAbPNSTB7uS2yp4mhlTLFE5FzWzobRgW4"
+        },
+        {
+          "headline": "Reality TV Star Recovering From Heart Problems After Shock Hospitalization",
+          "url": "https://entertainmentnow.com/reality-tv/reality-tv-star-heart-problems-hospital/",
+          "source": "EntertainmentNow",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcToAYqKFLm5AjZmPJoSAp31ml5Pp6gl3hc48BIPRs0FSbPWdJfMfKkOf3Og9m0"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "match",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=match&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT6rjpHue8g8jgsVW4S_wEcQrhMG-4yziqaXZfBY6QvlgVtu8bwz8rsofa70-w",
+        "source": "ABC News"
+      },
+      "news_articles": [
+        {
+          "headline": "Trump to urge families to open Trump Accounts as tax season begins",
+          "url": "https://abcnews.go.com/Politics/trump-urge-families-open-trump-accounts-tax-season/story?id=129611160",
+          "source": "ABC News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT6rjpHue8g8jgsVW4S_wEcQrhMG-4yziqaXZfBY6QvlgVtu8bwz8rsofa70-w"
+        },
+        {
+          "headline": "Intel says it will match government's 'Trump Accounts' contribution to kids of employees",
+          "url": "https://www.cnbc.com/2026/01/27/intel-says-it-will-match-governments-trump-accounts-contribution.html",
+          "source": "CNBC",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT6HHyxPmd23Wo6ZWrg0W3sj7OZtW4NKCpPmccc3EEst8hghouXwXc_o2RoLpw"
+        },
+        {
+          "headline": "Treasury to hold summit on Trump accounts",
+          "url": "https://thehill.com/homenews/administration/5705218-treasury-summit-trump-accounts-babies/",
+          "source": "The Hill",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR55nzxqgcYTM6jEhQEB12lwaZoeXDN8QGE4R5sFz2bP1hvalcKB8bX14Tcv4M"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "slu basketball",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=slu basketball&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTiNMa2mMHqnilYo77eLkZVGqhQFjfSWF4R6JXC-oAQA5J9YIqDXYQAWq8jvtY",
+        "source": "slubillikens.com"
+      },
+      "news_articles": [
+        {
+          "headline": "MBB PREVIEW: No. 21 SLU Hosts GW Tuesday Night - Saint Louis University",
+          "url": "https://slubillikens.com/news/2026/1/26/mens-basketball-mbb-preview-no-21-slu-hosts-gw-tuesday-night.aspx",
+          "source": "slubillikens.com",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTiNMa2mMHqnilYo77eLkZVGqhQFjfSWF4R6JXC-oAQA5J9YIqDXYQAWq8jvtY"
+        },
+        {
+          "headline": "George Washington vs Saint Louis Predictions, Start Time, Odds: NCAAB Picks for Tuesday (Fanatics Markets)",
+          "url": "https://www.actionnetwork.com/ncaab/george-washington-revolutionaries-vs-saint-louis-billikens-predictions-picks-odds-college-basketball-tuesday-january-27",
+          "source": "Action Network",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxbvE2MZZ-G8FAYgEG_CpHgOsHEk-AV5IV-vpbLNvUIG-zDiFatPs31_CmXMs"
+        },
+        {
+          "headline": "How to watch Saint Louis Billikens vs. George Washington Revolutionaries: Live stream info, TV channel, game time | Jan. 27",
+          "url": "https://collegesportswire.usatoday.com/story/sports/college/2026/01/27/saint-louis-billikens-george-washington-revolutionaries-mens-basketball-watch-live-stream-game-time/88374148007/",
+          "source": "College Sports Wire",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSRg0AOPDDGo9AtUz0fO2pYE4vBwGpVT2f2aiUgVaFCcnb6WnIKuRul13ucYgw"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "tom izzo",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=tom izzo&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK94gdZIdXNlG_kt99U7054HBD5zv7slcK-tTdUh0_auKIMdd6b41TiVQRoTo",
+        "source": "MLive.com"
+      },
+      "news_articles": [
+        {
+          "headline": "Tom Izzo proposes quid pro quo with Michigan State senior center",
+          "url": "https://www.mlive.com/spartans/2026/01/tom-izzo-proposes-quid-pro-quo-with-michigan-state-senior-center.html",
+          "source": "MLive.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK94gdZIdXNlG_kt99U7054HBD5zv7slcK-tTdUh0_auKIMdd6b41TiVQRoTo"
+        },
+        {
+          "headline": "Spartan Captain Proves Tom Izzo's Development Process Still Works",
+          "url": "https://www.si.com/college/michiganstate/spartans-captain-proves-izzo-development-process-still-works",
+          "source": "Sports Illustrated",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTpiDSd8VXAQtJXH6XUX0fLdxoA34UKqJLhJJq0SybMN8_KbYkgrXWAYIZ_GlY"
+        },
+        {
+          "headline": "Tom Izzo: 'There's still some ceiling left' for Carson Cooper & Michigan State's other developmental vets",
+          "url": "https://www.on3.com/teams/michigan-state-spartans/news/michigan-state-head-coach-tom-izzo-theres-still-some-ceiling-left-for-carson-cooper-spartans-other-developmental-leaders/",
+          "source": "On3",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqTDCyy5RCyML5Yu5fGewQIJekN8Hg94FaGpiUkg413vrssy4DnuJ-lHaNzTc"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "sandis vilmanis",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T01:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sandis vilmanis&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRKRRzVBEUsXmQTtkaO9xVbEBJtn3goGv2z3ex-FVE-wDBfLxawvWgANHar7ws",
+        "source": "tv3.lv"
+      },
+      "news_articles": [
+        {
+          "headline": "\u201cApbr\u012bnoju \u0161\u012b pui\u0161a ener\u0123iju!\u201d un \u201cM\u012blu to!\u201d \u2013 NHL apskatnieks un fani slav\u0113 Latvijas hokeja uzbruc\u0113ju Vilmani",
+          "url": "https://tv3.lv/sports/hokejs/nhl/apbrinoju-si-puisa-darba-energiju-un-milu-to-nhl-apskatnieks-un-fani-slave-latvijas-hokeja-uzbruceju-vilmani/",
+          "source": "tv3.lv",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRKRRzVBEUsXmQTtkaO9xVbEBJtn3goGv2z3ex-FVE-wDBfLxawvWgANHar7ws"
+        },
+        {
+          "headline": "Sandis Vilmanis atz\u012bm\u0113jas ar septi\u0146iem sp\u0113ka pa\u0146\u0113mieniem \"Panthers\" uzvar\u0101 p\u0101r \"Blackhawks\"",
+          "url": "https://lente.lv/sports/raksts/sandis-vilmanis-atzimejas-ar-septiniem-speka-panemieniem-panthers-uzvara-par-blackhawks-95371.html",
+          "source": "Lente.lv",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMPeMzkD3VtqVnm8TwDsVWiKWRaOx7gQVj1GWZ0hbBoJbQF9Yx0wYPcfaxIL4"
+        },
+        {
+          "headline": "Balinskis par jauno l\u012bgumu: Pat\u012bkami, ka komanda tevi tie\u0161\u0101m v\u0113las sav\u0101 sast\u0101v\u0101",
+          "url": "https://www.sportazinas.com/balinskis-par-jauno-ligumu-patikami-ka-komanda-tevi-tiesam-velas-sava-sastava/",
+          "source": "Sportazinas.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZUq7E44u_T-PW_CIEjCuldXK0r2f7C03c-z7WMmHoZEvjxRwv2CadF6b7Mwc"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "moneyball",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=moneyball&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTByR0LNbtLgtHwuKNpQ7awzE_x6ICY8iEfnxCrf-XiAnGiVEvNg7xLpqci53k",
+        "source": "Yahoo"
+      },
+      "news_articles": [
+        {
+          "headline": "Chris Pratt admits \u2018Moneyball\u2019 director told him to stop being 'such an a--hole' on set",
+          "url": "https://www.yahoo.com/entertainment/movies/articles/chris-pratt-admits-moneyball-director-211933790.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTByR0LNbtLgtHwuKNpQ7awzE_x6ICY8iEfnxCrf-XiAnGiVEvNg7xLpqci53k"
+        },
+        {
+          "headline": "Chris Pratt admits \u2018Moneyball\u2019 director told him to stop being 'such an a--hole' on set",
+          "url": "https://www.aol.com/news/chris-pratt-admits-moneyball-director-211933217.html",
+          "source": "AOL.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQKPxNVBjQzvnZKZ3d6Sukm0Mzfj9rYubpQhA64Kt3YQx86pi5qB67vad7M2-o"
+        },
+        {
+          "headline": "5 Best Chris Pratt Movies, Ranked: \u2018Moneyball,\u2019 \u2018Jurassic World\u2019 and More",
+          "url": "https://www.yahoo.com/entertainment/movies/articles/5-best-chris-pratt-movies-093526087.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR0HIccp7xXpWb7fLnhwii5L-BPPYo2hnz6lA0u3ws1TE3Ar48c-37ewzVfcEk"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "alex sarr",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-28T01:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=alex sarr&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSsamxyFUCPHHGSAPYjQfbugO3meupzitDk9YlxmuntHclTwfJNapnYg2pkqX0",
+        "source": "ESPN"
+      },
+      "news_articles": [
+        {
+          "headline": "Flagg, Knueppel, Edgecomb top Rising Stars draft picks",
+          "url": "https://www.espn.com/nba/story/_/id/47748482/flagg-knueppel-edgecomb-top-rising-stars-draft-picks",
+          "source": "ESPN",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSsamxyFUCPHHGSAPYjQfbugO3meupzitDk9YlxmuntHclTwfJNapnYg2pkqX0"
+        },
+        {
+          "headline": "Cooper Flagg, Kon Knueppel selected with top 2 picks in Castrol Rising Stars draft",
+          "url": "https://www.nba.com/news/2026-rising-stars-roster-announcement",
+          "source": "NBA",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTJfDz2DdaLTIAAG6SE2uLk1zBIE6OzWdH0wmO3WOHTBBwrWPewgL1k_Zwo_9Q"
+        },
+        {
+          "headline": "\u2018Want to be an All-Star one day\u2019: Cavs\u2019 Jaylon Tyson aiming higher after Rising Stars selection",
+          "url": "https://www.cleveland.com/cavs/2026/01/cavs-jaylon-tyson-aiming-higher-after-rising-stars-selection.html",
+          "source": "Cleveland.com",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRsaCgD1nHoovpTqVVNbVdiR2TmBAlzBR8VKyriNXujpvvY6sgAxCO1GK39IgE"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "montauk",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=montauk&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJLKyc74_2QUO8USbhD097HjhF5AgtU8dxwBscCjxvg_LZrpq4B0qnT8rbI_Y",
+        "source": "James Lane Post"
+      },
+      "news_articles": [
+        {
+          "headline": "Gurney\u2019s Montauk Resort & Seawater Spa Showcases Year-Round Wellness Offerings, Anchored By Seawater Spa",
+          "url": "https://jameslanepost.com/gurneys-montauk-resort-seawater-spa-showcases-its-year-round-wellness-offering-anchored-by-seawater-spa/01/26/2026/Hamptons-News-Happenings",
+          "source": "James Lane Post",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJLKyc74_2QUO8USbhD097HjhF5AgtU8dxwBscCjxvg_LZrpq4B0qnT8rbI_Y"
+        },
+        {
+          "headline": "What Is The Montauk Project? Stranger Things Creators Confirm Spinoff Status After Finale",
+          "url": "https://www.imdb.com/news/ni65641436/",
+          "source": "IMDb",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRadyLe73THv8k_jbrFztoqQo8ORsITTNKczL3qypfPUR_j3ahpd53vlsbv5nU"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "rutgers university",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T01:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=rutgers university&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRnVrjYe1YsumaUAO4by1m7Rbr0BcHxSX8QWxEosu1_B3diZak_t99rFH179fI",
+        "source": "University of Illinois Athletics"
+      },
+      "news_articles": [
+        {
+          "headline": "#12 Illinois Battles to B1G Win Over #17 Rutgers, 17-16 - University of Illinois Athletics",
+          "url": "https://fightingillini.com/news/2026/1/24/wrestling-no-12-illinois-battles-to-b1g-win-over-rutgers-17-16.aspx",
+          "source": "University of Illinois Athletics",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRnVrjYe1YsumaUAO4by1m7Rbr0BcHxSX8QWxEosu1_B3diZak_t99rFH179fI"
+        },
+        {
+          "headline": "No. 17 Wrestling Loses by Criteria at No. 12 Illinois",
+          "url": "https://scarletknights.com/news/2026/1/24/no-17-wrestling-loses-by-criteria-at-no-12-illinois",
+          "source": "Rutgers University Athletics",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZwNPEo5r1WmAoj-_NwHOPJbFqW7VZIzakHjNuzK6w-IySP2Q6xRVOpqSwXpU"
+        },
+        {
+          "headline": "N.J. weather: Rutgers sports teams reconfigure schedules ahead of powerful weather storm",
+          "url": "https://www.nj.com/rutgers/2026/01/nj-weather-rutgers-sports-teams-reconfigure-schedules-ahead-of-powerful-weather-storm.html",
+          "source": "NJ.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQfUn8u1TMmPcUKiSsf59dkhOndQbNZNfMPgsiFwSqi6oH1glmIzZOwbS4cD7M"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "kansas state vs west virginia",
+    "ray j",
+    "match",
+    "slu basketball",
+    "tom izzo",
+    "sandis vilmanis",
+    "moneyball",
+    "alex sarr",
+    "montauk",
+    "rutgers university"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}

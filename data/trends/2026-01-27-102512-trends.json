@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-01-27T10:25:12.754621+00:00",
+  "source": "trendspyg",
+  "method": "realtime_trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "arc raiders update",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T10:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=arc raiders update&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTQuNsLzzmLz6uw94rf3k4f7mTrbU8tsprvSqT2gnJKuwuxHLXOdO2hujXWXOk",
+        "source": "ARC Raiders"
+      },
+      "news_articles": [
+        {
+          "headline": "January Update 1.13.0",
+          "url": "https://arcraiders.com/news/patch-notes-1-13-0",
+          "source": "ARC Raiders",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTQuNsLzzmLz6uw94rf3k4f7mTrbU8tsprvSqT2gnJKuwuxHLXOdO2hujXWXOk"
+        },
+        {
+          "headline": "ARC Raiders Headwinds Release Date and Update Roadmap - Arc Raiders Guide",
+          "url": "https://www.ign.com/wikis/arc-raiders/ARC_Raiders_Headwinds_Release_Date_and_Update_Roadmap",
+          "source": "IGN",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRZ-q3aUMjOnuf5yzFpR16lzfzt_WSkCUPdZUadLC6h9OTuu4kxbOc2jGbvOw"
+        },
+        {
+          "headline": "Arc Raiders adding matchmaking option literally nobody asked for",
+          "url": "https://www.polygon.com/arc-raiders-headwinds-update-solo-vs-squads/",
+          "source": "Polygon",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQRUxN-6bM4y-_OdqQgBOyNEdp505mHLok2gbzg4DvORSXF-NmQjO-Gmr3PWbE"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "world's tallest buildings",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-27T10:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=world's tallest buildings&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRabsO9Cq9lv3KX0CSw9o_djVgRxqtpKRi8LY_79YeBqIvITQui1MQIMDZub0E",
+        "source": "CNN"
+      },
+      "news_articles": [
+        {
+          "headline": "Free solo climber Alex Honnold conquers one of the world\u2019s tallest buildings",
+          "url": "https://www.cnn.com/2026/01/25/sport/alex-honnold-taipei-101-free-solo-netflix-intl-hnk",
+          "source": "CNN",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRabsO9Cq9lv3KX0CSw9o_djVgRxqtpKRi8LY_79YeBqIvITQui1MQIMDZub0E"
+        },
+        {
+          "headline": "\u2018Skyscraper Live\u2019: How Netflix Was Prepared In Case Things Went Wrong",
+          "url": "https://www.forbes.com/sites/timlammers/2026/01/25/skyscraper-live-how-netflix-was-prepared-in-case-alex-honnold-fell/",
+          "source": "Forbes",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaBx19S9FNZRIZ6Jy77Z9-mFFKYy_6DlY1VqWXSGJP-l0q4G7bf7tLDpL_qXM"
+        },
+        {
+          "headline": "He Climbed a Cliff in \u2018Free Solo.\u2019 Now He\u2019ll Try a Skyscraper.",
+          "url": "https://www.nytimes.com/2026/01/22/us/alex-honnold-netflix-taipei.html",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRA9FE2yzVV8FBY9sqWQHPAatOUkhXHSOve-kVBkTiGZseh2bwVwz14qGWzMM0"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "non fungible tokens",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T09:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=non fungible tokens&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQn4Sfhaf5h58YyuStHLNZ1matFoVNX5Kmnd3hbzpKNAkhIT8GEP49F1gCIUYY",
+        "source": "CoinDesk"
+      },
+      "news_articles": [
+        {
+          "headline": "NFTs are not dead: Wealthy crypto collectors are still driving the market, says Animoca Brands' Yat Siu",
+          "url": "https://www.coindesk.com/business/2026/01/19/nfts-are-not-dead-wealthy-crypto-collectors-are-still-driving-the-market-says-animoca-brands-yat-siu",
+          "source": "CoinDesk",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQn4Sfhaf5h58YyuStHLNZ1matFoVNX5Kmnd3hbzpKNAkhIT8GEP49F1gCIUYY"
+        },
+        {
+          "headline": "How to Mint an NFT: Easy NFT Marketplace Tutorial for 2026",
+          "url": "https://www.analyticsinsight.net/cryptocurrency-analytics-insight/how-to-mint-an-nft-easy-nft-marketplace-tutorial-for-2026",
+          "source": "Analytics Insight",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRjEnpJqBSQbP49bcH1Qm3zfimpuIZmhaCR1TdEUtoNca8g0O8t3-h0j1QxDxI"
+        },
+        {
+          "headline": "Ninetynine Tulips \u2013 From Tulipmania to the Blockchain",
+          "url": "https://thursd.com/articles/ninetynine-tulips-tulipmania-blockchain",
+          "source": "Thursd",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR1RdOIZbWIDaxKt8vpnN5q2tmWGze3TjShhIoImAckquM4CiMHcEaNc2nMmPQ"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "carlos alcaraz",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-27T09:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=carlos alcaraz&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB_4z-kSiHOvG7DpEg-LGdlCzkudDdKzUIlyi74tEup8Z1Uqvn6QvF5TwV54Y",
+        "source": "Diario AS"
+      },
+      "news_articles": [
+        {
+          "headline": "\u00bfA qu\u00e9 hora es el Alcaraz - De Mi\u00f1aur? Horario, TV, d\u00f3nde y c\u00f3mo ver el Open de Australia",
+          "url": "https://as.com/tenis/open_australia/a-que-hora-es-el-alcaraz-de-minaur-horario-tv-donde-y-como-ver-el-open-de-australia-f202601-n/",
+          "source": "Diario AS",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB_4z-kSiHOvG7DpEg-LGdlCzkudDdKzUIlyi74tEup8Z1Uqvn6QvF5TwV54Y"
+        },
+        {
+          "headline": "De Mi\u00f1aur Se Cita Con Alcaraz En Cuartos Del Abierto De Australia",
+          "url": "https://www.barrons.com/news/spanish/de-minaur-se-cita-con-alcaraz-en-cuartos-del-abierto-de-australia-d5438edc?gaa_at=eafs&gaa_n=AWEtsqe0-6T8QonRpj887DzrYqbBsN79_PslVCTEPFYEnfQkAlTzx7AWjOb3&gaa_ts=697894ee&gaa_sig=yMhcUV_Ik4t8pb0fDBwhNO32yZzDvZy-w9vgra1KIwDd63GvAKUl7g-mu3_j-670ld8DMDg_cylb0IeECd1e9A%3D%3D",
+          "source": "Barron's",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgUGgh3Glt6qwO_VMYmG2L4dksKAuuBpqefEdGM5-zhhfjtkiJBRQGSPpqzSw"
+        },
+        {
+          "headline": "Australian Open 2026: De Mi\u00f1aur cort\u00f3 la racha triunfal de Bublik y enfrentar\u00e1 a Alcaraz en cuartos",
+          "url": "https://espndeportes.espn.com/tenis/nota/_/id/16225131/australian-open-2026-de-minaur-corto-la-racha-triunfal-de-bublik-y-enfrentara-a-alcaraz-en-cuartos-de-final",
+          "source": "ESPN Deportes",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRLfFnsgrKCh5cVpRl77ppotj3W4nGcyVZ4lx6fneqUb9T58xRGihMKtM0yk9A"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "england vs sri lanka",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T09:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=england vs sri lanka&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQr0V7ziB_xPz_aqyQzjWpzpt-jxduX_0NH2M3tRLknb_pdyLqlNYH2zfE_Hi0",
+        "source": "BBC"
+      },
+      "news_articles": [
+        {
+          "headline": "Sri Lanka vs England LIVE: Third ODI, Colombo - cricket score & updates",
+          "url": "https://www.bbc.com/sport/cricket/live/c9dxdz9jlz2t",
+          "source": "BBC",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQr0V7ziB_xPz_aqyQzjWpzpt-jxduX_0NH2M3tRLknb_pdyLqlNYH2zfE_Hi0"
+        },
+        {
+          "headline": "Asalanka questions Brook's 'worst pitch' assessment after second ODI",
+          "url": "https://www.espncricinfo.com/story/sl-vs-eng-asalanka-questions-brooks-worst-pitch-assessment-after-second-odi-1521033",
+          "source": "ESPNcricinfo",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTmh5QXBil6kasD_NzuCVACDqHYBJIHPH5cHv2Xh-uYqlkQsFEDxl9Z6IgnjSk"
+        },
+        {
+          "headline": "Sri Lanka v England: third men\u2019s cricket one-day international \u2013 live",
+          "url": "https://www.theguardian.com/sport/live/2026/jan/27/sri-lanka-v-england-third-mens-cricket-one-day-international-live",
+          "source": "The Guardian",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhu6vSGsCNsUAdHyHFD7ccDiu-612DlTaXmxS8ezNfDv-pUzYxBapmujud53A"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "travel",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-27T09:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=travel&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRyKUqabLK_8ipIqKMkymFbQHpszxADRQY2pDdgbDbCLUJ1T_JIYuMYXd8OdgI",
+        "source": "Yahoo"
+      },
+      "news_articles": [
+        {
+          "headline": "Winter storm full coverage: Northeast blanketed in heavy snow while ice accumulation leaves 600,000 in the South without power",
+          "url": "https://www.yahoo.com/news/weather-news/live/winter-storm-live-updates-heavy-snow-blasts-northeast-as-us-battles-impacts-of-catastrophic-ice-accumulation-154833840.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRyKUqabLK_8ipIqKMkymFbQHpszxADRQY2pDdgbDbCLUJ1T_JIYuMYXd8OdgI"
+        },
+        {
+          "headline": "Death Toll Rises as Cities Face Frigid Cold and Power Outages After Snowstorm: Live Updates",
+          "url": "https://www.nytimes.com/live/2026/01/26/weather/weather-snow-updates-ice-cold",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEL6Fx8fYQuvtlNC9MXghazk0r1F81pO51Dy8tTsb-fSQtqCE0FqKCtjdkbLU"
+        },
+        {
+          "headline": "At least 34 dead as winter storm brings ice, snow, extreme cold",
+          "url": "https://www.usatoday.com/story/news/weather/2026/01/26/deaths-winter-storm-states/88364939007/",
+          "source": "USA Today",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSe7Kqaz_4Uq1VSCmabse6A8fGw9lcUBlZxzK2TAmkPiCG8p9PBEud6cJ1gHPs"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "alex de minaur",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-27T09:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=alex de minaur&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE0t-yp-BK2ZqVREUkHqXKWHRFK3VBBklAqUs3luSvLCff88zTkmQrEwA10_w",
+        "source": "ESPN"
+      },
+      "news_articles": [
+        {
+          "headline": "De Minaur must keep Alcaraz 'guessing': Mark Philippoussis",
+          "url": "https://www.espn.com/tennis/story/_/id/47731623/alex-de-minaur-carlos-alcaraz-australian-open-quarterfinal-clash-mark-philippoussis",
+          "source": "ESPN",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE0t-yp-BK2ZqVREUkHqXKWHRFK3VBBklAqUs3luSvLCff88zTkmQrEwA10_w"
+        },
+        {
+          "headline": "Carlos Alcaraz v Alex de Minaur start time and how to watch Australian Open quarter-final",
+          "url": "https://sports.yahoo.com/articles/carlos-alcaraz-v-alex-minaur-170658298.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSQNie9h9uCW18P9KOFSn0hzNJI16lroB6_sjqkmuadOQDOAMpb63dw6yW0cxw"
+        },
+        {
+          "headline": "Alcaraz vs. de Minaur 2026 livestream: Watch Australian Open for free",
+          "url": "https://mashable.com/article/alcaraz-de-minaur-australian-open-2026-live-stream-for-free",
+          "source": "Mashable",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvP6IWLqJIDO36_s-JGhbjgASmMYA-SnCdiOOAovQ4rnR6s6lC4Njl3rars_Q"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "freeze warning",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "5000+",
+      "published_at": "2026-01-27T09:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=freeze warning&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTBchU9lelUFHnoOMFUxShtYAjWIWZ9t37N6j5LKdLa2wxRKpoGS2kBZlgdiZY",
+        "source": "WKMG"
+      },
+      "news_articles": [
+        {
+          "headline": "Frigid Florida air! When\u2019s the last time it was this cold for this long in Orlando?",
+          "url": "https://www.clickorlando.com/weather/2026/01/26/frigid-florida-air-whens-the-last-time-it-was-this-cold-for-this-long-in-orlando/",
+          "source": "WKMG",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTBchU9lelUFHnoOMFUxShtYAjWIWZ9t37N6j5LKdLa2wxRKpoGS2kBZlgdiZY"
+        },
+        {
+          "headline": "Model hints at snow flurries north of Orlando as Florida braces for extended freeze",
+          "url": "https://www.wesh.com/article/florida-snow-flurries-possible-orlando-extended-winter-freeze/70144390",
+          "source": "WESH",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTice5bg7kRQS8WBIMOQNdK7WlI0MXnLF4LAZD7zkQXKY2mRKEz5R8-UlqFJ4c"
+        },
+        {
+          "headline": "Orlando weather: Colder temperatures returning to Central Florida",
+          "url": "https://www.fox35orlando.com/news/orlando-weather-colder-temperatures-returning-central-florida",
+          "source": "FOX 35 Orlando",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTXg7xtEdiQd8aazb4JT5jjD0gIpZExu8PtiULYSp3nijAENjeDwivKjooNZiM"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "coco gauff",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "10000+",
+      "published_at": "2026-01-27T08:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=coco gauff&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRxC97IgjGBhn-cKbtk9V3m2rDqpsbU9vh45FyPyXfRgfh0GVDxyjkZqABLNes",
+        "source": "The New York Times"
+      },
+      "news_articles": [
+        {
+          "headline": "Coco Gauff\u2019s Australian Open evaporates in overwhelming loss to Elina Svitolina",
+          "url": "https://www.nytimes.com/athletic/7001166/2026/01/27/australian-open-coco-gauff-elina-svitolina-result-analysis/",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRxC97IgjGBhn-cKbtk9V3m2rDqpsbU9vh45FyPyXfRgfh0GVDxyjkZqABLNes"
+        },
+        {
+          "headline": "Svitolina sweeps past off Gauff in hour of power to reach first AO semifinal",
+          "url": "https://ausopen.com/articles/news/svitolina-sweeps-past-gauff-hour-power-reach-first-ao-semifinal",
+          "source": "Australian Open",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTgpXgfGk_UWhGLNPC9181DSOOt4p0icD3eSF7OmT6qWkgECgjM_ynm_3rcZi8"
+        },
+        {
+          "headline": "Australian Open 2026 quarter-finals: Svitolina destroys Gauff, Alcaraz v De Minaur to follow \u2013 live",
+          "url": "https://www.theguardian.com/sport/live/2026/jan/27/australian-open-2026-gauff-svitolina-alcaraz-de-minaur-live",
+          "source": "The Guardian",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR-ZLHmnGjjidtqPNdwvxKJkbjk6S3RhfYQOX2pSBbAIN430OXoHyPs8j8_zG0"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "wonder man release date",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-27T08:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=wonder man release date&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvuROwPlx38TO-H8FTN0xmkjyPOlEKN7buGDdUJUsE6Gj2aIPl9rAhOTQbc4c",
+        "source": "Los Angeles Times"
+      },
+      "news_articles": [
+        {
+          "headline": "\u2018Wonder Man\u2019 shows, again, why the MCU is superior on TV with a grounded Hollywood story",
+          "url": "https://www.latimes.com/entertainment-arts/tv/story/2026-01-26/wonder-man-review-marvel-disney",
+          "source": "Los Angeles Times",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvuROwPlx38TO-H8FTN0xmkjyPOlEKN7buGDdUJUsE6Gj2aIPl9rAhOTQbc4c"
+        },
+        {
+          "headline": "\u2018Wonder Man\u2019 Pushes Marvel Into Unfamiliar Territory",
+          "url": "https://www.nytimes.com/2026/01/27/arts/television/wonder-man.html",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQEiMJGdte1zKRLWMsq4j22hfXOIkUL2-SthPE_8EqGba_Sj_9j7g-v0u4awLU"
+        },
+        {
+          "headline": "What You Need to Know Before Watching \u2018Wonder Man\u2019",
+          "url": "https://www.theringer.com/2026/01/26/marvel/what-you-need-to-know-before-watching-wonder-man-mcu",
+          "source": "The Ringer",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSCu3qrjQyJthjKu2NxrPH3i-mQUO94UF7lE81dwPHlM9HOUZEmFL5uy9ew2E8"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "arc raiders update",
+    "world's tallest buildings",
+    "non fungible tokens",
+    "carlos alcaraz",
+    "england vs sri lanka",
+    "travel",
+    "alex de minaur",
+    "freeze warning",
+    "coco gauff",
+    "wonder man release date"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}

@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-01-27T11:57:33.068341+00:00",
+  "source": "trendspyg",
+  "method": "realtime_trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "nyc schools closed",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-27T11:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=nyc schools closed&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRmYlo_1hyxQpD2gCYP_duln0Z2bdmmcuCUq24nnl-8aMwSCPWMS2eUx4pv91Y",
+        "source": "ABC7 New York"
+      },
+      "news_articles": [
+        {
+          "headline": "Winter storm NYC: Public schools reopen Tuesday, Mamdani says every street was plowed",
+          "url": "https://abc7ny.com/post/nyc-public-schools-closed-today-due-sunday-snow-storm-remote-learning-students/18475952/",
+          "source": "ABC7 New York",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRmYlo_1hyxQpD2gCYP_duln0Z2bdmmcuCUq24nnl-8aMwSCPWMS2eUx4pv91Y"
+        },
+        {
+          "headline": "Opinion | New York City Robs Kids of a Snow Day",
+          "url": "https://www.wsj.com/opinion/new-york-city-robs-kids-of-a-snow-day-e1673000?gaa_at=eafs&gaa_n=AWEtsqeJxoBuK2eGif1BVCGISF47Wwvnc1pITu6D3HlZgXwUWunpBeP8cP3e&gaa_ts=6978aaba&gaa_sig=IKR3wgy6Fy6WgesWQedrpcZOglJlFsmKG_5Ffvy3bRGX2O1gYgygWSJInrUg4z-jhLxWSqtr8gHOpKzgH6QJyA%3D%3D",
+          "source": "The Wall Street Journal",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRTs3vdbHOojexPFRbY0lXfzF8ZiChwCwJrQxFkWDc8r39SjlWtIh7JxZgwKFE"
+        },
+        {
+          "headline": "List of school closings across NY, NJ, CT on Monday, Jan. 26",
+          "url": "https://www.fox5ny.com/news/list-schools-closings-ny-nj-ct-monday-jan-26",
+          "source": "FOX 5 New York",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRR3k3er4F8YbjV9Hvu2Re0GvFs21w69smmH4QvlyLkFyCEkgg8Dh12zOAih1k"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "weather tampa",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=weather tampa&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSqhxTG2s87xXib4YdzxWu5iKJtZDpp7f1i15jqg5MAWVWb7tKmnoC5RHFAXFM",
+        "source": "WPEC"
+      },
+      "news_articles": [
+        {
+          "headline": "South Florida shelters open doors as temps plunge; free transit offered to those in need",
+          "url": "https://cbs12.com/news/local/south-florida-shelters-open-doors-as-temps-plunge-free-transit-offered-to-those-in-need-indian-river-st-lucie-martin-okeechobee-and-palm-beach-counties-south-florida-treasure-coast-news-opening-emergency-cold-weather-shelters-january-26-2026",
+          "source": "WPEC",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSqhxTG2s87xXib4YdzxWu5iKJtZDpp7f1i15jqg5MAWVWb7tKmnoC5RHFAXFM"
+        },
+        {
+          "headline": "Get ready to bundle up! Cold temperatures coming to the Treasure Coast",
+          "url": "https://www.tcpalm.com/story/weather/2026/01/26/strong-cold-front-knocks-down-temps-after-record-breaking-heat-weather/88358766007/",
+          "source": "Treasure Coast News",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSWV_APuPuogad_YoFh0NjvNuo7dUwHRNXytfKe7U5YdwNTBw1yI2RUnJhkWQQ"
+        },
+        {
+          "headline": "Temperatures plunge after warm weekend; cold weather shelters to open ahead of sudden chill",
+          "url": "https://www.wesh.com/article/temps-plunge-cold-weather-shelters-open-sudden-chill/70131831",
+          "source": "WESH",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSn6xtxJw50egbpblOypWHqq9QT0P5V8Ql2xXxrOgGCStasKqnoi6kkCEymQNw"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "wmata",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=wmata&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQZfGM5Wd4YfMoqgoi88pkp_VQZXj05SkBCgCm5Sz2d3V0qjjTOzoZ1d9TAvSo",
+        "source": "WUSA9"
+      },
+      "news_articles": [
+        {
+          "headline": "Metro suspending bus, Access service amid severe winter storm",
+          "url": "https://www.wusa9.com/article/traffic/mission-metro/metro-suspending-bus-access-service-severe-winter-storm/65-6d5657af-52cc-41b5-99c7-ff87d8af3dc4",
+          "source": "WUSA9",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQZfGM5Wd4YfMoqgoi88pkp_VQZXj05SkBCgCm5Sz2d3V0qjjTOzoZ1d9TAvSo"
+        },
+        {
+          "headline": "Metro resumes Monday morning as other DC area transit services suspend",
+          "url": "https://wjla.com/news/local/washington-dc-montgomery-arlington-county-metro-bus-rail-wmata-transit-service-access-snow-ice-weather-star-maryland-transit-administration-mta-ride-on",
+          "source": "WJLA",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD7X40DV9wVqVVKvrENZnupINPzWWjq6vWaSCJvIkNzvXTxL7DYtlFLeFSPhM"
+        },
+        {
+          "headline": "Metro delays buses, trains after icy roads impact DMV travel",
+          "url": "https://www.dcnewsnow.com/news/travel/metro-delays-buses-trains-after-icy-roads-impact-dmv-travel/",
+          "source": "DC News Now",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS8D_Ou5pcc_YSH_pAtjMyAiUbPDtr-qrwouvurmi8JxJUfcW8kV3-cKyMjI5U"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "wfsb",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=wfsb&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRKycNh4LIL6LYRRvc1p0nehFgDBY54T7zxTQFioNi4fvGQ0R0e6vsUCxb043M",
+        "source": "WWLP"
+      },
+      "news_articles": [
+        {
+          "headline": "Serious injuries reported in multi-vehicle crash on I-91 south in Enfield",
+          "url": "https://www.wwlp.com/news/connecticut/serious-injuries-reported-in-multi-vehicle-crash-on-i-91-south-in-enfield/",
+          "source": "WWLP",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRKycNh4LIL6LYRRvc1p0nehFgDBY54T7zxTQFioNi4fvGQ0R0e6vsUCxb043M"
+        },
+        {
+          "headline": "Multi-vehicle crash closes I-91 in Enfield, serious injuries reported",
+          "url": "https://www.westernmassnews.com/2026/01/26/multi-vehicle-crash-closes-i-91-enfield-serious-injuries-reported/",
+          "source": "Western Mass News",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS_mqhJdYg1VEUnfoxIjuLwH3-9Wpfh4_zJqVKRoPu_yqKFsKiluR7x8pVIWog"
+        },
+        {
+          "headline": "Serious injuries in multi-vehicle crash on I-91 in Enfield",
+          "url": "https://www.nbcconnecticut.com/news/local/serious-injuries-in-multi-vehicle-crash-on-i-91-in-enfield/3692051/",
+          "source": "NBC Connecticut",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTx-Xm4qLAryFdPz6FcTYwG3Qdnf312SBCS3BY8KGXyKs3RjCovnr0uaAEOAw"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "where is lawrence jones on fox and friends",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=where is lawrence jones on fox and friends&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8HBHVqvIApRf4-AYx980FFo4UavxXcadHB6pwT-wThEhHdwL9R9E8Yi9pQWc",
+        "source": "USA Today"
+      },
+      "news_articles": [
+        {
+          "headline": "'Fox & Friends' host Lawrence Jones speaks out on absence from show",
+          "url": "https://www.usatoday.com/story/entertainment/tv/2026/01/26/lawrence-jones-fox-friends-absence-eye-surgery/88362977007/",
+          "source": "USA Today",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8HBHVqvIApRf4-AYx980FFo4UavxXcadHB6pwT-wThEhHdwL9R9E8Yi9pQWc"
+        },
+        {
+          "headline": "Fox News host explains weeks-long absence from breakfast show",
+          "url": "https://www.the-independent.com/bulletin/culture/fox-news-lawrence-jones-health-b2907732.html",
+          "source": "The Independent",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRsBzBF8W8gytStNMhge95-1cRNLgOwtTIWTsnrzkzwecXwXD9KwRyiZd1gQks"
+        },
+        {
+          "headline": "Lawrence Jones opens up about recent \u2018Fox & Friends\u2019 hiatus",
+          "url": "https://rollingout.com/2026/01/26/lawrence-jones-fox-and-friends-hiatus/",
+          "source": "Rolling Out",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSo5De_QIUyubvgkc8TxhUjx2aorcda9cbpLGw4pt3XuFXa_LQBtVtPje5H84Q"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "ups stock",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=ups stock&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQFFT91VuLnqj3YtDJ6CyP7uNjZJWVRLHc58k9OIhOgIoV_qRpi99_wl0etwtc",
+        "source": "Investing.com UK"
+      },
+      "news_articles": [
+        {
+          "headline": "UPS stock rating reiterated at Buy by Stifel on transformation savings",
+          "url": "https://uk.investing.com/news/analyst-ratings/ups-stock-rating-reiterated-at-buy-by-stifel-on-transformation-savings-93CH-4468235",
+          "source": "Investing.com UK",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQFFT91VuLnqj3YtDJ6CyP7uNjZJWVRLHc58k9OIhOgIoV_qRpi99_wl0etwtc"
+        },
+        {
+          "headline": "Evercore ISI Sees Cost Initiatives Anchoring EPS at United Parcel Service, Inc. (UPS)",
+          "url": "https://finviz.com/news/286344/evercore-isi-sees-cost-initiatives-anchoring-eps-at-united-parcel-service-inc-ups",
+          "source": "Finviz",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQLcS53FAWBa3iPTu1vpoHBU7kd6y-20QNjtAC3GSEd46haqnj3hJPFZ7FCoX8"
+        },
+        {
+          "headline": "JPMorgan cautious on United Parcel Service (UPS) amid expected share pullback",
+          "url": "https://www.msn.com/en-us/money/companies/jpmorgan-cautious-on-united-parcel-service-ups-amid-expected-share-pullback/ar-AA1UEJk8?ocid=finance-verthp-feeds",
+          "source": "MSN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQm4S9XYUMRCFjo9asJeqipFO7Qn-am-7fQxDbAPVA4-tK41OwF5RAo-wQlzgE"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "frank reich",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=frank reich&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSQ3W6RNkaMayjgiclJRiOPOZRs2jOW_btQJyADEzE_d6EkGiqlDvnlJnvBSfk",
+        "source": "NBC Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Report: Jets are working on a deal to hire Frank Reich",
+          "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/report-jets-are-working-on-a-deal-to-hire-frank-reich",
+          "source": "NBC Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSQ3W6RNkaMayjgiclJRiOPOZRs2jOW_btQJyADEzE_d6EkGiqlDvnlJnvBSfk"
+        },
+        {
+          "headline": "New York Jets Close to Hiring Former NFL Head Coach, Super Bowl Winner",
+          "url": "https://sports.yahoo.com/articles/york-jets-close-hiring-former-110000979.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5oUpx8mKfJ9nEMkCvAsiMSjRDBV_ThvWTCGbSMXdCDFZj9-BPPhoMGazN2Wc"
+        },
+        {
+          "headline": "Aaron Glenn mulling offensive coordinator change in Jets\u2019 turnover-filled offseason",
+          "url": "https://nypost.com/2026/01/25/sports/aaron-glenn-mulling-jets-offensive-coordinator-change/",
+          "source": "New York Post",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRbJCXvB7Hdw8Kx-oKhCcpd0rI_ivyhhZhslOYa-zcfphBRubiP-J6BvnhP-cg"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "penguin",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=penguin&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlsLwQe4PYYLp9mBBvb0IFbQJx0gkao-FmamqOxXFbdmPOGWPyQ_eflooD-_o",
+        "source": "NDTV"
+      },
+      "news_articles": [
+        {
+          "headline": "Why A Lone Nihilist Penguin's Clip From A 2007 Documentary Is Going Viral In 2026",
+          "url": "https://www.ndtv.com/lifestyle/why-a-lone-nihilist-penguins-clip-from-a-2007-documentary-is-going-viral-in-2026-10881871",
+          "source": "NDTV",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlsLwQe4PYYLp9mBBvb0IFbQJx0gkao-FmamqOxXFbdmPOGWPyQ_eflooD-_o"
+        },
+        {
+          "headline": "TikTok\u2019s \u2018Nihilistic Penguin\u2019 Meme, Explained",
+          "url": "https://www.forbes.com/sites/danidiplacido/2026/01/26/tiktoks-nihilistic-penguin-meme-explained/",
+          "source": "Forbes",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQMfdM72M2aK12aqipUH9j0XvaBSWUu23xPzJetC5i_CllC_yzG2OmNVH7JUcI"
+        },
+        {
+          "headline": "Explained: Why is a penguin\u2019s 'death march' going viral? Know the meaning behind 'Nihilist Penguin' meme",
+          "url": "https://timesofindia.indiatimes.com/etimes/trending/explained-why-is-a-penguins-death-march-going-viral-know-the-meaning-behind-nihilist-penguin-meme/articleshow/127449160.cms",
+          "source": "The Times of India",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTAvOpnRLR_G7yuzn0Ro6icBoFl2jhSk562IPcpkBjIIow1IHoG5LIYbQ13JX8"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "sofia falcone",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sofia falcone&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRuIONOvtFkdOy1EusJaTdJ-Eq-56B_tWNeMW5NRyha70pCZUFokag2ZyGMI_Q",
+        "source": "Yahoo"
+      },
+      "news_articles": [
+        {
+          "headline": "The Penguin breakout star Cristina Milioti says Sofia Falcone is \"definitively not\" in The Batman 2",
+          "url": "https://www.yahoo.com/entertainment/tv/articles/penguin-breakout-star-cristina-milioti-225639409.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRuIONOvtFkdOy1EusJaTdJ-Eq-56B_tWNeMW5NRyha70pCZUFokag2ZyGMI_Q"
+        },
+        {
+          "headline": "The Penguin: Cristin Milioti Gives Disappointing DC Return Update",
+          "url": "https://www.superherohype.com/tv/649015-the-penguin-cristin-milioti-disappointing-dc-return-update",
+          "source": "SuperHeroHype",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHQ13kom3Zwmi5HEEDfqllXvzsGP2ZPO30w-4MsC_UAC4JOtq7yUYwgDOXew0"
+        },
+        {
+          "headline": "\"What are you doing?\": Interstellar Star Can\u2019t Wrap His Head Around \u2018The Penguin\u2019 Season 2 Limbo",
+          "url": "https://fandomwire.com/interstellar-star-topher-grace-cant-wrap-his-head-around-the-penguin-season-2-limbo/",
+          "source": "FandomWire",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR7QRbAohBFJOorTSJKMYncByX3bUj1WpPe3BDyK9PmxwInBj42yM2Wt_2UD2E"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "closings today",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=closings today&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQkts_hTcGUfW_3QHOMkoSZkBzVGUXyr7L88DJ_MjqtHs6BeGeBttRrMl6EzXw",
+        "source": "WAVE News"
+      },
+      "news_articles": [
+        {
+          "headline": "JCPS declares traditional snow days for Monday and Tuesday",
+          "url": "https://www.wave3.com/2026/01/25/jcps-declares-traditional-snow-days-monday-tuesday/",
+          "source": "WAVE News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQkts_hTcGUfW_3QHOMkoSZkBzVGUXyr7L88DJ_MjqtHs6BeGeBttRrMl6EzXw"
+        },
+        {
+          "headline": "LIST | School, business closures due to winter storm",
+          "url": "https://www.wlky.com/article/school-business-church-closures-list-louisville/70119337",
+          "source": "WLKY",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS38nbrR42BYdMXCQ0Rh548hRXzN95w5MOp37gnJ3bopR1XPNBlD0NDWSvFCH0"
+        },
+        {
+          "headline": "SNOW FOX | Additional business, child care and church closings/delays for Jan. 26-27",
+          "url": "https://www.wdrb.com/news/snow-fox-additional-business-child-care-and-church-closings-delays-for-jan-26-27/article_b20a2028-a777-4250-93a5-42ff465d653b.html",
+          "source": "WDRB",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQM7dZllOVk1-wT900ZrOMTNwixTXazdtHj2R88JBKE_huY2j6Q9Id8bfRLeFc"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "nyc schools closed",
+    "weather tampa",
+    "wmata",
+    "wfsb",
+    "where is lawrence jones on fox and friends",
+    "ups stock",
+    "frank reich",
+    "penguin",
+    "sofia falcone",
+    "closings today"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}

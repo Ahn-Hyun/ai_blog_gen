@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-01-27T11:18:08.615046+00:00",
+  "source": "trendspyg",
+  "method": "realtime_trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "lawrence jones",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=lawrence jones&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8HBHVqvIApRf4-AYx980FFo4UavxXcadHB6pwT-wThEhHdwL9R9E8Yi9pQWc",
+        "source": "USA Today"
+      },
+      "news_articles": [
+        {
+          "headline": "'Fox & Friends' host Lawrence Jones speaks out on absence from show",
+          "url": "https://www.usatoday.com/story/entertainment/tv/2026/01/26/lawrence-jones-fox-friends-absence-eye-surgery/88362977007/",
+          "source": "USA Today",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8HBHVqvIApRf4-AYx980FFo4UavxXcadHB6pwT-wThEhHdwL9R9E8Yi9pQWc"
+        },
+        {
+          "headline": "Fox and Friends co-host shares health update amid absence from show",
+          "url": "https://www.the-independent.com/arts-entertainment/tv/news/lawrence-jones-fox-and-friends-health-update-eye-surgery-b2908199.html",
+          "source": "The Independent",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj4U31CEzp3Hdux1dV18c6BTtn7uVNRUV-hRjpJ0toJyNJV1vT3lvCFTGUSsw"
+        },
+        {
+          "headline": "Lawrence Jones opens up about recent \u2018Fox & Friends\u2019 hiatus",
+          "url": "https://rollingout.com/2026/01/26/lawrence-jones-fox-and-friends-hiatus/",
+          "source": "Rolling Out",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSo5De_QIUyubvgkc8TxhUjx2aorcda9cbpLGw4pt3XuFXa_LQBtVtPje5H84Q"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "australian open results",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=australian open results&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRHz2eprvHarHZrqeLGmXXpOPws9avEB7NaN4lt39HtFRCOgC3IiiAUDbghB0E",
+        "source": "BBC"
+      },
+      "news_articles": [
+        {
+          "headline": "Australian Open 2026: Naomi Osaka withdraws from Grand Slam tournament through injury",
+          "url": "https://www.bbc.com/sport/tennis/articles/c1klgw1zkp9o",
+          "source": "BBC",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRHz2eprvHarHZrqeLGmXXpOPws9avEB7NaN4lt39HtFRCOgC3IiiAUDbghB0E"
+        },
+        {
+          "headline": "Naomi Osaka Speaks Out on \u201cReally Sad Decision\u201d to Withdraw From Australian Open",
+          "url": "https://www.eonline.com/news/1427709/naomi-osaka-speaks-out-on-australian-open-withdrawal",
+          "source": "E! News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTL6HyNokNYXyAtVWYlyhinJma2EYhRkB0Mdt2s5ikH-vaBXWWsy3pMhank29U"
+        },
+        {
+          "headline": "Naomi Osaka withdraws from Australian Open shortly before third-round match - The Athletic",
+          "url": "https://www.nytimes.com/athletic/6995530/2026/01/24/naomi-osaka-australian-open-out/",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQM1hYu6jpZto6PBSwzPsEeZjZP5r3b5WCws1zEtIa_5VtsUq7puL8foJIkvkU"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "alerta por fr\u00edo extremo",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=alerta por fr\u00edo extremo&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRygG2X3Shg3hdFPrU_5XAnDu1LvnWQRhcJEoS5Lx4PHE74dSO3z_l6VbRfxrc",
+        "source": "Univision"
+      },
+      "news_articles": [
+        {
+          "headline": "Estos son los albergues que siguen disponibles en el condado Harris por el fr\u00edo extremo",
+          "url": "https://www.univision.com/local/houston-kxln/cuales-albergues-siguen-disponibles-en-el-condado-harris-por-el-frio-extremo-video",
+          "source": "Univision",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRygG2X3Shg3hdFPrU_5XAnDu1LvnWQRhcJEoS5Lx4PHE74dSO3z_l6VbRfxrc"
+        },
+        {
+          "headline": "Austin niega rumores de operaciones de ICE en refugios durante tormenta de hielo",
+          "url": "https://telemundoaustin.com/news/local/austin-niega-rumores-de-operaciones-de-ice-en-refugios-durante-tormenta-de-hielo",
+          "source": "Telemundo Austin!",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcThLZFbLYnV5ON7zqGvGt8rE3qisDMIdoot1c3XXbXGNbAHbUwO43m8rFOxob0"
+        },
+        {
+          "headline": "Abre centro de calentamiento en Houston ante temperaturas congelantes",
+          "url": "https://www.telemundohouston.com/noticias/local/abre-centro-de-calentamiento-en-houston-ante-temperaturas-congelantes/2540196/",
+          "source": "Telemundo Houston",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQwAOQmNN2ivC0iuh3ITOSDZ5Cm4ZcJqo3hnfQh0Q-tXVdXMXiPQewSlP10WCA"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "is school closed today",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=is school closed today&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmpqvwfiYD934PmjhZF2b5sqK_Xo-jGEq6oT7DGSa3wZdxfgA9R70jAqEtRm0",
+        "source": "RochesterFirst"
+      },
+      "news_articles": [
+        {
+          "headline": "RCSD closes schools Tuesday for second day in a row",
+          "url": "https://www.rochesterfirst.com/community/rcsd/rcsd-closes-schools-tuesday-for-second-day-in-a-row/",
+          "source": "RochesterFirst",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmpqvwfiYD934PmjhZF2b5sqK_Xo-jGEq6oT7DGSa3wZdxfgA9R70jAqEtRm0"
+        },
+        {
+          "headline": "Winter storm forces school, mall closures in Rochester. See the latest closings",
+          "url": "https://www.democratandchronicle.com/story/weather/2026/01/25/winter-storm-forces-school-mall-closures-in-rochester-ny-see-the-latest-closings/88349208007/",
+          "source": "Democrat and Chronicle",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRypL-e_wjAPgrs6FKgCdHVPGdzQ8L_Ds5ttt7ZlC-4E2m-gLFa1kDyfKyPWYI"
+        },
+        {
+          "headline": "Buffalo Public Schools, Niagara Falls schools closed Monday",
+          "url": "https://www.wivb.com/news/local-news/buffalo-public-schools-niagara-falls-schools-closed-monday/",
+          "source": "WIVB News 4",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTh1c8kDIAo8PWP4d28vvmIzlRJUAexKA1Jwhnh4C30x8Y8KpoP9B58sp9UBWU"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "weather miami",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=weather miami&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTdWFEngleoaY23fU78qkDOdhED2g1hh9QmFSLWx2_zbMeIeujI0zXWkdZnDJs",
+        "source": "WSVN"
+      },
+      "news_articles": [
+        {
+          "headline": "Near-Record Heat Ahead of Prolonged, Bitter Blast",
+          "url": "https://wsvn.com/weather-blog/near-record-heat-ahead-of-prolonged-bitter-blast/",
+          "source": "WSVN",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTdWFEngleoaY23fU78qkDOdhED2g1hh9QmFSLWx2_zbMeIeujI0zXWkdZnDJs"
+        },
+        {
+          "headline": "Cold whiplash: Temps plunge by 30 or 40 degrees by Tuesday",
+          "url": "https://www.sun-sentinel.com/2026/01/26/cold-whiplash-temps-to-plunge-by-40-degrees-overnight-monday/",
+          "source": "Sun Sentinel",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDPgIr63A31_aPJmLEac88Lia14hkweeUtFxBXdAa2e_YzkgUpjmQcmJAWrsI"
+        },
+        {
+          "headline": "Central Florida Weather: Record heat Sunday, then sharp cool-down and freeze watch Monday night",
+          "url": "https://www.wftv.com/news/local/central-florida-weather-record-heat-sunday-then-sharp-cool-down-freeze-watch-monday-night/3AJ4ZFKSHFALJLSTKY6VGNQQYE/",
+          "source": "WFTV",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS56j9akzuY1ObnJ9cU_K2SNtpn3UYJlhN29dcto612-hLBJqN7n0f7HjQ8tMA"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "gwinnett county schools",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=gwinnett county schools&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTYet7tqXlr58yoyFOY8KfR8dewueG8xcOZ3Phwikwq2BgST24ykLQP_3_vC2E",
+        "source": "Gwinnett County Public Schools"
+      },
+      "news_articles": [
+        {
+          "headline": "GCPS Monitoring Weather Conditions: Stay Safe and Informed",
+          "url": "https://www.gcpsk12.org/get-connected/district-news-and-communication/all-news/gcps-full-news-article/~board/gcps-links/post/gcps-monitoring-weather-conditions-stay-safe-and-informed",
+          "source": "Gwinnett County Public Schools",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTYet7tqXlr58yoyFOY8KfR8dewueG8xcOZ3Phwikwq2BgST24ykLQP_3_vC2E"
+        },
+        {
+          "headline": "GCPS announces schools will operate on a normal schedule Tuesday",
+          "url": "https://www.gwinnettdailypost.com/local/gcps-announces-schools-will-operate-on-a-normal-schedule-tuesday/article_b5f19100-107c-4ba3-804c-f7c2017306d7.html",
+          "source": "Gwinnett Daily Post",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhavbl1-edoa31B1FRf30b0L1MBJ4Qgv0895DzROogRc8AaOG8Cibo_wQZ8HQ"
+        },
+        {
+          "headline": "Gwinnett County Schools returns to normal schedule Tuesday",
+          "url": "https://www.mainstreetnews.com/braselton/news/gwinnett-county-schools-returns-to-normal-schedule-tuesday/article_dfe6d16f-b2e0-4cde-b0e0-1aedb2349c60.html",
+          "source": "mainstreetnews.com",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTyCcJJ3jL0YVEtKZh-acwws4AqqYaFfJlelVnxjYGLUVLkvS26g8U5P5dTc5M"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "kylie kelce",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T11:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=kylie kelce&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRse5ogTCYiKst74aMVpcgH_bUVFD-HyoSc_m2n-o0h5B0kQOSBRGu60FetBPc",
+        "source": "Yahoo"
+      },
+      "news_articles": [
+        {
+          "headline": "Kylie Kelce Is Not Happy With Comments On Her Body",
+          "url": "https://www.yahoo.com/entertainment/celebrity/articles/kylie-kelce-not-happy-comments-144826523.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRse5ogTCYiKst74aMVpcgH_bUVFD-HyoSc_m2n-o0h5B0kQOSBRGu60FetBPc"
+        },
+        {
+          "headline": "\u201cLay off\u201d: Jason Kelce's wife Kylie Kelce fires back at body-shaming critics after viral curling video",
+          "url": "https://timesofindia.indiatimes.com/sports/nfl/news/lay-off-jason-kelces-wife-kylie-kelce-fires-back-at-body-shaming-critics-after-viral-curling-video/articleshow/127508588.cms",
+          "source": "Times of India",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT7lHaFDB8QMzaI3Redm0SZLQ1f6aEOXQd9J5VIxs9qAS4qbE3LXgTW0VAm26U"
+        },
+        {
+          "headline": "Kylie Kelce Claps Back at Comments About Her Post-Baby Body: 'Can You Lay Off?'",
+          "url": "https://people.com/kylie-kelce-claps-back-at-comments-about-her-post-baby-body-can-you-lay-off-11891414",
+          "source": "People.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ674RFXPkgAbPay8qZ2HL22V8ge9quabmBBRrki7DFG-s1Pqluq_G-Se2jSL0"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "nhl teams",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T10:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=nhl teams&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR7Aadx2L89BgSIt5eGZ3WtC1V_108q5j24Il3vbQhjSPKpj4P3S08ZL0ryfNo",
+        "source": "Bleacher Report"
+      },
+      "news_articles": [
+        {
+          "headline": "Grading 10 NHL Teams' Rebuilds in the Last 10 Years",
+          "url": "https://bleacherreport.com/articles/25369511-grading-10-nhl-teams-rebuilds-last-10-years",
+          "source": "Bleacher Report",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR7Aadx2L89BgSIt5eGZ3WtC1V_108q5j24Il3vbQhjSPKpj4P3S08ZL0ryfNo"
+        },
+        {
+          "headline": "Bleacher Report Grades Habs Rebuild As An A-",
+          "url": "https://thesickpodcast.com/bleacher-report-grades-habs-rebuild-as-an-a/",
+          "source": "The Sick Podcast",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Pl1r-abxftQjQNgfYbrP1jPz1-TBTM4SiVw3WDsTRJS7AuPRcEiOOt7kouY"
+        },
+        {
+          "headline": "NHL games today: Schedule, odds, how to watch for Jan. 27",
+          "url": "https://www.usatoday.com/story/sports/nhl/2026/01/27/nhl-games-today-schedule-times-tv-jan-27/88374341007/",
+          "source": "USA Today",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKB0nSaB4B_ha19tdQvqHCAY27NgNZXL1jPN_amOoDVPhDAKXNtiloR7pg_Hw"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "mbta",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "100+",
+      "published_at": "2026-01-27T10:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=mbta&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRCrSwP9KvUW2_qZyFuVqXyqJA_gD2kJfQUWfROKwE0I2ps_WHcIcfH_Ob4ktI",
+        "source": "WHDH"
+      },
+      "news_articles": [
+        {
+          "headline": "\u2018Unimaginable\u2019: Wife dead, husband injured after being struck by truck plowing snow in MBTA parking lot in Norwood",
+          "url": "https://whdh.com/news/unimaginable-wife-dead-husband-injured-after-being-struck-by-truck-plowing-snow-in-mbta-parking-lot-in-norwood/",
+          "source": "WHDH",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRCrSwP9KvUW2_qZyFuVqXyqJA_gD2kJfQUWfROKwE0I2ps_WHcIcfH_Ob4ktI"
+        },
+        {
+          "headline": "Woman struck, killed by plow truck in Mass. parking lot identified",
+          "url": "https://www.wcvb.com/article/norwood-mbta-plow-truck-death-fatal/70133369",
+          "source": "WCVB",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyat3skJPPdCOe9gzuHcZPw328RUd69huwALNJUNAPmZvdGxEiqrSxnHZZRZU"
+        },
+        {
+          "headline": "\u2018Heartbreaking\u2019: Mass. Gov. Healey on the latest on the winter storm, fatal snowplow incident",
+          "url": "https://www.masslive.com/politics/2026/01/heartbreaking-mass-gov-healey-on-the-latest-on-the-winter-storm-fatal-snowplow-accident.html",
+          "source": "MassLive.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTOlfZN0KlegOQsySxXvxEC9FpOyQxhvy9eqi2BfFXa0YVQIgvA-tsDdKtD_Vs"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "irs where's my refund",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:realtime_trending_searches_rss",
+      "traffic": "10000+",
+      "published_at": "2026-01-27T10:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=irs where's my refund&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrJ-rpgUNRDBpCF8EyTRQDpFIXdfzAZRQWdV4XHJWDqBsqXxHz-EBPqiH2cvk",
+        "source": "CNN"
+      },
+      "news_articles": [
+        {
+          "headline": "Why federal tax refunds may be bigger than usual",
+          "url": "https://www.cnn.com/2026/01/26/business/tax-refunds-increase-2026",
+          "source": "CNN",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrJ-rpgUNRDBpCF8EyTRQDpFIXdfzAZRQWdV4XHJWDqBsqXxHz-EBPqiH2cvk"
+        },
+        {
+          "headline": "President Trump Delivers Largest Tax Refund Season in U.S. History",
+          "url": "https://www.whitehouse.gov/articles/2026/01/president-trump-delivers-largest-tax-refund-season-in-u-s-history/",
+          "source": "The White House (.gov)",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTHAjpi1vRUk73MVFN8yHbfZT75cH6YSrlqkRgT5nHsi2ya86qCbbGUgbDyIe0"
+        },
+        {
+          "headline": "How Trump's tax cuts will affect your return as the 2026 filing season opens",
+          "url": "https://www.cnbc.com/2026/01/26/tax-season-opens-trumps-tax-cuts.html",
+          "source": "CNBC",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoh03r0g27r_NSLErJ5HqBLTAnAD29AOAQaBJt_wXOkFcs07A2rWlsJCTDGZ4"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "lawrence jones",
+    "australian open results",
+    "alerta por fr\u00edo extremo",
+    "is school closed today",
+    "weather miami",
+    "gwinnett county schools",
+    "kylie kelce",
+    "nhl teams",
+    "mbta",
+    "irs where's my refund"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}
