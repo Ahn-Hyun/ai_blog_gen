@@ -2,13 +2,23 @@ from __future__ import annotations
 
 import argparse
 import base64
+import binascii
+import colorsys
 import http.client
 import json
 import logging
+import math
+import mimetypes
 import os
+import random
 import re
+import shutil
+import struct
+import subprocess
 import sys
+import tempfile
 import time
+import zlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -43,7 +53,7 @@ from store.local_store import read_json, write_json  # noqa: E402
 
 DEFAULT_USER_AGENT = "Mozilla/5.0 (compatible; TrendBlogBot/1.0)"
 DEFAULT_MAX_SOURCE_CHARS = 2000
-DEFAULT_MAX_TOTAL_SOURCE_CHARS = 12000
+DEFAULT_MAX_TOTAL_SOURCE_CHARS = 16000
 DEFAULT_SCRAPE_TIMEOUT = 12
 DEFAULT_SCRAPE_DELAY_SEC = 1.0
 DEFAULT_SCRAPE_MAX_RETRIES = 2
@@ -52,7 +62,7 @@ DEFAULT_GEMINI_MODEL = "gemini-3-pro-preview"
 DEFAULT_GEMINI_MODEL_CONTENT = DEFAULT_GEMINI_MODEL
 DEFAULT_GEMINI_MODEL_META = DEFAULT_GEMINI_MODEL
 DEFAULT_GEMINI_TEMPERATURE = 0.6
-DEFAULT_GEMINI_MAX_TOKENS = 2200
+DEFAULT_GEMINI_MAX_TOKENS = 2600
 DEFAULT_BLOG_DOMAIN = "https://blog.ship-write.com"
 DEFAULT_CONTENT_LANGUAGE = "English"
 DEFAULT_CONTENT_TONE = "neutral, informative"
@@ -60,8 +70,10 @@ DEFAULT_USE_MULTI_AGENT = True
 DEFAULT_SEARCH_RSS_ENABLED = True
 DEFAULT_SEARCH_RSS_MAX_RESULTS = 6
 DEFAULT_SEARCH_RSS_MAX_PER_QUERY = 3
-DEFAULT_MAX_EVIDENCE_SOURCES = 6
+DEFAULT_MAX_EVIDENCE_SOURCES = 8
 DEFAULT_QUALITY_GATE_REVISIONS = 1
+DEFAULT_FINAL_REVIEW_ENABLED = True
+DEFAULT_FINAL_REVIEW_REVISIONS = 1
 DEFAULT_SEARCH_WEB_ENABLED = True
 DEFAULT_SEARCH_WEB_MAX_RESULTS = 5
 DEFAULT_SEARCH_WEB_MAX_PER_QUERY = 2
@@ -75,9 +87,27 @@ DEFAULT_YOUTUBE_MAX_PER_QUERY = 2
 DEFAULT_GOOGLE_IMAGE_ENABLED = True
 DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-3-pro-image-preview"
 DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO = "16:9"
+DEFAULT_GRADIENT_WIDTH = 1600
+DEFAULT_GRADIENT_HEIGHT = 900
+DEFAULT_GRADIENT_JPEG_QUALITY = 90
+FINAL_REVIEW_MAX_HINTS = 16
+FINAL_REVIEW_SUSPICIOUS_PATTERNS = (
+    r"\bhtt\b",
+    r"\(htt(?!p)",
+    r"!\[[^\]]*\]\(\s*\)",
+    r"\[[^\]]*\]\(\s*\)",
+    r"\bAdvertisement\b",
+    r"\bManage your account\b",
+    r"\bFor premium support\b",
+    r"\bSubscribe\b",
+    r"\bSign in\b",
+    r"\bSign up\b",
+    r"\bContinue reading\b",
+    r"\bRead more\b",
+)
 CONTENT_JSON_SCHEMA = (
     "Required JSON keys: summary (2-3 sentences), key_points (array of 3-5 strings), "
-    "body_markdown (string, MDX-friendly, ~1200-1800 words), "
+    "body_markdown (string, MDX-friendly, ~1500-2200 words), "
     "image_prompt_hint (short string)."
 )
 FRONTMATTER_ZOD_SCHEMA = """
@@ -93,6 +123,8 @@ z.object({
 
 STATE_PATH = ROOT_DIR / "data" / "state" / "published.json"
 DOMAIN_LAST_FETCH: dict[str, float] = {}
+MAX_IMAGE_ANALYSIS = 3
+MAX_IMAGE_BYTES = 2_000_000
 REGION_CODE_MAP = {
     "south_korea": "KR",
     "korea": "KR",
@@ -108,6 +140,196 @@ GOOGLE_NEWS_LANGUAGE_MAP = {
     "US": "en",
     "JP": "ja",
 }
+PIPELINE_RECENT = "recent"
+PIPELINE_HIGH_INTENT = "high-intent"
+PIPELINE_CHOICES = (PIPELINE_RECENT, PIPELINE_HIGH_INTENT)
+TRENDSPYG_CATEGORIES = {
+    "all",
+    "autos",
+    "beauty",
+    "business",
+    "climate",
+    "entertainment",
+    "food",
+    "games",
+    "health",
+    "hobbies",
+    "jobs",
+    "law",
+    "other",
+    "pets",
+    "politics",
+    "science",
+    "shopping",
+    "sports",
+    "technology",
+    "travel",
+}
+HIGH_INTENT_CATEGORY_ALIASES = {
+    "b2b": "business",
+    "b2b_saas": "business",
+    "business_industrial": "business",
+    "business_and_industrial": "business",
+    "saas": "business",
+    "enterprise": "business",
+    "finance": "business",
+    "finance_insurance": "business",
+    "insurance": "business",
+    "banking": "business",
+    "career": "jobs",
+    "education": "jobs",
+    "career_education": "jobs",
+    "jobs_education": "jobs",
+    "jobs_and_education": "jobs",
+    "jobs": "jobs",
+    "tech": "technology",
+    "technology": "technology",
+    "computers_electronics": "technology",
+    "internet_telecom": "technology",
+    "software": "technology",
+    "developer_tools": "technology",
+    "productivity_software": "technology",
+}
+DEFAULT_HIGH_INTENT_CATEGORY_HINTS = (
+    "b2b_saas",
+    "finance_insurance",
+    "career_education",
+    "tech",
+)
+HIGH_INTENT_RSS_CATEGORY_KEYWORDS: dict[str, tuple[str, ...]] = {
+    "business": (
+        "saas",
+        "b2b",
+        "enterprise",
+        "subscription",
+        "pricing",
+        "invoice",
+        "billing",
+        "payroll",
+        "crm",
+        "erp",
+        "procurement",
+        "vendor",
+        "fintech",
+        "bank",
+        "banking",
+        "loan",
+        "mortgage",
+        "insurance",
+        "insurer",
+        "policy",
+        "premium",
+        "credit",
+        "credit card",
+        "debit",
+        "broker",
+        "investment",
+        "investor",
+        "stock",
+        "stocks",
+        "bond",
+        "bonds",
+        "treasury",
+        "yield",
+        "rate",
+        "interest",
+        "forex",
+        "currency",
+        "dollar",
+        "index",
+        "cpi",
+        "inflation",
+        "earnings",
+        "guidance",
+        "ipo",
+        "sec",
+    ),
+    "jobs": (
+        "job",
+        "jobs",
+        "hiring",
+        "hire",
+        "recruit",
+        "recruiting",
+        "recruiter",
+        "resume",
+        "cv",
+        "interview",
+        "salary",
+        "compensation",
+        "layoff",
+        "layoffs",
+        "unemployment",
+        "career",
+        "internship",
+        "degree",
+        "university",
+        "college",
+        "school",
+        "tuition",
+        "scholarship",
+        "course",
+        "bootcamp",
+        "certification",
+        "training",
+        "exam",
+        "admission",
+        "student",
+    ),
+    "technology": (
+        "software",
+        "app",
+        "application",
+        "api",
+        "cloud",
+        "aws",
+        "azure",
+        "gcp",
+        "google cloud",
+        "microsoft",
+        "github",
+        "gitlab",
+        "docker",
+        "kubernetes",
+        "devops",
+        "cybersecurity",
+        "security",
+        "sso",
+        "identity",
+        "database",
+        "analytics",
+        "ai",
+        "machine learning",
+        "ml",
+        "llm",
+        "model",
+        "sdk",
+        "framework",
+        "programming",
+        "developer",
+        "code",
+        "ide",
+        "automation",
+        "platform",
+        "tool",
+        "tools",
+        "integration",
+        "data",
+    ),
+}
+HIGH_INTENT_TEMPLATE_REQUIREMENTS = """
+Template requirements (fixed order):
+1) Add a "TL;DR" section after the intro (3-5 bullet points max).
+2) Add a "Comparison table" section using a Markdown table.
+   Columns: Option, Best for, Pros, Cons, Pricing/Cost (use "unknown" if not supported).
+3) Add a "Pros and cons" section with two bullet lists.
+4) Add a "FAQ" section (2-4 Q/A).
+
+Rules:
+- Use only facts supported by the provided sources and citations.
+- Reuse existing citations inside the table or bullets when possible.
+- If evidence is thin, label details as "unknown" or "varies" and avoid numbers.
+""".strip()
 
 
 class _HTMLTextExtractor(HTMLParser):
@@ -203,6 +425,8 @@ class AutomationConfig:
     youtube_max_per_query: int
     max_evidence_sources: int
     quality_gate_revisions: int
+    final_review_enabled: bool
+    final_review_revisions: int
     google_image_enabled: bool
     google_image_model: str
     google_image_aspect_ratio: str
@@ -259,6 +483,17 @@ def _resolve_env() -> dict[str, str]:
         file_env = _load_env_file(ROOT_DIR / "env.template")
     file_env.update(env)
     return file_env
+
+
+def _resolve_state_path() -> Path:
+    env = _resolve_env()
+    raw = str(env.get("STATE_PATH") or "").strip()
+    if not raw:
+        return STATE_PATH
+    candidate = Path(raw)
+    if not candidate.is_absolute():
+        candidate = (ROOT_DIR / candidate).resolve()
+    return candidate
 
 
 def _build_config() -> AutomationConfig:
@@ -359,6 +594,14 @@ def _build_config() -> AutomationConfig:
         env.get("QUALITY_GATE_REVISIONS"),
         DEFAULT_QUALITY_GATE_REVISIONS,
     )
+    final_review_enabled = _parse_bool(
+        env.get("FINAL_REVIEW_ENABLED"),
+        DEFAULT_FINAL_REVIEW_ENABLED,
+    )
+    final_review_revisions = _parse_int(
+        env.get("FINAL_REVIEW_REVISIONS"),
+        DEFAULT_FINAL_REVIEW_REVISIONS,
+    )
     google_image_enabled = _parse_bool(
         env.get("GOOGLE_IMAGE_ENABLED"),
         DEFAULT_GOOGLE_IMAGE_ENABLED,
@@ -442,10 +685,121 @@ def _build_config() -> AutomationConfig:
         youtube_max_per_query=youtube_max_per_query,
         max_evidence_sources=max_evidence_sources,
         quality_gate_revisions=quality_gate_revisions,
+        final_review_enabled=final_review_enabled,
+        final_review_revisions=final_review_revisions,
         google_image_enabled=google_image_enabled,
         google_image_model=google_image_model or DEFAULT_GOOGLE_IMAGE_MODEL,
         google_image_aspect_ratio=google_image_aspect_ratio or DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO,
     )
+
+
+def _build_high_intent_settings(config: AutomationConfig) -> dict[str, object]:
+    env = _resolve_env()
+    regions = _parse_list(env.get("HIGH_INTENT_REGIONS"), ["US"])
+    trend_source = env.get("HIGH_INTENT_TREND_SOURCE", "csv").strip().lower() or "csv"
+    trend_method = env.get("HIGH_INTENT_TREND_METHOD", config.trend_method).strip() or config.trend_method
+    trend_window_hours = _parse_int(env.get("HIGH_INTENT_TREND_WINDOW_HOURS"), 24)
+    csv_sort_by = env.get("HIGH_INTENT_CSV_SORT_BY", config.csv_sort_by)
+    trend_limit = _parse_int(env.get("HIGH_INTENT_TREND_LIMIT"), config.trend_limit)
+    trend_sleep_sec = _parse_float(env.get("HIGH_INTENT_TREND_SLEEP_SEC"), config.trend_sleep_sec)
+    max_topic_rank_default = max(config.max_topic_rank, 5)
+    max_topic_rank = _parse_int(env.get("HIGH_INTENT_MAX_TOPIC_RANK"), max_topic_rank_default)
+    csv_active_only = _parse_bool(env.get("HIGH_INTENT_CSV_ACTIVE_ONLY"), False)
+    csv_download_dir = env.get("HIGH_INTENT_CSV_DOWNLOAD_DIR", "").strip()
+    csv_max_retries = _parse_int(env.get("HIGH_INTENT_CSV_MAX_RETRIES"), 2)
+    csv_retry_delay_sec = _parse_float(env.get("HIGH_INTENT_CSV_RETRY_DELAY_SEC"), 2.0)
+    allow_rss_fallback = _parse_bool(env.get("HIGH_INTENT_ALLOW_RSS_FALLBACK"), True)
+    rss_min_matches = _parse_int(env.get("HIGH_INTENT_RSS_MIN_MATCHES"), 1)
+    raw_categories = _parse_list(
+        env.get("HIGH_INTENT_TREND_CATEGORIES"),
+        DEFAULT_HIGH_INTENT_CATEGORY_HINTS,
+    )
+    return {
+        "regions": regions,
+        "trend_source": trend_source,
+        "trend_method": trend_method,
+        "trend_window_hours": trend_window_hours,
+        "csv_sort_by": csv_sort_by,
+        "trend_limit": trend_limit,
+        "trend_sleep_sec": trend_sleep_sec,
+        "max_topic_rank": max_topic_rank,
+        "raw_categories": raw_categories,
+        "csv_active_only": csv_active_only,
+        "csv_download_dir": csv_download_dir,
+        "csv_max_retries": csv_max_retries,
+        "csv_retry_delay_sec": csv_retry_delay_sec,
+        "allow_rss_fallback": allow_rss_fallback,
+        "rss_min_matches": rss_min_matches,
+    }
+
+
+def _normalize_high_intent_categories(raw_categories: Iterable[str]) -> list[str]:
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for raw in raw_categories:
+        key = str(raw).strip().lower()
+        if not key:
+            continue
+        key = key.replace("/", "_").replace("-", "_").replace(" ", "_")
+        mapped = HIGH_INTENT_CATEGORY_ALIASES.get(key, key)
+        if mapped in TRENDSPYG_CATEGORIES and mapped != "all" and mapped not in seen:
+            normalized.append(mapped)
+            seen.add(mapped)
+    return normalized
+
+
+def _build_high_intent_filter_text(topic: dict) -> str:
+    chunks: list[str] = []
+    keyword = str(topic.get("keyword") or "").strip()
+    if keyword:
+        chunks.append(keyword)
+    articles = topic.get("news_articles") or []
+    if isinstance(articles, list):
+        for item in articles:
+            if not isinstance(item, dict):
+                continue
+            headline = str(item.get("headline") or "").strip()
+            source = str(item.get("source") or "").strip()
+            if headline:
+                chunks.append(headline)
+            if source:
+                chunks.append(source)
+    return " ".join(chunks).lower()
+
+
+def _filter_high_intent_rss_items(
+    items: list[dict],
+    categories: list[str],
+    *,
+    min_matches: int,
+) -> list[dict]:
+    if not items:
+        return []
+    min_matches = max(1, int(min_matches))
+    allowed = [c for c in categories if c in HIGH_INTENT_RSS_CATEGORY_KEYWORDS]
+    if not allowed:
+        return []
+    filtered: list[dict] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        text = _build_high_intent_filter_text(item)
+        if not text:
+            continue
+        matched: list[str] = []
+        for category in allowed:
+            keywords = HIGH_INTENT_RSS_CATEGORY_KEYWORDS.get(category, ())
+            hits = sum(1 for kw in keywords if kw and kw in text)
+            if hits >= min_matches:
+                matched.append(category)
+        if matched:
+            metadata = item.get("metadata") or {}
+            metadata = dict(metadata) if isinstance(metadata, dict) else {}
+            metadata["high_intent_categories"] = matched
+            metadata["high_intent_filter"] = "rss_keywords"
+            item["metadata"] = metadata
+            filtered.append(item)
+    return filtered
 
 
 def _normalize_keyword(keyword: str) -> str:
@@ -717,6 +1071,29 @@ def _clean_body_text(body: str) -> str:
     return "\n".join(cleaned_lines).strip()
 
 
+def _collect_review_hints(body: str) -> list[str]:
+    if not body:
+        return []
+    patterns = [re.compile(pattern, re.IGNORECASE) for pattern in FINAL_REVIEW_SUSPICIOUS_PATTERNS]
+    hints: list[str] = []
+    for line in body.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if any(pattern.search(stripped) for pattern in patterns):
+            hints.append(_truncate_plain(stripped, 240))
+            if len(hints) >= FINAL_REVIEW_MAX_HINTS:
+                break
+            continue
+        if "](" in stripped:
+            after = stripped.split("](", 1)[1]
+            if ")" not in after:
+                hints.append(_truncate_plain(stripped, 240))
+                if len(hints) >= FINAL_REVIEW_MAX_HINTS:
+                    break
+    return hints
+
+
 def _strip_markdown(text: str) -> str:
     cleaned = re.sub(r"!\[[^\]]*\]\([^\)]*\)", "", text)
     cleaned = re.sub(r"\[([^\]]+)\]\([^\)]*\)", r"\1", cleaned)
@@ -830,11 +1207,13 @@ def _select_topics_by_region(
 
 
 def _load_state() -> dict:
-    return read_json(STATE_PATH, default={"topics": [], "slugs": []}) or {"topics": [], "slugs": []}
+    state_path = _resolve_state_path()
+    return read_json(state_path, default={"topics": [], "slugs": []}) or {"topics": [], "slugs": []}
 
 
 def _save_state(state: dict) -> None:
-    write_json(STATE_PATH, state)
+    state_path = _resolve_state_path()
+    write_json(state_path, state)
 
 
 class GeminiClient:
@@ -849,6 +1228,46 @@ class GeminiClient:
         url = f"{self.base_url}/models/{self.model}:generateContent?key={self.api_key}"
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": max_tokens,
+            },
+        }
+        request = Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlopen(request, timeout=30) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        candidates = data.get("candidates", [])
+        if not candidates:
+            raise RuntimeError("Gemini returned no candidates.")
+        parts = candidates[0].get("content", {}).get("parts", [])
+        text_parts = [part.get("text", "") for part in parts if isinstance(part, dict)]
+        return "\n".join(text_parts).strip()
+
+    def generate_with_image(
+        self,
+        prompt: str,
+        image_bytes: bytes,
+        mime_type: str,
+        *,
+        temperature: float,
+        max_tokens: int,
+    ) -> str:
+        if not self.api_key:
+            raise RuntimeError("GEMINI_API_KEY is not set.")
+        if not image_bytes:
+            raise RuntimeError("Image bytes are empty.")
+        url = f"{self.base_url}/models/{self.model}:generateContent?key={self.api_key}"
+        inline_data = {
+            "mimeType": mime_type,
+            "data": base64.b64encode(image_bytes).decode("utf-8"),
+        }
+        payload = {
+            "contents": [{"parts": [{"text": prompt}, {"inlineData": inline_data}]}],
             "generationConfig": {
                 "temperature": temperature,
                 "maxOutputTokens": max_tokens,
@@ -1014,6 +1433,72 @@ def _fetch_url_raw_with_status(
     return None, None
 
 
+def _fetch_url_bytes(
+    url: str,
+    user_agent: str,
+    timeout: int,
+    delay_sec: float,
+    max_retries: int,
+    backoff_sec: float,
+    *,
+    max_bytes: int = MAX_IMAGE_BYTES,
+) -> tuple[bytes | None, str | None]:
+    sanitized_url = _sanitize_url(url)
+    for attempt in range(max_retries + 1):
+        _throttle_domain(sanitized_url, delay_sec)
+        request = Request(sanitized_url, headers={"User-Agent": user_agent})
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                content_type = response.headers.get("Content-Type")
+                data = response.read(max_bytes + 1)
+                if len(data) > max_bytes:
+                    logging.warning("Image too large to fetch: %s", sanitized_url)
+                    return None, content_type
+                return data, content_type
+        except HTTPError as exc:
+            if exc.code == 429 and attempt < max_retries:
+                sleep_for = backoff_sec * (2**attempt)
+                logging.warning(
+                    "429 rate limit for %s, retrying in %.1fs",
+                    sanitized_url,
+                    sleep_for,
+                )
+                time.sleep(sleep_for)
+                continue
+            logging.warning("Failed to fetch %s: %s", sanitized_url, exc)
+            return None, None
+        except (
+            URLError,
+            TimeoutError,
+            http.client.IncompleteRead,
+            http.client.RemoteDisconnected,
+        ) as exc:
+            if attempt < max_retries:
+                sleep_for = backoff_sec * (2**attempt)
+                logging.warning(
+                    "Fetch failed for %s, retrying in %.1fs (%s)",
+                    sanitized_url,
+                    sleep_for,
+                    exc,
+                )
+                time.sleep(sleep_for)
+                continue
+            logging.warning("Failed to fetch %s: %s", sanitized_url, exc)
+            return None, None
+    return None, None
+
+
+def _resolve_image_mime_type(url: str, content_type: str | None) -> str:
+    if content_type:
+        base_type = content_type.split(";", 1)[0].strip().lower()
+        if base_type.startswith("image/"):
+            return base_type
+    guessed = mimetypes.guess_type(url)[0]
+    if guessed and guessed.startswith("image/"):
+        return guessed
+    return "image/jpeg"
+
+
 def _post_json_with_status(
     url: str,
     payload: dict,
@@ -1139,6 +1624,8 @@ def _search_web_tavily(
     *,
     max_results: int,
     config: AutomationConfig,
+    search_depth: str | None = None,
+    include_answer: bool | None = None,
 ) -> list[dict]:
     if not query or max_results <= 0:
         return []
@@ -1156,6 +1643,14 @@ def _search_web_tavily(
         "max_results": min(max_results, 10),
         "include_answer": config.search_web_include_answer,
     }
+    depth = (search_depth or config.search_web_depth or "").strip().lower()
+    if depth not in {"basic", "advanced"}:
+        depth = config.search_web_depth
+    payload["search_depth"] = depth
+    if include_answer is None:
+        payload["include_answer"] = config.search_web_include_answer
+    else:
+        payload["include_answer"] = include_answer
     if config.search_web_include_domains:
         payload["include_domains"] = config.search_web_include_domains
     if config.search_web_exclude_domains:
@@ -1521,20 +2016,39 @@ def _build_content_prompt(
     traffic: str | None,
     sources: list[dict],
     image_urls: list[str],
+    image_infos: list[dict] | None,
     references: list[str],
     language: str = "English",
+    template_mode: str | None = None,
 ) -> str:
     sources_text = "\n".join(
         f"- {source['url']} | {source.get('title') or 'Untitled'}\n  {source['text']}"
         for source in sources
     )
-    images_text = "\n".join(f"- {url}" for url in image_urls) or "- None"
+    if image_infos:
+        image_lines: list[str] = []
+        for info in image_infos:
+            url = str(info.get("url") or "").strip()
+            if not _is_valid_url(url):
+                continue
+            description = str(info.get("description") or "No description available").strip()
+            alt_text = str(info.get("alt_text") or "").strip()
+            image_lines.append(f"- {url} | {description} | alt: {alt_text}".strip())
+        images_text = "\n".join(image_lines) or "- None"
+    else:
+        images_text = "\n".join(f"- {url}" for url in image_urls) or "- None"
     refs_text = "\n".join(f"- {url}" for url in references) or "- None"
+    has_images = bool(image_urls)
     image_requirement = (
-        "Embed at least 2 images from the provided list in the middle of the article."
-        if image_urls
+        "Embed 1-3 images from the list at natural points between paragraphs. "
+        "Avoid placing images in the first paragraph or final conclusion."
+        if has_images
         else "No images are available. Do not add image markdown."
     )
+
+    template_block = ""
+    if template_mode == PIPELINE_HIGH_INTENT:
+        template_block = f"\n\n{HIGH_INTENT_TEMPLATE_REQUIREMENTS}"
 
     return f"""
 Role: Columnist and investigative writer.
@@ -1558,22 +2072,24 @@ Output JSON only. {CONTENT_JSON_SCHEMA}
 SEO requirements:
 - Use the primary keyword in the first paragraph, one H2 heading, and the conclusion.
 - Use 2-4 secondary keywords derived from the sources (natural phrasing, no stuffing).
-- Keep paragraphs short (2-4 sentences).
-- Include one FAQ section with 2-4 Q/A items.
+- Keep paragraphs short (3-4 sentences).
+- Include one FAQ section with 3-4 Q/A items.
 
 Editorial requirements:
 - Write a full topic column, not a summary or bullet digest.
-- Provide depth: background, recent trigger, stakeholder impact, and forward-looking analysis.
+- Provide depth: background, recent trigger, evidence/data, stakeholder impact, and forward-looking analysis.
 - Include at least 3 inline citations with Markdown links inside paragraphs.
 - Do NOT use the headings "Overview", "Key Points", or "Implications".
-- Use 3-6 meaningful section headings tailored to the story.
+- Use 4-7 meaningful section headings tailored to the story.
 - Include an opening paragraph with a clear angle, and a closing paragraph with a takeaway.
 - Integrate at least 2 source links inline in the body (e.g., "According to [Source](url)...").
 - {image_requirement}
 - Avoid listing raw URLs; all URLs must be Markdown links.
 - Do not tell readers to click the links for details; include the details in the column.
 - Never include ellipses or truncated fragments. Rewrite into complete sentences.
+- Target 5000-6000 words total.
 - Do not include frontmatter.
+{template_block}
 """.strip()
 
 
@@ -1814,13 +2330,27 @@ Rules:
     return _compose_prompt(system, user)
 
 
-def _build_outline_prompt(*, keyword: str, angle: str, evidence_summary: str) -> str:
+def _build_outline_prompt(
+    *,
+    keyword: str,
+    angle: str,
+    evidence_summary: str,
+    template_mode: str | None = None,
+) -> str:
     system = """
 You are the article architect.
 Create a logical, reader-friendly structure that supports the chosen angle.
 Balance context, evidence, impact, and forward-looking analysis.
 Use section headings that are specific, concrete, and SEO-aware.
 Anchor sections in evidence and reader intent (what they came to learn).
+""".strip()
+    template_block = ""
+    if template_mode == PIPELINE_HIGH_INTENT:
+        template_block = """
+Template requirements:
+- Include at least one section focused on comparisons or alternatives.
+- Include at least one section focused on pricing/cost or decision criteria.
+- Ensure headings fit high-intent readers looking for choices or fixes.
 """.strip()
     user = f"""
 Topic: {keyword}
@@ -1837,13 +2367,15 @@ Output JSON:
 }}
 
 Rules:
-- Provide 4-7 sections.
+- Provide 5-8 sections.
 - Avoid generic headings like "Overview" or "Conclusion".
 - evidence_refs should point to source URLs or IDs.
 - Ensure at least one section addresses "what changed/why now".
 - Ensure at least one section addresses "impact / what it means for readers".
 - Include the primary keyword (or close variation) in at least 2 headings.
+- Include sections covering background/context, evidence or data, and outlook.
 - FAQ should target high-intent reader questions, not trivia.
+{template_block}
 """.strip()
     return _compose_prompt(system, user)
 
@@ -1906,7 +2438,7 @@ Relevant sources: {sources_subset}
 Language: {language}
 
 Writing rules:
-- 3-6 paragraphs, 2-4 sentences each
+- 4-7 paragraphs, 4-6 sentences each
 - Include at least 2 inline citations with Markdown links
 - Do not make claims without citations
 - Avoid hype or sensational wording
@@ -1914,6 +2446,7 @@ Writing rules:
 - Prefer clear cause -> evidence -> implication flow
 - If a key claim lacks evidence, mark it as uncertain rather than assert it
 - Keep terminology consistent with sources (avoid re-labeling entities)
+- Add specific context, data, or verification details where available
 
 Output (MDX):
 {{section_mdx}}
@@ -1927,6 +2460,7 @@ def _build_assembler_prompt(
     faq_list: list[str],
     tone: str,
     keyword: str,
+    template_mode: str | None = None,
 ) -> str:
     system = """
 You are the editor in chief.
@@ -1935,6 +2469,9 @@ Add an intro, conclusion, and FAQ without adding new facts.
 Preserve all citations and do not invent sources.
 Maintain a consistent voice and avoid redundancy across sections.
 """.strip()
+    template_block = ""
+    if template_mode == PIPELINE_HIGH_INTENT:
+        template_block = f"\n{HIGH_INTENT_TEMPLATE_REQUIREMENTS}"
     user = f"""
 Inputs:
 sections: {json.dumps(section_mdx_list, ensure_ascii=True)}
@@ -1949,6 +2486,8 @@ Requirements:
 - Intro should set scope and "why now" context using existing evidence
 - Conclusion should summarize evidence and note remaining uncertainties
 - FAQ answers must be concise and evidence-based
+- Target 5000-6000 words total
+{template_block}
 
 Output (MDX):
 full article body
@@ -1985,6 +2524,58 @@ Output JSON:
     {{"type": "missing_citation|factual_risk|seo|structure|style", "detail": "...", "fix_hint": "..."}}
   ]
 }}
+""".strip()
+    return _compose_prompt(system, user)
+
+
+def _build_final_review_prompt(
+    *,
+    full_mdx: str,
+    keyword: str,
+    language: str,
+    hints: list[str],
+) -> str:
+    system = """
+You are a meticulous MDX editor and QA reviewer.
+Check sentence structure, grammar, and scraping artifacts.
+Never add new facts or sources. Preserve citations and Markdown links.
+""".strip()
+    hints_block = json.dumps(hints, ensure_ascii=True)
+    user = f"""
+Language: {language}
+Primary keyword: {keyword}
+
+Article (MDX):
+{full_mdx}
+
+Suspicious snippets (if any):
+{hints_block}
+
+Review focus:
+- Sentences are grammatical and complete
+- No UI/ads/navigation remnants or garbage text
+- No broken URLs or partial links (e.g., "htt")
+- No empty Markdown links/images
+- Markdown structure remains valid
+
+Decision:
+- status=pass if clean
+- status=fix if minor removals or edits are enough
+- status=regenerate if sentence structure is broadly broken or the article is incoherent
+
+Output JSON only:
+{{
+  "status": "pass|fix|regenerate",
+  "issues": [
+    {{"type": "grammar|artifact|markdown|structure", "detail": "...", "fix_hint": "..."}}
+  ],
+  "cleaned_mdx": "..."
+}}
+
+Rules:
+- If status is pass, cleaned_mdx must be an empty string.
+- If status is fix or regenerate, cleaned_mdx must contain the full revised article.
+- Use valid JSON and escape newlines as \\n.
 """.strip()
     return _compose_prompt(system, user)
 
@@ -2064,6 +2655,199 @@ Output JSON:
 """.strip()
 
 
+def _build_image_description_prompt() -> str:
+    system = """
+You are a visual analyst and accessibility writer.
+Describe the image content precisely and extract useful keywords.
+""".strip()
+    user = """
+Task:
+- Describe the image in 1-2 sentences.
+- Provide 3-6 short keywords or phrases.
+- Provide a concrete alt text (6-12 words).
+
+Rules:
+- English only. ASCII only.
+- Be specific about visible objects, setting, and actions.
+- Avoid subjective adjectives like "beautiful" or "stunning".
+- If the image is unclear, say "unclear image" and use generic keywords.
+
+Output JSON:
+{
+  "description": "...",
+  "keywords": ["..."],
+  "alt_text": "..."
+}
+""".strip()
+    return _compose_prompt(system, user)
+
+
+def _describe_image_urls(
+    config: AutomationConfig,
+    writer: GeminiClient,
+    image_urls: list[str],
+) -> list[dict]:
+    if not image_urls or not config.gemini_api_key:
+        return []
+    prompt = _build_image_description_prompt()
+    results: list[dict] = []
+    for url in list(dict.fromkeys(image_urls))[:MAX_IMAGE_ANALYSIS]:
+        if not _is_valid_url(url):
+            continue
+        image_bytes, content_type = _fetch_url_bytes(
+            url,
+            config.user_agent,
+            config.scrape_timeout,
+            config.scrape_delay_sec,
+            config.scrape_max_retries,
+            config.scrape_backoff_sec,
+        )
+        if not image_bytes:
+            continue
+        mime_type = _resolve_image_mime_type(url, content_type)
+        try:
+            response = writer.generate_with_image(
+                prompt,
+                image_bytes,
+                mime_type,
+                temperature=min(config.gemini_temperature, 0.4),
+                max_tokens=min(config.gemini_max_tokens, 600),
+            )
+            data = _extract_json_block(response)
+        except Exception as exc:
+            logging.warning("Image analysis failed for %s: %s", url, exc)
+            data = None
+        if not isinstance(data, dict):
+            continue
+        description = _ensure_ascii_text(str(data.get("description") or "").strip(), "")
+        alt_text = _ensure_ascii_text(str(data.get("alt_text") or "").strip(), "")
+        keywords = [
+            _ensure_ascii_text(keyword, "")
+            for keyword in _ensure_list_of_strings(data.get("keywords"))
+        ]
+        keywords = [keyword for keyword in keywords if keyword]
+        if not description and not alt_text and not keywords:
+            continue
+        if not alt_text:
+            alt_text = description or "Related image"
+        results.append(
+            {
+                "url": url,
+                "description": description,
+                "alt_text": alt_text,
+                "keywords": keywords,
+            }
+        )
+    return results
+
+
+def _extract_keywords_from_text(text: str, max_terms: int = 6) -> list[str]:
+    tokens = re.findall(r"[a-zA-Z0-9]{3,}", text.lower())
+    stopwords = {
+        "the",
+        "and",
+        "with",
+        "from",
+        "this",
+        "that",
+        "image",
+        "photo",
+        "picture",
+        "illustration",
+        "graphic",
+        "people",
+        "person",
+        "woman",
+        "man",
+        "men",
+        "women",
+        "crowd",
+        "group",
+        "scene",
+        "background",
+    }
+    seen: set[str] = set()
+    keywords: list[str] = []
+    for token in tokens:
+        if token in stopwords or token in seen:
+            continue
+        seen.add(token)
+        keywords.append(token)
+        if len(keywords) >= max_terms:
+            break
+    return keywords
+
+
+def _is_text_block(block: str) -> bool:
+    stripped = block.strip()
+    if not stripped:
+        return False
+    if stripped.startswith(("#", "![", "-", ">", "```")):
+        return False
+    return True
+
+
+def _score_block_for_keywords(block: str, keywords: list[str]) -> int:
+    if not keywords:
+        return 0
+    text = block.lower()
+    score = 0
+    for keyword in keywords:
+        normalized = keyword.lower().strip()
+        if normalized and normalized in text:
+            score += 1
+    return score
+
+
+def _insert_images_by_relevance(body: str, image_infos: list[dict]) -> str:
+    if not image_infos:
+        return body
+    existing = re.findall(r"!\[.*?\]\((.*?)\)", body)
+    existing_set = {url for url in existing if isinstance(url, str)}
+    candidates: list[dict] = []
+    for info in image_infos:
+        if not isinstance(info, dict):
+            continue
+        url = info.get("url")
+        if _is_valid_url(url) and url not in existing_set:
+            candidates.append(info)
+    if not candidates:
+        return body
+    parts = body.split("\n\n")
+    candidate_indices = [index for index, part in enumerate(parts) if _is_text_block(part)]
+    if len(candidate_indices) > 4:
+        candidate_indices = candidate_indices[2:-2]
+    if not candidate_indices:
+        return body
+    placements: list[tuple[int, dict]] = []
+    for info in candidates[:3]:
+        keywords = _ensure_list_of_strings(info.get("keywords"))
+        if not keywords:
+            keywords = _extract_keywords_from_text(str(info.get("description") or ""))
+        best_index = None
+        best_score = -1
+        for index in candidate_indices:
+            score = _score_block_for_keywords(parts[index], keywords)
+            if score > best_score:
+                best_score = score
+                best_index = index
+        if best_index is None:
+            continue
+        placements.append((best_index, info))
+        candidate_indices.remove(best_index)
+        if not candidate_indices:
+            break
+    if not placements:
+        return body
+    for index, info in sorted(placements, key=lambda item: item[0], reverse=True):
+        alt_text = _ensure_ascii_text(
+            str(info.get("alt_text") or info.get("description") or "Related image"),
+            "Related image",
+        )
+        parts.insert(index + 1, f"![{alt_text}]({info.get('url')})")
+    return "\n\n".join(parts)
+
+
 def _ensure_images_in_body(body: str, image_urls: list[str], alt_text: str) -> str:
     if not image_urls:
         return body
@@ -2076,9 +2860,169 @@ def _ensure_images_in_body(body: str, image_urls: list[str], alt_text: str) -> s
     safe_alt = _ensure_ascii_text(alt_text, "Related image")
     blocks = [f"![{safe_alt}]({url})" for url in add_urls[:needed]]
     parts = body.split("\n\n")
-    insert_at = 2 if len(parts) > 2 else len(parts)
+    text_indices = [index for index, part in enumerate(parts) if _is_text_block(part)]
+    if text_indices:
+        insert_at = text_indices[min(len(text_indices) // 2, len(text_indices) - 1)]
+    else:
+        insert_at = 2 if len(parts) > 2 else len(parts)
     parts[insert_at:insert_at] = blocks
     return "\n\n".join(parts)
+
+
+def _parse_aspect_ratio(value: str | None) -> tuple[int, int]:
+    if not value or ":" not in value:
+        return DEFAULT_GRADIENT_WIDTH, DEFAULT_GRADIENT_HEIGHT
+    pieces = value.split(":", 1)
+    if len(pieces) != 2:
+        return DEFAULT_GRADIENT_WIDTH, DEFAULT_GRADIENT_HEIGHT
+    try:
+        width_ratio = float(pieces[0])
+        height_ratio = float(pieces[1])
+    except ValueError:
+        return DEFAULT_GRADIENT_WIDTH, DEFAULT_GRADIENT_HEIGHT
+    if width_ratio <= 0 or height_ratio <= 0:
+        return DEFAULT_GRADIENT_WIDTH, DEFAULT_GRADIENT_HEIGHT
+    width = DEFAULT_GRADIENT_WIDTH
+    height = max(1, int(round(width * height_ratio / width_ratio)))
+    return width, height
+
+
+def _hsv_to_rgb_int(hue: float, saturation: float, value: float) -> tuple[int, int, int]:
+    red, green, blue = colorsys.hsv_to_rgb(hue, saturation, value)
+    return int(red * 255), int(green * 255), int(blue * 255)
+
+
+def _random_gradient_colors(rng: random.Random) -> tuple[tuple[int, int, int], tuple[int, int, int]]:
+    base_hue = rng.random()
+    shift = rng.uniform(0.2, 0.6)
+    second_hue = (base_hue + shift) % 1.0
+    saturation = rng.uniform(0.5, 0.85)
+    value_a = rng.uniform(0.6, 0.95)
+    value_b = rng.uniform(0.55, 0.9)
+    return _hsv_to_rgb_int(base_hue, saturation, value_a), _hsv_to_rgb_int(
+        second_hue, saturation, value_b
+    )
+
+
+def _build_gradient_pixels(
+    width: int,
+    height: int,
+    start_rgb: tuple[int, int, int],
+    end_rgb: tuple[int, int, int],
+    angle: float,
+) -> bytes:
+    if width <= 0 or height <= 0:
+        return b""
+    dx = math.cos(angle)
+    dy = math.sin(angle)
+    pixels = bytearray(width * height * 3)
+    row_len = width * 3
+    for y in range(height):
+        ny = 0.0 if height == 1 else (y / (height - 1)) * 2 - 1
+        row_offset = y * row_len
+        for x in range(width):
+            nx = 0.0 if width == 1 else (x / (width - 1)) * 2 - 1
+            t = (nx * dx + ny * dy) * 0.5 + 0.5
+            if t < 0:
+                t = 0.0
+            elif t > 1:
+                t = 1.0
+            red = int(start_rgb[0] + (end_rgb[0] - start_rgb[0]) * t)
+            green = int(start_rgb[1] + (end_rgb[1] - start_rgb[1]) * t)
+            blue = int(start_rgb[2] + (end_rgb[2] - start_rgb[2]) * t)
+            idx = row_offset + x * 3
+            pixels[idx] = red
+            pixels[idx + 1] = green
+            pixels[idx + 2] = blue
+    return bytes(pixels)
+
+
+def _encode_png_bytes(width: int, height: int, pixels: bytes) -> bytes:
+    if width <= 0 or height <= 0:
+        return b""
+    if len(pixels) != width * height * 3:
+        return b""
+    row_len = width * 3
+    raw = bytearray()
+    for y in range(height):
+        start = y * row_len
+        raw.append(0)
+        raw.extend(pixels[start : start + row_len])
+    compressed = zlib.compress(bytes(raw), level=6)
+
+    def _chunk(tag: bytes, data: bytes) -> bytes:
+        length = struct.pack(">I", len(data))
+        crc = struct.pack(">I", binascii.crc32(tag + data) & 0xFFFFFFFF)
+        return length + tag + data + crc
+
+    ihdr = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + _chunk(b"IHDR", ihdr)
+        + _chunk(b"IDAT", compressed)
+        + _chunk(b"IEND", b"")
+    )
+
+
+def _write_gradient_jpeg(output_path: Path, width: int, height: int, pixels: bytes) -> bool:
+    try:
+        from PIL import Image  # type: ignore
+    except Exception:
+        return False
+    try:
+        image = Image.frombytes("RGB", (width, height), pixels)
+        image.save(output_path, format="JPEG", quality=DEFAULT_GRADIENT_JPEG_QUALITY)
+        return True
+    except Exception as exc:
+        logging.warning("Gradient JPEG generation failed: %s", exc)
+        return False
+
+
+def _convert_png_bytes_to_jpeg(png_bytes: bytes, output_path: Path) -> bool:
+    tool = shutil.which("sips")
+    if not tool:
+        return False
+    tmp_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+            tmp.write(png_bytes)
+            tmp_path = Path(tmp.name)
+        result = subprocess.run(
+            [tool, "-s", "format", "jpeg", str(tmp_path), "--out", str(output_path)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        return result.returncode == 0 and output_path.exists()
+    except Exception as exc:
+        logging.warning("Gradient JPEG conversion failed: %s", exc)
+        return False
+    finally:
+        if tmp_path:
+            try:
+                tmp_path.unlink()
+            except FileNotFoundError:
+                pass
+
+
+def _generate_hero_gradient(output_path: Path, config: AutomationConfig) -> bool:
+    width, height = _parse_aspect_ratio(config.google_image_aspect_ratio)
+    rng = random.Random(str(output_path))
+    start_rgb, end_rgb = _random_gradient_colors(rng)
+    angle = rng.uniform(0.0, math.pi * 2)
+    pixels = _build_gradient_pixels(width, height, start_rgb, end_rgb, angle)
+    if not pixels:
+        return False
+    if _write_gradient_jpeg(output_path, width, height, pixels):
+        return True
+    png_bytes = _encode_png_bytes(width, height, pixels)
+    if not png_bytes:
+        return False
+    if _convert_png_bytes_to_jpeg(png_bytes, output_path):
+        return True
+    output_path.write_bytes(png_bytes)
+    logging.warning("Gradient PNG saved with .jpg extension: %s", output_path)
+    return True
 
 
 def _generate_hero_image_google(prompt: str, output_path: Path, config: AutomationConfig) -> bool:
@@ -2151,6 +3095,9 @@ def _generate_hero_image(prompt: str, output_path: Path, config: AutomationConfi
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if _generate_hero_image_google(prompt, output_path, config):
         logging.info("Hero image generated via Gemini image model.")
+        return
+    if _generate_hero_gradient(output_path, config):
+        logging.info("Hero image gradient generated locally.")
         return
 
     placeholder = config.astro_root / "src" / "assets" / "blog-placeholder-5.jpg"
@@ -2389,6 +3336,19 @@ def _plan_research(
     }
 
 
+def _build_question_queries(keyword: str, angle: str | None = None) -> list[str]:
+    base = keyword.strip()
+    if not base:
+        return []
+    year = datetime.now(timezone.utc).year
+    angle_hint = f" {angle.strip()}" if angle else ""
+    return [
+        f"What changed about {base} in {year} and why now{angle_hint}?",
+        f"Who is affected by {base} and what are the impacts in {year}?",
+        f"What official statements, data, or reports support {base} in {year}?",
+    ]
+
+
 def _rescue_research_plan(
     config: AutomationConfig,
     writer: GeminiClient,
@@ -2432,6 +3392,7 @@ def _gather_sources_for_topic(
 ) -> list[dict]:
     keyword = str(topic.get("keyword") or "").strip() or "unknown"
     logging.info("Gathering sources for topic: %s", keyword)
+    seed_urls = _extract_urls(topic)
     candidates = _candidate_sources_from_topic(topic)
     logging.info("Seed candidates from topic: %s", len(candidates))
     web_added_total = 0
@@ -2458,6 +3419,21 @@ def _gather_sources_for_topic(
                     "Web search exclude domains: %s",
                     ", ".join(config.search_web_exclude_domains),
                 )
+            if seed_urls:
+                logging.info("Focused URL search: %s urls", len(seed_urls))
+                url_added = 0
+                for url in seed_urls[:3]:
+                    results = _search_web_tavily(
+                        url,
+                        max_results=1,
+                        config=config,
+                        search_depth="basic",
+                        include_answer=False,
+                    )
+                    candidates.extend(results)
+                    url_added += len(results)
+                    web_added_total += len(results)
+                logging.info("Focused URL search added: %s results", url_added)
             added = 0
             for query in queries:
                 results = _search_web_tavily(
@@ -2470,6 +3446,27 @@ def _gather_sources_for_topic(
                 web_added_total += len(results)
                 if added >= config.search_web_max_results:
                     break
+            question_queries = _build_question_queries(
+                keyword,
+                angle=str(topic.get("angle") or "").strip(),
+            )
+            if question_queries:
+                question_added = 0
+                question_limit = max(3, config.search_web_max_results)
+                for query in question_queries:
+                    results = _search_web_tavily(
+                        query,
+                        max_results=config.search_web_max_per_query,
+                        config=config,
+                        search_depth="advanced",
+                        include_answer=True,
+                    )
+                    candidates.extend(results)
+                    question_added += len(results)
+                    web_added_total += len(results)
+                    if question_added >= question_limit:
+                        break
+                logging.info("Advanced question search added: %s results", question_added)
             logging.info("Web search added: %s results", web_added_total)
     else:
         logging.info("Web search disabled; skipping Tavily search.")
@@ -2660,11 +3657,13 @@ def _build_outline(
     keyword: str,
     angle: str,
     evidence_summary: str,
+    template_mode: str | None = None,
 ) -> dict:
     prompt = _build_outline_prompt(
         keyword=keyword,
         angle=angle,
         evidence_summary=evidence_summary,
+        template_mode=template_mode,
     )
     try:
         response = writer.generate(
@@ -2700,6 +3699,23 @@ def _build_outline(
             "evidence_refs": [],
         },
     ]
+    if template_mode == PIPELINE_HIGH_INTENT:
+        fallback_sections.insert(
+            2,
+            {
+                "heading": f"{keyword} alternatives and comparisons",
+                "goal": "Compare options and highlight key differences for buyers.",
+                "evidence_refs": [],
+            },
+        )
+        fallback_sections.insert(
+            3,
+            {
+                "heading": f"{keyword} pricing and decision criteria",
+                "goal": "Summarize cost signals and how to evaluate choices.",
+                "evidence_refs": [],
+            },
+        )
     return {"title_direction": "", "sections": fallback_sections, "faq": []}
 
 
@@ -2868,12 +3884,14 @@ def _assemble_article(
     section_mdx_list: list[str],
     faq_list: list[str],
     keyword: str,
+    template_mode: str | None = None,
 ) -> str | None:
     prompt = _build_assembler_prompt(
         section_mdx_list=section_mdx_list,
         faq_list=faq_list,
         tone=config.content_tone,
         keyword=keyword,
+        template_mode=template_mode,
     )
     try:
         response = writer.generate(
@@ -2934,6 +3952,55 @@ def _apply_quality_gate(
     return content
 
 
+def _apply_final_review(
+    config: AutomationConfig,
+    writer: GeminiClient,
+    *,
+    full_mdx: str,
+    keyword: str,
+) -> str:
+    if not full_mdx or not config.final_review_enabled:
+        return full_mdx
+    if not config.gemini_api_key:
+        return full_mdx
+    content = full_mdx
+    hints = _collect_review_hints(content)
+    attempts = max(config.final_review_revisions, 0) + 1
+    for attempt in range(attempts):
+        prompt = _build_final_review_prompt(
+            full_mdx=content,
+            keyword=keyword,
+            language=config.content_language,
+            hints=hints,
+        )
+        try:
+            response = writer.generate(
+                prompt,
+                temperature=min(config.gemini_temperature, 0.4),
+                max_tokens=config.gemini_max_tokens,
+            )
+            data = _extract_json_block(response)
+        except Exception as exc:
+            logging.warning("Final review failed: %s", exc)
+            return content
+        if not isinstance(data, dict):
+            if attempt < attempts - 1:
+                continue
+            return content
+        status = str(data.get("status") or "").strip().lower()
+        issues = data.get("issues")
+        issue_count = len(issues) if isinstance(issues, list) else 0
+        logging.info("Final review status: %s (issues=%s)", status, issue_count)
+        if status == "pass":
+            return content
+        cleaned = str(data.get("cleaned_mdx") or "").strip()
+        if status in {"fix", "regenerate"} and cleaned:
+            return cleaned
+        if attempt >= attempts - 1:
+            return content
+    return content
+
+
 def _key_points_from_evidence(evidence: dict) -> list[str]:
     points: list[str] = []
     claims = evidence.get("claims") if isinstance(evidence, dict) else None
@@ -2952,10 +4019,12 @@ def _generate_article_multi_agent(
     writer: GeminiClient,
     *,
     topic: dict,
+    pipeline: str | None = None,
 ) -> dict | None:
     keyword = str(topic.get("keyword") or "").strip()
     if not keyword:
         return None
+    template_mode = PIPELINE_HIGH_INTENT if pipeline == PIPELINE_HIGH_INTENT else None
     angle = str(topic.get("angle") or "").strip() or f"latest developments and impact for {keyword}"
     research_plan = _plan_research(
         config,
@@ -2984,6 +4053,7 @@ def _generate_article_multi_agent(
         keyword=keyword,
         angle=angle,
         evidence_summary=evidence_summary,
+        template_mode=template_mode,
     )
     resources = _allocate_resources(config, writer, outline=outline, sources=structured_sources)
     youtube_videos = _collect_youtube_videos(config, topic=topic, resources=resources)
@@ -3003,6 +4073,7 @@ def _generate_article_multi_agent(
         section_mdx_list=section_mdx_list,
         faq_list=faq_list,
         keyword=keyword,
+        template_mode=template_mode,
     )
     if not full_body:
         return None
@@ -3042,6 +4113,7 @@ def _generate_post_for_topic(
     writer: GeminiClient,
     meta_writer: GeminiClient,
     topic: dict,
+    pipeline: str | None = None,
 ) -> Path | None:
     keyword = topic.get("keyword")
     if not keyword:
@@ -3050,6 +4122,7 @@ def _generate_post_for_topic(
     image_urls = _extract_image_urls(topic)
     urls = _extract_urls(topic)
     alt_text = _ensure_ascii_text(f"{keyword} related image", "Related image")
+    image_infos = _describe_image_urls(config, writer, image_urls)
     fallback_body = ""
     summary = ""
     key_points: list[str] = []
@@ -3058,8 +4131,14 @@ def _generate_post_for_topic(
     hero_alt_hint = ""
     reference_urls = list(urls)
 
+    template_mode = PIPELINE_HIGH_INTENT if pipeline == PIPELINE_HIGH_INTENT else None
     if config.use_multi_agent:
-        article = _generate_article_multi_agent(config, writer, topic=topic)
+        article = _generate_article_multi_agent(
+            config,
+            writer,
+            topic=topic,
+            pipeline=pipeline,
+        )
         if article:
             body = str(article.get("body") or "").strip()
             summary = _ensure_ascii_text(str(article.get("summary") or "").strip(), "")
@@ -3094,8 +4173,10 @@ def _generate_post_for_topic(
             traffic=topic.get("traffic"),
             sources=sources,
             image_urls=image_urls,
+            image_infos=image_infos,
             references=urls,
             language=config.content_language,
+            template_mode=template_mode,
         )
 
         try:
@@ -3126,10 +4207,22 @@ def _generate_post_for_topic(
     if not body:
         body = fallback_body
 
+    if image_infos:
+        body = _insert_images_by_relevance(body, image_infos)
     body = _ensure_images_in_body(body, image_urls, alt_text)
     body = _linkify_urls(body)
     body = _clean_body_text(body)
     body = _ensure_ascii_body(body, fallback_body or body)
+    reviewed_body = _apply_final_review(
+        config,
+        writer,
+        full_mdx=body,
+        keyword=str(keyword),
+    )
+    if reviewed_body != body:
+        body = _clean_body_text(reviewed_body)
+        body = _ensure_ascii_body(body, body)
+        summary = ""
 
     if not summary:
         summary = _ensure_ascii_text(
@@ -3219,42 +4312,79 @@ def _save_trends_snapshot(payload: dict) -> None:
     write_json(path, payload)
 
 
-def run_once(config: AutomationConfig) -> None:
+def _collect_trends_payload(
+    *,
+    regions: list[str],
+    trend_source: str,
+    trend_method: str,
+    trend_limit: int,
+    trend_sleep_sec: float,
+    trend_window_hours: int,
+    csv_sort_by: str,
+    categories: list[str] | None,
+    csv_active_only: bool = False,
+    csv_download_dir: str | None = None,
+    csv_max_retries: int = 1,
+    csv_retry_delay_sec: float = 1.0,
+    include_images: bool,
+    include_articles: bool,
+    max_articles_per_trend: int,
+    cache: bool,
+    allow_rss_fallback: bool = True,
+) -> dict:
+    source_mode = trend_source.strip().lower()
     try:
         payload = collect_trending_searches(
-            config.regions,
-            limit=config.trend_limit,
-            sleep_sec=config.trend_sleep_sec,
-            method=config.trend_method,
-            source=config.trend_source,
-            window_hours=config.trend_window_hours,
-            csv_sort_by=config.csv_sort_by,
-            include_images=config.rss_include_images,
-            include_articles=config.rss_include_articles,
-            max_articles_per_trend=config.rss_max_articles_per_trend,
-            cache=config.rss_cache,
+            regions,
+            limit=trend_limit,
+            sleep_sec=trend_sleep_sec,
+            method=trend_method,
+            source=source_mode,
+            window_hours=trend_window_hours,
+            csv_sort_by=csv_sort_by,
+            categories=categories,
+            csv_active_only=csv_active_only,
+            csv_download_dir=csv_download_dir,
+            csv_max_retries=csv_max_retries,
+            csv_retry_delay_sec=csv_retry_delay_sec,
+            include_images=include_images,
+            include_articles=include_articles,
+            max_articles_per_trend=max_articles_per_trend,
+            cache=cache,
         )
     except RuntimeError as exc:
-        if config.trend_source == "csv":
+        if source_mode == "csv" and allow_rss_fallback:
             logging.warning("CSV source failed; falling back to RSS. Error: %s", exc)
             payload = collect_trending_searches(
-                config.regions,
-                limit=config.trend_limit,
-                sleep_sec=config.trend_sleep_sec,
-                method=config.trend_method,
+                regions,
+                limit=trend_limit,
+                sleep_sec=trend_sleep_sec,
+                method=trend_method,
                 source="rss",
-                window_hours=config.trend_window_hours,
-                csv_sort_by=config.csv_sort_by,
-                include_images=config.rss_include_images,
-                include_articles=config.rss_include_articles,
-                max_articles_per_trend=config.rss_max_articles_per_trend,
-                cache=config.rss_cache,
+                window_hours=trend_window_hours,
+                csv_sort_by=csv_sort_by,
+                categories=None,
+                csv_active_only=False,
+                csv_download_dir=None,
+                csv_max_retries=1,
+                csv_retry_delay_sec=0.0,
+                include_images=include_images,
+                include_articles=include_articles,
+                max_articles_per_trend=max_articles_per_trend,
+                cache=cache,
             )
         else:
             raise
-    _save_trends_snapshot(payload)
+    return payload
 
-    topics = _select_topics_by_region(payload, config.regions, config.max_topic_rank)
+
+def _process_topics(
+    config: AutomationConfig,
+    *,
+    topics: list[dict],
+    ranker_enabled: bool = True,
+    pipeline: str | None = None,
+) -> None:
     if not topics:
         logging.info("No topics found.")
         return
@@ -3265,7 +4395,7 @@ def run_once(config: AutomationConfig) -> None:
 
     writer = GeminiClient(config.gemini_api_key, config.gemini_model_content)
     meta_writer = GeminiClient(config.gemini_api_key, config.gemini_model_meta)
-    if config.use_multi_agent:
+    if ranker_enabled and config.use_multi_agent:
         topics = _rank_topics_with_llm(config, writer, topics)
     for topic in topics:
         keyword = topic.get("keyword")
@@ -3276,7 +4406,13 @@ def run_once(config: AutomationConfig) -> None:
         if topic_key in used:
             logging.info("Skip already processed topic: %s", topic_key)
             continue
-        post_path = _generate_post_for_topic(config, writer, meta_writer, topic)
+        post_path = _generate_post_for_topic(
+            config,
+            writer,
+            meta_writer,
+            topic,
+            pipeline=pipeline,
+        )
         if post_path:
             used.add(topic_key)
             slugs.add(post_path.stem)
@@ -3285,6 +4421,178 @@ def run_once(config: AutomationConfig) -> None:
     state["topics"] = sorted(used)
     state["slugs"] = sorted(slugs)
     _save_state(state)
+
+
+def run_once(config: AutomationConfig) -> None:
+    payload = _collect_trends_payload(
+        regions=config.regions,
+        trend_limit=config.trend_limit,
+        trend_sleep_sec=config.trend_sleep_sec,
+        trend_method=config.trend_method,
+        trend_source=config.trend_source,
+        trend_window_hours=config.trend_window_hours,
+        csv_sort_by=config.csv_sort_by,
+        categories=None,
+        csv_active_only=False,
+        csv_download_dir=None,
+        csv_max_retries=1,
+        csv_retry_delay_sec=0.0,
+        include_images=config.rss_include_images,
+        include_articles=config.rss_include_articles,
+        max_articles_per_trend=config.rss_max_articles_per_trend,
+        cache=config.rss_cache,
+    )
+    payload["pipeline"] = PIPELINE_RECENT
+    _save_trends_snapshot(payload)
+
+    topics = _select_topics_by_region(payload, config.regions, config.max_topic_rank)
+    _process_topics(config, topics=topics, pipeline=PIPELINE_RECENT)
+
+
+def run_high_intent(config: AutomationConfig) -> None:
+    settings = _build_high_intent_settings(config)
+    regions = settings["regions"]
+    if not isinstance(regions, list) or not regions:
+        logging.warning("HIGH_INTENT_REGIONS is empty; skipping pipeline.")
+        return
+    raw_categories = settings["raw_categories"]
+    categories = _normalize_high_intent_categories(raw_categories)
+    if not categories:
+        logging.warning("HIGH_INTENT_TREND_CATEGORIES resolved to empty; skipping pipeline.")
+        return
+    logging.info("High-intent category filters: %s", categories)
+    csv_download_dir = settings["csv_download_dir"]
+    if not csv_download_dir:
+        csv_download_dir = str((ROOT_DIR / "data" / "downloads").resolve())
+    allow_rss_fallback = bool(settings["allow_rss_fallback"])
+    rss_min_matches = int(settings["rss_min_matches"])
+    trend_source = str(settings["trend_source"]).strip().lower()
+    if trend_source == "rss":
+        payload = _collect_trends_payload(
+            regions=regions,
+            trend_limit=int(settings["trend_limit"]),
+            trend_sleep_sec=float(settings["trend_sleep_sec"]),
+            trend_method=str(settings["trend_method"]),
+            trend_source="rss",
+            trend_window_hours=int(settings["trend_window_hours"]),
+            csv_sort_by=str(settings["csv_sort_by"]),
+            categories=None,
+            csv_active_only=False,
+            csv_download_dir=None,
+            csv_max_retries=1,
+            csv_retry_delay_sec=0.0,
+            include_images=config.rss_include_images,
+            include_articles=config.rss_include_articles,
+            max_articles_per_trend=config.rss_max_articles_per_trend,
+            cache=config.rss_cache,
+            allow_rss_fallback=False,
+        )
+        payload["pipeline"] = PIPELINE_HIGH_INTENT
+        payload["rss_filter_categories"] = categories
+        payload["rss_filter_min_matches"] = rss_min_matches
+        items = payload.get("items", [])
+        if isinstance(items, list):
+            filtered = _filter_high_intent_rss_items(
+                items,
+                categories,
+                min_matches=rss_min_matches,
+            )
+            payload["items"] = filtered
+        _save_trends_snapshot(payload)
+        max_topic_rank = int(settings["max_topic_rank"])
+        topics = _select_topics_by_region(payload, regions, max_topic_rank)
+        _process_topics(
+            config,
+            topics=topics,
+            ranker_enabled=False,
+            pipeline=PIPELINE_HIGH_INTENT,
+        )
+        return
+    if trend_source != "csv":
+        logging.warning("Unknown trend source; forcing csv for high-intent.")
+        trend_source = "csv"
+    try:
+        payload = _collect_trends_payload(
+            regions=regions,
+            trend_limit=int(settings["trend_limit"]),
+            trend_sleep_sec=float(settings["trend_sleep_sec"]),
+            trend_method=str(settings["trend_method"]),
+            trend_source=trend_source,
+            trend_window_hours=int(settings["trend_window_hours"]),
+            csv_sort_by=str(settings["csv_sort_by"]),
+            categories=categories,
+            csv_active_only=bool(settings["csv_active_only"]),
+            csv_download_dir=csv_download_dir,
+            csv_max_retries=int(settings["csv_max_retries"]),
+            csv_retry_delay_sec=float(settings["csv_retry_delay_sec"]),
+            include_images=config.rss_include_images,
+            include_articles=config.rss_include_articles,
+            max_articles_per_trend=config.rss_max_articles_per_trend,
+            cache=config.rss_cache,
+            allow_rss_fallback=False,
+        )
+    except RuntimeError as exc:
+        logging.warning("High-intent CSV collection failed. Error: %s", exc)
+        if not allow_rss_fallback:
+            return
+        payload = _collect_trends_payload(
+            regions=regions,
+            trend_limit=int(settings["trend_limit"]),
+            trend_sleep_sec=float(settings["trend_sleep_sec"]),
+            trend_method=str(settings["trend_method"]),
+            trend_source="rss",
+            trend_window_hours=int(settings["trend_window_hours"]),
+            csv_sort_by=str(settings["csv_sort_by"]),
+            categories=None,
+            csv_active_only=False,
+            csv_download_dir=None,
+            csv_max_retries=1,
+            csv_retry_delay_sec=0.0,
+            include_images=config.rss_include_images,
+            include_articles=config.rss_include_articles,
+            max_articles_per_trend=config.rss_max_articles_per_trend,
+            cache=config.rss_cache,
+            allow_rss_fallback=False,
+        )
+        payload["pipeline"] = PIPELINE_HIGH_INTENT
+        payload["rss_filter_categories"] = categories
+        payload["rss_filter_min_matches"] = rss_min_matches
+        items = payload.get("items", [])
+        if isinstance(items, list):
+            filtered = _filter_high_intent_rss_items(
+                items,
+                categories,
+                min_matches=rss_min_matches,
+            )
+            payload["items"] = filtered
+        _save_trends_snapshot(payload)
+        max_topic_rank = int(settings["max_topic_rank"])
+        topics = _select_topics_by_region(payload, regions, max_topic_rank)
+        _process_topics(
+            config,
+            topics=topics,
+            ranker_enabled=False,
+            pipeline=PIPELINE_HIGH_INTENT,
+        )
+        return
+    payload["pipeline"] = PIPELINE_HIGH_INTENT
+    _save_trends_snapshot(payload)
+
+    max_topic_rank = int(settings["max_topic_rank"])
+    topics = _select_topics_by_region(payload, regions, max_topic_rank)
+    _process_topics(
+        config,
+        topics=topics,
+        ranker_enabled=False,
+        pipeline=PIPELINE_HIGH_INTENT,
+    )
+
+
+def run_pipeline(config: AutomationConfig, *, pipeline: str) -> None:
+    if pipeline == PIPELINE_HIGH_INTENT:
+        run_high_intent(config)
+        return
+    run_once(config)
 
 
 def _configure_logging(level: str) -> None:
@@ -3298,6 +4606,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Automate trend-based blog posts.")
     parser.add_argument("--once", action="store_true", help="Run only once")
     parser.add_argument(
+        "--pipeline",
+        default=PIPELINE_RECENT,
+        choices=PIPELINE_CHOICES,
+        help="Pipeline mode (recent or high-intent)",
+    )
+    parser.add_argument(
         "--log-level",
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
@@ -3310,14 +4624,18 @@ def main() -> int:
     args = parse_args()
     _configure_logging(args.log_level)
     config = _build_config()
-    logging.info("Automation start (interval=%s hours)", config.interval_hours)
+    logging.info(
+        "Automation start (pipeline=%s, interval=%s hours)",
+        args.pipeline,
+        config.interval_hours,
+    )
 
     if args.once:
-        run_once(config)
+        run_pipeline(config, pipeline=args.pipeline)
         return 0
 
     while True:
-        run_once(config)
+        run_pipeline(config, pipeline=args.pipeline)
         sleep_seconds = max(config.interval_hours, 0.1) * 3600
         logging.info("Sleeping for %s seconds", sleep_seconds)
         time.sleep(sleep_seconds)

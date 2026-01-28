@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-01-28T03:36:13.702298+00:00",
+  "source": "trendspyg",
+  "method": "trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "the rookie cast",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T03:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=the rookie cast&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRoGVFjbcvTPcrl71NyjFEDckxDBOE17R4ZfCrd8Gwq-3mSWpNIzgHJhWxe_LU",
+        "source": "People.com"
+      },
+      "news_articles": [
+        {
+          "headline": "When Is \u2018The Rookie\u2019 On? All About the Show's Updated Release Schedule",
+          "url": "https://people.com/the-rookie-season-8-release-schedule-11893493",
+          "source": "People.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRoGVFjbcvTPcrl71NyjFEDckxDBOE17R4ZfCrd8Gwq-3mSWpNIzgHJhWxe_LU"
+        },
+        {
+          "headline": "\u2018The Rookie\u2019 Fans, You Need to Sit Down for This Unexpected Season 8 Episode Update",
+          "url": "https://www.goodhousekeeping.com/entertainment/tv-shows/a70141611/the-rookie-season-8-episodes-schedule-change/",
+          "source": "Good Housekeeping",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQYCm2Xt6zaHuWOg7vEJZNY_G8Ix3acVzGqgrOUZCbsr_ecs4CNbXtWVm0OU40"
+        },
+        {
+          "headline": "The Rookie Season 8 Episode 4 release time and how to watch: Global streaming timings for all regions, ABC",
+          "url": "https://m.economictimes.com/news/international/us/the-rookie-season-8-episode-4-release-time-and-how-to-watch-global-streaming-timings-for-all-regions-abc-and-hulu-schedule-abc-police-drama-john-nolan-nathan-fillion-los-angeles-police-department-alexi-hawley-hulu/articleshow/127554174.cms",
+          "source": "The Economic Times",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTAeWZxpKjbzccLDxA4eajHXZl37z2uMbuVj0YuXakPCXIwwFITItk-yu99p3k"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "jeremiah fears",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T03:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=jeremiah fears&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRaMJJWDYhxr3htddc0ywxj-KgkXPbTiVLHqxyKE_xCT2rdXMBA-780Fn6S1f4",
+        "source": "Yahoo Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Scoop up Smith and these top fantasy basketball adds | The Playlist",
+          "url": "https://sports.yahoo.com/video/scoop-up-smith-and-these-top-fantasy-basketball-adds--the-playlist-184157161.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRaMJJWDYhxr3htddc0ywxj-KgkXPbTiVLHqxyKE_xCT2rdXMBA-780Fn6S1f4"
+        },
+        {
+          "headline": "Fantasy Basketball Week 15 Schedule Primer: The last full week before the trade deadline",
+          "url": "https://www.nbcsports.com/fantasy/basketball/news/fantasy-basketball-week-15-schedule-primer-the-last-full-week-before-the-trade-deadline",
+          "source": "NBC Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRWTpYR0FIyamrl9rgsy_FJ7xgI3mQWQg12E1fv4Q2j9OVLyAIC0lMQHr0dlm0"
+        },
+        {
+          "headline": "Fantasy Basketball Waiver Wire Pickups & Advice (Week 15)",
+          "url": "https://www.fantasypros.com/2026/01/fantasy-basketball-waiver-wire-pickups-advice-week-15/",
+          "source": "FantasyPros",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQduRirn2Eoag-PR_8HUTMvn82eNsICi_13tAGvw7ftVmJUjOtol_p4d1rPSkw"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "cooper barkate",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T03:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=cooper barkate&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQFTyq6mJAxNBNqpDoGZ0FOK0CyYdUOHO2RNbUIRScJQct95aYG_PDnGDF3nCk",
+        "source": "247Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Former Duke WR Cooper Barkate will transfer to Miami",
+          "url": "https://247sports.com/college/miami/article/cooper-barkate-transfers-to-miami-hurricanes-football-duke-blue-devils-wide-receiver-darian-mensah-272479838/",
+          "source": "247Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQFTyq6mJAxNBNqpDoGZ0FOK0CyYdUOHO2RNbUIRScJQct95aYG_PDnGDF3nCk"
+        },
+        {
+          "headline": "Former Duke Blue Devils WR Cooper Barkate transfers to the Miami Hurricanes",
+          "url": "https://sports.yahoo.com/articles/former-duke-blue-devils-wr-032408938.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQQi-Efp6Y2BudZzxPEIJBQzwbbaV05ZDeXhC5HMngJ6U9b47D4cqq5A-mDEe0"
+        },
+        {
+          "headline": "Duke star Cooper Barkate to join Mensah in Miami in biggest portal WR pickup of Cristobal era",
+          "url": "https://www.on3.com/teams/miami-hurricanes/news/miami-lands-duke-star-cooper-barkate-in-biggest-portal-wr-pickup-of-cristobal-era/",
+          "source": "On3",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTwma0MLg-2o6gswtJYanjbgwtuj6UKSuu_CMkR4FMm6AGxzNhEAk5d2yJQjms"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "doc rivers",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T03:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=doc rivers&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRZVA4EQuV_F0UNcQjrYa4bnamPTzzuUon3PxYdO0F20dcq4YbIdT1ZDr3si_c",
+        "source": "Yahoo Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "76ers\u2019 Joel Embiid earns \u2018most talented\u2019 nod from Doc Rivers",
+          "url": "https://sports.yahoo.com/articles/76ers-joel-embiid-earns-most-012211777.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRZVA4EQuV_F0UNcQjrYa4bnamPTzzuUon3PxYdO0F20dcq4YbIdT1ZDr3si_c"
+        },
+        {
+          "headline": "Doc Rivers: 'Joel Is the Most Talented Player That I Ever Coached.'",
+          "url": "https://www.si.com/nba/76ers/onsi/doc-rivers-joel-is-the-most-talented-player-that-i-ever-coached-01kg0y42qr9a",
+          "source": "Sports Illustrated",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQNtsjszITT5ufsPOI6X_UFMtcsaN73mC6wO8x4ZHNOHmNokMuYHDpYU1nCLoc"
+        },
+        {
+          "headline": "Bucks Coach Doc Rivers Takes Subtle Jab at Giannis Antetokounmpo While Praising Joel Embiid",
+          "url": "https://roundtable.io/sports/nba/76ers/players/bucks-coach-doc-rivers-takes-subtle-jab-at-giannis-antetokounmpo-while-praising-joel-embiid",
+          "source": "roundtable.io",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQWpT7DKeOxZ8YUi-kLXdOHqW4nokAz58Ie25xaucNUAGNiMXgV8x-QCvTCO1g"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "emma sears",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T03:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=emma sears&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRfA3cXb3pHdfkK2_uu4QbnIq-JXElyxX8fyKhDoK4sBEc0TmTytvDNQcW8bg8",
+        "source": "ESPN"
+      },
+      "news_articles": [
+        {
+          "headline": "USA 6-0 Paraguay (Jan 24, 2026) Game Analysis",
+          "url": "https://www.espn.com/soccer/report/_/gameId/761391",
+          "source": "ESPN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRfA3cXb3pHdfkK2_uu4QbnIq-JXElyxX8fyKhDoK4sBEc0TmTytvDNQcW8bg8"
+        },
+        {
+          "headline": "U.S. Women\u2019s National Team Kicks Off 2026 With 6-0 Rout Of Paraguay",
+          "url": "https://ussoccer.com/stories/2026/01/uswnt-match-recap-vs-paraguay-trinity-rodman-reilyn-turner-ally-sentnor",
+          "source": "US Soccer",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyQ7IvV6pUGIpmsmV6QlHreO0A3C5Ai6450YiOPAeRA--zb5pr4Lbj2ngQX4s"
+        },
+        {
+          "headline": "When does the USWNT play next? Schedule, TV info available for upcoming games.",
+          "url": "https://www.timesunion.com/sports/article/when-is-the-next-uswnt-game-schedule-21314947.php",
+          "source": "Times Union",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR5TpAKu-Y5_eR9pXYoQH0UtGahUAedUngPZLSsE5nvICRYd2LumYgISIeFTus"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "jared mccain",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T03:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=jared mccain&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlzt0AjuzmgmQe-c2gMShv4cqb7GkWDgqDqFm2pCTHdXotG_NgO9LIXsdKYBg",
+        "source": "RotoWire"
+      },
+      "news_articles": [
+        {
+          "headline": "Jared McCain News: Back to G League",
+          "url": "https://www.rotowire.com/basketball/headlines/jared-mccain-news-back-to-g-league-515204",
+          "source": "RotoWire",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlzt0AjuzmgmQe-c2gMShv4cqb7GkWDgqDqFm2pCTHdXotG_NgO9LIXsdKYBg"
+        },
+        {
+          "headline": "Would the Real Jared McCain Please Stand Up?",
+          "url": "https://www.rightstorickysanchez.com/p/would-the-real-jared-mccain-please",
+          "source": "The Rights to Ricky Sanchez",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcStavZ8F3KjsyQ7xOHhxLf_icPvsaA6QdJZZDQqKdVdhycf7Bxa_m_N178tREw"
+        },
+        {
+          "headline": "Sixers Send Jared McCain Back to G League as Sophomore Season Slips",
+          "url": "https://lowerbuckstimes.com/2026/01/22/jared-mccain-sent-back-to-g-league/",
+          "source": "Lower Bucks Times",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyYjl2iOAluKxHptFQl5-_8dgw946SCQ_5ANEk8dQEbxd2ubyVDsfGcFB0TvY"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "virginia tech basketball",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T03:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=virginia tech basketball&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJQY2pjUtx5Auk5vaFa46obNezWInCbZoJ1qZmoMN6jAEbvhrvvIQjez-Wrg",
+        "source": "247Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Game Preview: Virginia Tech hosts Georgia Tech",
+          "url": "https://247sports.com/college/virginia-tech/article/virginia-tech-georgia-tech-acc-mens-basketball-preview-26-272461625/",
+          "source": "247Sports",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJQY2pjUtx5Auk5vaFa46obNezWInCbZoJ1qZmoMN6jAEbvhrvvIQjez-Wrg"
+        },
+        {
+          "headline": "Live Score Updates for Virginia Tech Men's Basketball vs. Georgia Tech",
+          "url": "https://www.si.com/college/virginiatech/basketball/live-score-updates-for-virginia-tech-men-s-basketball-vs-georgia-tech-01kg0c44y8t0",
+          "source": "Sports Illustrated",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQrHfiswC9a8W2CdCI7ukEn01cY9MBtPpmEa9O-vKSXbk6KtN8EGI_CgCDJr-4"
+        },
+        {
+          "headline": "Bedford and Virginia Tech host Georgia Tech",
+          "url": "https://abcnews.go.com/Sports/wireStory/bedford-virginia-tech-host-georgia-tech-129556396",
+          "source": "ABC News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTnAXuNjFpZC1-r3b4tjIgOqXdrgCSTTew6u5rc3xoVkPvrQ-uxkBhne9UckDs"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "nevada basketball",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T03:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=nevada basketball&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRe5XMNUgnbINrjGrIWoshoExdkQNpX5QYXNN2qqqCstQLzGVE6UWGgh5XJkPU",
+        "source": "Nevada Sports Net"
+      },
+      "news_articles": [
+        {
+          "headline": "Nevada basketball versus Grand Canyon: Three keys to victory and a prediction",
+          "url": "https://nevadasportsnet.com/news/reporters/nevada-basketball-versus-grand-canyon-three-keys-to-victory-and-a-prediction",
+          "source": "Nevada Sports Net",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRe5XMNUgnbINrjGrIWoshoExdkQNpX5QYXNN2qqqCstQLzGVE6UWGgh5XJkPU"
+        },
+        {
+          "headline": "How to watch Nevada Wolf Pack vs. Grand Canyon Antelopes: Live stream info, TV channel, game time | Jan. 27",
+          "url": "https://collegesportswire.usatoday.com/story/sports/college/2026/01/27/nevada-wolf-pack-grand-canyon-antelopes-2026-ncaa-mens-basketball-how-to-watch-live-stream-game-time/88376173007/",
+          "source": "College Sports Wire",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY7k2xfGUxigax4CSSbrT1KaWoQJ3Ajbl4U5iDPi0jI8qOuahsnevNoNsVWTI"
+        },
+        {
+          "headline": "Nevada hosts Grand Canyon on Tuesday night",
+          "url": "https://nevadawolfpack.com/news/2026/1/26/mens-basketball-nevada-hosts-grand-canyon-on-tuesday-night.aspx",
+          "source": "University of Nevada Athletics",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSUfFclmQMkyACc3zlYNHa5OOrg0AAXlATBuI7ultOlqNhzSafOdic_VYUgDPw"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "brandi glanville",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T03:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=brandi glanville&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRHYf9CwzzdW6JMGPxztrpTIalrUt-5NpjVWvyXlPP-8HTV7N51Lrftze40Ns4",
+        "source": "People.com"
+      },
+      "news_articles": [
+        {
+          "headline": "Brandi Glanville Debuts New Look Ahead of Sundance Film Festival, Thanks Her Plastic Surgeon",
+          "url": "https://people.com/brandi-glanville-debuts-new-look-ahead-of-sundance-film-festival-11893141",
+          "source": "People.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRHYf9CwzzdW6JMGPxztrpTIalrUt-5NpjVWvyXlPP-8HTV7N51Lrftze40Ns4"
+        },
+        {
+          "headline": "Brandi Glanville debuts new look after crippling facial disfigurement",
+          "url": "https://pagesix.com/2026/01/27/celebrity-news/brandi-glanville-debuts-new-look-after-crippling-facial-disfigurement/",
+          "source": "Page Six",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS2VeU66BROKTL9TNexIMpB95dMUVlyZB-B4AX0SHFYK500abZ3gjHfAzkCz18"
+        },
+        {
+          "headline": "Brandi Glanville Praises Plastic Surgeon for New Look Month After Facial Disfigurement Diagnosis",
+          "url": "https://www.justjared.com/2026/01/27/brandi-glanville-praises-plastic-surgeon-for-new-look-month-after-facial-disfigurement-diagnosis/",
+          "source": "Just Jared",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzaF06Qr4qwnHhTQCt1gp5KWxl2KYu2A1hw2v1mc9yMEKtV-zvfYJ1YgdHLBQ"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "patrick kane",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T03:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=patrick kane&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSLsjPgJuZP9iFV-RHg3rXy0QOlyScPPSTRDUaBjUTZ1biYEet7uUeid3XWFJg",
+        "source": "ESPN"
+      },
+      "news_articles": [
+        {
+          "headline": "Kings 3-1 Red Wings (Jan 27, 2026) Game Recap",
+          "url": "https://www.espn.com/nhl/recap/_/gameId/401803184",
+          "source": "ESPN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSLsjPgJuZP9iFV-RHg3rXy0QOlyScPPSTRDUaBjUTZ1biYEet7uUeid3XWFJg"
+        },
+        {
+          "headline": "Red Wings' Kane ties Stars' Modano as highest-scoring American-born players in NHL history",
+          "url": "https://sports.yahoo.com/articles/red-wings-kane-ties-stars-024013291.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ_ZWMm6DWPzP6TzdBhzjRv-owmBqChDlVvCxozbFpWtFiVkzJeM9E-7lKRq9M"
+        },
+        {
+          "headline": "Patrick Kane ties Mike Modano as top U.S. scorer, but Red Wings fall",
+          "url": "https://www.freep.com/story/sports/nhl/red-wings/2026/01/27/detroit-red-wings-game-score-recap-los-angeles-kings-patrick-kane-mike-modano/88381746007/",
+          "source": "Detroit Free Press",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSmga-0K2W8BxnjVuVsbhTkVE6jmmUVvATCYJFAcBzpfi9lMM63LFNJOGek9io"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "the rookie cast",
+    "jeremiah fears",
+    "cooper barkate",
+    "doc rivers",
+    "emma sears",
+    "jared mccain",
+    "virginia tech basketball",
+    "nevada basketball",
+    "brandi glanville",
+    "patrick kane"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": []
+}

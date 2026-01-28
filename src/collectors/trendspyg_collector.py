@@ -311,21 +311,49 @@ def _fetch_trends_csv(
     *,
     hours: int,
     sort_by: str,
+    category: str = "all",
+    active_only: bool = False,
+    download_dir: str | None = None,
+    max_retries: int = 1,
+    retry_delay_sec: float = 1.0,
 ) -> tuple[list[dict], str]:
     region_code = _map_rss_region(region)
     logger.debug(
-        "Fetching CSV trends (region=%s, mapped=%s, hours=%s, sort_by=%s)",
+        "Fetching CSV trends (region=%s, mapped=%s, hours=%s, sort_by=%s, category=%s)",
         region,
         region_code,
         hours,
         sort_by,
+        category,
     )
-    output = download_google_trends_csv(
-        geo=region_code,
-        hours=hours,
-        sort_by=sort_by,
-        output_format="dataframe",
-    )
+    max_retries = max(1, int(max_retries))
+    attempt = 0
+    while True:
+        attempt += 1
+        try:
+            output = download_google_trends_csv(
+                geo=region_code,
+                hours=hours,
+                category=category,
+                sort_by=sort_by,
+                active_only=active_only,
+                download_dir=download_dir,
+                output_format="dataframe",
+            )
+            break
+        except Exception as exc:
+            if attempt >= max_retries:
+                raise
+            logger.warning(
+                "CSV download failed (attempt %s/%s, region=%s, category=%s): %s",
+                attempt,
+                max_retries,
+                region,
+                category,
+                exc,
+            )
+            if retry_delay_sec > 0:
+                time.sleep(retry_delay_sec)
     records = _records_from_csv_output(output)
     entries = _normalize_csv_entries(records)
     logger.debug("CSV trends fetched: %s entries", len(entries))
@@ -370,6 +398,11 @@ def collect_trending_searches(
     source: str = DEFAULT_TREND_SOURCE,
     window_hours: int = DEFAULT_CSV_HOURS,
     csv_sort_by: str = DEFAULT_CSV_SORT_BY,
+    categories: Iterable[str] | None = None,
+    csv_active_only: bool = False,
+    csv_download_dir: str | None = None,
+    csv_max_retries: int = 1,
+    csv_retry_delay_sec: float = 1.0,
     include_images: bool = DEFAULT_RSS_INCLUDE_IMAGES,
     include_articles: bool = DEFAULT_RSS_INCLUDE_ARTICLES,
     max_articles_per_trend: int = DEFAULT_RSS_MAX_ARTICLES_PER_TREND,
@@ -382,6 +415,7 @@ def collect_trending_searches(
         raise ValueError(f"Unsupported trend source: {source}")
 
     csv_hours_used: int | None = None
+    categories_list = [c.strip() for c in categories or [] if c and str(c).strip()]
     if source_mode == "csv":
         csv_hours_used, coerced = _coerce_csv_hours(window_hours)
         if coerced:
@@ -393,14 +427,17 @@ def collect_trending_searches(
 
     if source_mode == "csv":
         logger.info(
-            "Collect trends (source=%s, regions=%s, limit=%s, hours=%s, sort_by=%s)",
+            "Collect trends (source=%s, regions=%s, limit=%s, hours=%s, sort_by=%s, categories=%s)",
             source_mode,
             regions_list,
             limit,
             csv_hours_used,
             csv_sort_by,
+            categories_list or ["all"],
         )
     else:
+        if categories_list:
+            logger.info("Categories are ignored for RSS source: %s", categories_list)
         logger.info(
             "Collect trends (source=%s, method=%s, regions=%s, limit=%s, images=%s, articles=%s, max_articles=%s, cache=%s)",
             source_mode,
@@ -426,11 +463,43 @@ def collect_trending_searches(
             else:
                 if method != DEFAULT_TREND_METHOD:
                     logger.debug("CSV source ignores method=%s", method)
-                entries, method_used = _fetch_trends_csv(
-                    region,
-                    hours=csv_hours_used or DEFAULT_CSV_HOURS,
-                    sort_by=csv_sort_by,
-                )
+                if not categories_list:
+                    categories_list = ["all"]
+                entries = []
+                method_used = "csv"
+                errors: list[Exception] = []
+                for category in categories_list:
+                    try:
+                        category_entries, method_used = _fetch_trends_csv(
+                            region,
+                            hours=csv_hours_used or DEFAULT_CSV_HOURS,
+                            sort_by=csv_sort_by,
+                            category=category or "all",
+                            active_only=csv_active_only,
+                            download_dir=csv_download_dir,
+                            max_retries=csv_max_retries,
+                            retry_delay_sec=csv_retry_delay_sec,
+                        )
+                    except Exception as exc:
+                        errors.append(exc)
+                        logger.warning(
+                            "CSV fetch failed (region=%s, category=%s): %s",
+                            region,
+                            category,
+                            exc,
+                        )
+                        continue
+                    if category and category != "all":
+                        for entry in category_entries:
+                            metadata = entry.get("metadata") or {}
+                            metadata = dict(metadata)
+                            metadata["category_filter"] = category
+                            entry["metadata"] = metadata
+                    entries.extend(category_entries)
+                if not entries and errors:
+                    raise RuntimeError(
+                        f"CSV fetch failed for all categories (region={region})"
+                    ) from errors[-1]
         except Exception as exc:
             raise RuntimeError(
                 f"trend fetch failed (source={source_mode}, method={method}, region={region})"
@@ -485,6 +554,11 @@ def collect_trending_searches(
         "csv_options": {
             "hours": csv_hours_used,
             "sort_by": csv_sort_by,
+            "categories": categories_list or ["all"],
+            "active_only": csv_active_only if source_mode == "csv" else None,
+            "download_dir": csv_download_dir if source_mode == "csv" else None,
+            "max_retries": csv_max_retries if source_mode == "csv" else None,
+            "retry_delay_sec": csv_retry_delay_sec if source_mode == "csv" else None,
         }
         if source_mode == "csv"
         else None,

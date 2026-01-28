@@ -1,0 +1,279 @@
+{
+  "generated_at": "2026-01-28T05:32:35.896316+00:00",
+  "source": "trendspyg",
+  "method": "trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "singles inferno",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T05:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=singles inferno&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd5Vhat4YoQbbZFrrz5wBehVpk1Y886LLzJQLFUsiX4pC2MBWtQkZqrEJ16zM",
+        "source": "Yahoo"
+      },
+      "news_articles": [
+        {
+          "headline": "You Won\u2019t Believe Who\u2019s the Youngest Single\u2019s Inferno Season 5 Contestant\u2026",
+          "url": "https://www.yahoo.com/entertainment/tv/articles/singles-inferno-season-5-cast-185935983.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd5Vhat4YoQbbZFrrz5wBehVpk1Y886LLzJQLFUsiX4pC2MBWtQkZqrEJ16zM"
+        },
+        {
+          "headline": "All About the 'Single's Inferno' Season 5 Cast\u2014From Their Ages and Careers to Their Pre-Show Fame",
+          "url": "https://www.marieclaire.com/culture/tv-shows/singles-inferno-season-5-cast/",
+          "source": "Marie Claire",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTTtw4T9o-zpa5AZAuVYr3CbfCrGBew9UzsY20Okv1FcNM5bWkCiFGiXpMioM"
+        },
+        {
+          "headline": "'Single's Inferno': Choi Mina's Friend Defends Her 'Role' After Backlash",
+          "url": "https://www.aol.com/articles/singles-inferno-choi-minas-friend-153410070.html",
+          "source": "AOL.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRE2vZ6rFK1J6nWwo4I6XSX_BjKTLiFw0nj50PvI1kRQYQksLBWMe0U33yj6rY"
+        }
+      ],
+      "metadata": {
+        "high_intent_categories": [
+          "jobs",
+          "technology"
+        ],
+        "high_intent_filter": "rss_keywords"
+      }
+    },
+    {
+      "keyword": "sacramento weather",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T05:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sacramento weather&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSKzE9Kh8UTQ_0Kiktl7Efu7oVR8DEMzwSExSKymyS1RqruLXBbMQxKdHVlgPc",
+        "source": "SFGATE"
+      },
+      "news_articles": [
+        {
+          "headline": "Advisory issued over Calif. weather phenomenon visible from space",
+          "url": "https://www.sfgate.com/weather/article/california-dense-fog-advisory-21311414.php",
+          "source": "SFGATE",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSKzE9Kh8UTQ_0Kiktl7Efu7oVR8DEMzwSExSKymyS1RqruLXBbMQxKdHVlgPc"
+        },
+        {
+          "headline": "Northern California forecast: Dense, patchy fog ahead of light rain and snow",
+          "url": "https://www.kcra.com/article/northern-california-rain-snow-fog-forecast-january-27-2026/70155787",
+          "source": "KCRA",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB3oAc8W3QBPIj3NabITMrgwGrcrwBudrQeV_X0cmZ5-SuNLzFPP83muN2Tuc"
+        },
+        {
+          "headline": "Relentless tule fog returns to California\u2019s Central Valley, snarling travel and darkening days",
+          "url": "https://www.sfchronicle.com/weather/article/tule-fog-central-valley-21311925.php",
+          "source": "San Francisco Chronicle",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS6gf4pJR9I8e9-eq4o-Zf9IZgBPyNMLGb73UMRdwkLA5b-XNLoHwopT-T_GfU"
+        }
+      ],
+      "metadata": {
+        "high_intent_categories": [
+          "technology"
+        ],
+        "high_intent_filter": "rss_keywords"
+      }
+    },
+    {
+      "keyword": "united rentals",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T05:10:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=united rentals&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR8z-vn5B8jhCDsFTBsbQ1FalbrPTtYi9c88HN2R-n5N-OPaBjPzwSaYReSMag",
+        "source": "Simply Wall Street"
+      },
+      "news_articles": [
+        {
+          "headline": "Is It Too Late To Consider United Rentals (URI) After Its Strong Multi Year Share Price Run?",
+          "url": "https://simplywall.st/stocks/us/capital-goods/nyse-uri/united-rentals/news/is-it-too-late-to-consider-united-rentals-uri-after-its-stro",
+          "source": "Simply Wall Street",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR8z-vn5B8jhCDsFTBsbQ1FalbrPTtYi9c88HN2R-n5N-OPaBjPzwSaYReSMag"
+        },
+        {
+          "headline": "Philip Morris International: A Stock Analysis You Can't Miss",
+          "url": "https://www.nasdaq.com/articles/philip-morris-international-stock-analysis-you-cant-miss",
+          "source": "Nasdaq",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRQwCFqOLz9d1njVwIGoLG4Pm_Bntl_jwrQMc-eyO25SyqEk91drFVY6XJTG-M"
+        },
+        {
+          "headline": "United Rentals Earnings Preview",
+          "url": "https://www.benzinga.com/insights/earnings/26/01/50158503/united-rentals-earnings-preview",
+          "source": "Benzinga",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkETrADONQtFURiYflhCQFFEdcY-8Qu5s115XlKgcx_MirA4U0Q6-XB_fsj8U"
+        }
+      ],
+      "metadata": {
+        "high_intent_categories": [
+          "business",
+          "technology"
+        ],
+        "high_intent_filter": "rss_keywords"
+      }
+    },
+    {
+      "keyword": "jacob elordi",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "5000+",
+      "published_at": "2026-01-28T05:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=jacob elordi&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTPl8u0zaTXE_LkCdefkAXSb56Y0Mu4zeYHkWbfJHRJg72QX32ezcmnRBzLtww",
+        "source": "Yahoo"
+      },
+      "news_articles": [
+        {
+          "headline": "Margot Robbie and Jacob Elordi say they have a 'mutual obsession': Here's everything they've said about one another on the 'Wuthering Heights' press tour",
+          "url": "https://www.yahoo.com/entertainment/movies/article/margot-robbie-and-jacob-elordi-say-they-have-a-mutual-obsession-heres-everything-theyve-said-about-one-another-on-the-wuthering-heights-press-tour-194118666.html",
+          "source": "Yahoo",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTPl8u0zaTXE_LkCdefkAXSb56Y0Mu4zeYHkWbfJHRJg72QX32ezcmnRBzLtww"
+        },
+        {
+          "headline": "Margot Robbie Says She Became \u2018Codependent\u2019 with Jacob Elordi While Making Wuthering Heights",
+          "url": "https://people.com/margot-robbie-became-codependent-jacob-elordi-wuthering-heights-11889124",
+          "source": "People.com",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSKF-3WxNC_a1pJxc_tpUIhMnYmz-b3pd2kJEHF-HtfGnB0ztcwDR_lPJpdeO8"
+        },
+        {
+          "headline": "\u201cThis is a summer of love\u201d: Margot Robbie and Jacob Elordi on \u2018Wuthering Heights\u2019 and taking Queensland to Hollywood",
+          "url": "https://www.vogue.com.au/culture/features/margot-robbie-jacob-elordi-vogue-cover/image-gallery/5ad9d7f5993076606fd750152a3678fc",
+          "source": "Vogue Australia",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQsPg7eZr3MYxliGb42yxfw2kbw0qFnZ1VSC21XFQmyB25HD9sb-r-Qjm_-Ics"
+        }
+      ],
+      "metadata": {
+        "high_intent_categories": [
+          "technology"
+        ],
+        "high_intent_filter": "rss_keywords"
+      }
+    },
+    {
+      "keyword": "india news",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T05:00:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=india news&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTxs-Gc4JCEO5nrFmIWdtey4tTtEVTs0NokNhTCGHC7RvpRhVzD546AwoYHWHw",
+        "source": "BBC"
+      },
+      "news_articles": [
+        {
+          "headline": "India-EU trade deal under the looming shadow of Donald Trump",
+          "url": "https://www.bbc.com/news/articles/c75x9wqwz40o",
+          "source": "BBC",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTxs-Gc4JCEO5nrFmIWdtey4tTtEVTs0NokNhTCGHC7RvpRhVzD546AwoYHWHw"
+        },
+        {
+          "headline": "\u2018India comes out on top\u2019: Trump aide's big remark after New Delhi's \u2018mother of all deals\u2019 with EU",
+          "url": "https://timesofindia.indiatimes.com/business/india-business/india-comes-out-on-top-trump-aides-big-remark-after-new-delhis-mother-of-all-deals-with-eu/articleshow/127673620.cms",
+          "source": "Times of India",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSyKID2czHoDqBiVw5uzoeu4BWJA1uKxYbLYudrKIEkUTEBuqeQerQFIKiUx48"
+        },
+        {
+          "headline": "Facing U.S. turmoil, Europe and India announce blockbuster trade deal",
+          "url": "https://www.washingtonpost.com/world/2026/01/27/indian-european-union-free-trade-agreement/",
+          "source": "The Washington Post",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQzOmlQ4Skdz-l7iMb0s2iy9S6k3CMNczX2vrNcjOD8s5SJt5nTehDBJXn0X2Q"
+        }
+      ],
+      "metadata": {
+        "high_intent_categories": [
+          "technology"
+        ],
+        "high_intent_filter": "rss_keywords"
+      }
+    },
+    {
+      "keyword": "dennis rodman",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T04:50:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=dennis rodman&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSsJNuT4vmNTl9FE1ETbkEg67MhrTdYgn_280bMXP9W7XwXcf20MHpGXfL4JU8",
+        "source": "Basketball Network"
+      },
+      "news_articles": [
+        {
+          "headline": "Dennis Rodman explains his infamous Vegas disappearance",
+          "url": "https://www.basketballnetwork.net/old-school/dennis-rodman-reflects-on-the-vegas-trip-phil-jackson-approved",
+          "source": "Basketball Network",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSsJNuT4vmNTl9FE1ETbkEg67MhrTdYgn_280bMXP9W7XwXcf20MHpGXfL4JU8"
+        },
+        {
+          "headline": "Bulls fans overwhelmingly say Dennis Rodman\u2019s jersey should be retired",
+          "url": "https://sports.yahoo.com/articles/bulls-fans-overwhelmingly-dennis-rodman-173626520.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT8D1n8zL4yMGLfVhS5FpjkZVdLkZRaiFF2yhjJt9gOxmxKvL3lnZfl1UpeQLQ"
+        },
+        {
+          "headline": "\"I just got to believe\" - Kenneth Faried was motivated to pursue basketball by watching small big men like Barkley and Rodman",
+          "url": "https://sports.yahoo.com/articles/just-got-believe-kenneth-faried-114029931.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSVQjudOE6GY7RLnwgV-h7g-o1ZYqJk7ULklta1ZqDg_LBoYSBWWGM1uSjqp4g"
+        }
+      ],
+      "metadata": {
+        "high_intent_categories": [
+          "technology"
+        ],
+        "high_intent_filter": "rss_keywords"
+      }
+    }
+  ],
+  "unique_keywords": [
+    "singles inferno",
+    "kris dunn",
+    "sacramento weather",
+    "united rentals",
+    "jacob elordi",
+    "india news",
+    "stephen colbert",
+    "george saunders",
+    "rocket launch today",
+    "dennis rodman"
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": [],
+  "pipeline": "high-intent",
+  "rss_filter_categories": [
+    "business",
+    "jobs",
+    "technology"
+  ],
+  "rss_filter_min_matches": 1
+}

@@ -1,0 +1,377 @@
+{
+  "generated_at": "2026-01-28T04:56:26.942997+00:00",
+  "source": "trendspyg",
+  "method": "trending_searches",
+  "source_mode": "rss",
+  "window_hours_requested": null,
+  "window_hours_used": null,
+  "regions": [
+    "US"
+  ],
+  "rss_options": {
+    "include_images": true,
+    "include_articles": true,
+    "max_articles_per_trend": 10,
+    "cache": true
+  },
+  "csv_options": null,
+  "items": [
+    {
+      "keyword": "kevin james",
+      "region": "US",
+      "rank": 1,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T04:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=kevin james&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS8Mwift9F5rm6Zv9wm9eymA8XWRu4Ze8FKPY707DzK1EK5Hbj9y-dYJ_DeZYc",
+        "source": "Geek Vibes Nation"
+      },
+      "news_articles": [
+        {
+          "headline": "\u2018Solo Mio\u2019 Review \u2013 Kevin James Stars In A Funny, Thoughtful, & Unexpected Rom-Com",
+          "url": "https://geekvibesnation.com/solo-mio-review/",
+          "source": "Geek Vibes Nation",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS8Mwift9F5rm6Zv9wm9eymA8XWRu4Ze8FKPY707DzK1EK5Hbj9y-dYJ_DeZYc"
+        },
+        {
+          "headline": "\"Solo Mio\" New York Premiere at Regal Times Square in New York",
+          "url": "https://www.upi.com/News_Photos/view/upi/55deaa32bb19b2217828c634951f2ab7/Solo-Mio-New-York-Premiere-at-Regal-Times-Square-in-New-York/",
+          "source": "UPI.com",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTlZwjKbt-AOtcwF_nagohFdO5oqZPtN3MVg0uAXMNA2WlFIti_vZZ_6bpv0DA"
+        },
+        {
+          "headline": "NY Premiere of \"Solo Mio\"",
+          "url": "https://www.wvnews.com/newsfeed/us/ny-premiere-of-solo-mio/image_bb3a4a89-cd52-56ef-b0e5-04168d2c3db4.html",
+          "source": "WV News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS1ic12GVig4ZkCa5EMW0JdLMPlC4hYRcpgfxqI1F2TdYJL3_0mIbg3fQXMNww"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "frisco sledding accident",
+      "region": "US",
+      "rank": 2,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "1000+",
+      "published_at": "2026-01-28T04:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=frisco sledding accident&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSgUl31P_iEcE-B45uKIGSO8wb_zj31Bo6Y31aBVosY6LLRB-jJwODvFfLc7Og",
+        "source": "WFAA"
+      },
+      "news_articles": [
+        {
+          "headline": "Frisco ISD identifies 16-year-old girl killed in sledding accident; 1 teen remains in critical condition",
+          "url": "https://www.wfaa.com/article/news/local/denton-county/16-year-old-girl-killed-in-sledding-accident-frisco-police-say/287-3cf941ed-2b97-474e-8f4b-d1145af14ba3",
+          "source": "WFAA",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSgUl31P_iEcE-B45uKIGSO8wb_zj31Bo6Y31aBVosY6LLRB-jJwODvFfLc7Og"
+        },
+        {
+          "headline": "16-year-old girl dead, another critically injured after Frisco sledding accident",
+          "url": "https://www.nbcdfw.com/news/local/16-year-old-girl-dead-sledding-accident-frisco/3973390/",
+          "source": "NBC 5 Dallas-Fort Worth",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEETctxx_BinwJmMODNx8dkHpWsqezwRre2tCmcYzFEPqHt1KZGzi5_nYBagQ"
+        },
+        {
+          "headline": "Teen Who Died in Sledding Accident Identified While Injured Friend Remains on Life Support",
+          "url": "https://people.com/teen-who-died-in-sledding-accident-identified-friend-on-life-support-11892987",
+          "source": "People.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_oNATn_c_m6yo6oXGQg8tBAuGUMSl3O56_O73Zzq1Rw6rEjvGjleC7VawaM0"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "brook lopez",
+      "region": "US",
+      "rank": 3,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T04:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=brook lopez&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGD7lVIU_gJirQuyR6bsL14gJ9h4Eshep8tv2fuLbqrCKBnpXAt9Qf6t2RZkY",
+        "source": "New York Post"
+      },
+      "news_articles": [
+        {
+          "headline": "Nic Claxton toughs out finger injury in Nets loss as imaging results loom",
+          "url": "https://nypost.com/2026/01/26/sports/nic-claxton-toughs-out-finger-injury-in-nets-loss-as-imaging-results-loom/",
+          "source": "New York Post",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGD7lVIU_gJirQuyR6bsL14gJ9h4Eshep8tv2fuLbqrCKBnpXAt9Qf6t2RZkY"
+        },
+        {
+          "headline": "Nets Notes: Claxton, Mann, Thomas, Losing Streak",
+          "url": "https://www.hoopsrumors.com/2026/01/nets-notes-claxton-mann-thomas-losing-streak.html",
+          "source": "Hoops Rumors",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ0sf1yOqv649hDkp0x58V9BVisKrntn1D3qBkiWklg3G0ize1WHB5rN-A7VX0"
+        },
+        {
+          "headline": "Nic Claxton Scheduled for MRI on Injured Finger - NBA News | Fantasy Basketball",
+          "url": "https://www.rotoballer.com/player-news/nic-claxton-scheduled-for-mri-on-injured-finger/1803192",
+          "source": "RotoBaller",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRktoNhIhvqvbUYyx4YG15mSokdgrtrhxcyqS0YsHoeZ0hPCEjBtx2D3vm4ZEs"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "josh gad",
+      "region": "US",
+      "rank": 4,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T04:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=josh gad&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPRTDPalaKzMD--bgCtQ0dsSpHCQEQeheBIBSXuyNo5v1UMVBCmV4T9fQO7iM",
+        "source": "Entertainment Weekly"
+      },
+      "news_articles": [
+        {
+          "headline": "'Wonder Man' creators explain Josh Gad and Joe Pantoliano's hilarious cameos",
+          "url": "https://ew.com/wonder-man-creators-explain-josh-gad-joe-pantoliano-cameos-11893966",
+          "source": "Entertainment Weekly",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPRTDPalaKzMD--bgCtQ0dsSpHCQEQeheBIBSXuyNo5v1UMVBCmV4T9fQO7iM"
+        },
+        {
+          "headline": "\u201cWonder Man\u201d creators explain how Josh Gad and Joe Pantoliano were cast as spoof versions of themselves",
+          "url": "https://www.aol.com/articles/wonder-man-creators-explain-josh-020000357.html",
+          "source": "AOL.com",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYB_w3P5NU1YOAosY54RrSTnm1yJE66KmZR8sBviZutJEPusjo2OvFMRhOZg8"
+        },
+        {
+          "headline": "\u2018Wonder Man\u2019 Pushes Marvel Into Unfamiliar Territory",
+          "url": "https://www.nytimes.com/2026/01/27/arts/television/wonder-man.html",
+          "source": "The New York Times",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQEiMJGdte1zKRLWMsq4j22hfXOIkUL2-SthPE_8EqGba_Sj_9j7g-v0u4awLU"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "sam rockwell",
+      "region": "US",
+      "rank": 5,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T04:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=sam rockwell&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRke0QSO3BY6KFn8M745zIYDNg_M07OVaUuaejPj1SflDyPG6OmIwFtX-Po-VQ",
+        "source": "Deadline"
+      },
+      "news_articles": [
+        {
+          "headline": "Casey Affleck, Kathy Bates, Marisa Tomei Film 'The Smack' Gets Deal",
+          "url": "https://deadline.com/2026/01/casey-affleck-kathy-bates-marisa-tomei-film-smack-deal-1236698467/",
+          "source": "Deadline",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRke0QSO3BY6KFn8M745zIYDNg_M07OVaUuaejPj1SflDyPG6OmIwFtX-Po-VQ"
+        },
+        {
+          "headline": "The Smack: Casey Affleck, Sam Rockwell, Marisa Tomei, & Kathy Bates to lead a high-stakes casino heist film",
+          "url": "https://www.joblo.com/the-smack-casey-affleck-heist-film/",
+          "source": "JoBlo",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQA7bcGZ5awJV3K-o-V_GpHZoV7orWninFrIXg8T86nN_3l_UNINk63Z7ZwquI"
+        },
+        {
+          "headline": "Heist Thriller \u2018The Smack\u2019 Enlists Casey Affleck, Sam Rockwell, Kathy Bates & Marisa Tomei",
+          "url": "https://theplaylist.net/heist-thriller-the-smack-enlists-casey-affleck-sam-rockwell-kathy-bates-marisa-tomei-20260127/",
+          "source": "The Playlist",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR-FclsV0XdG8akeIIgsVX9mRmDq8FdKfCI-Tu1o845JWe_A0YG1_mLA1JXlrs"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "us dollar index",
+      "region": "US",
+      "rank": 6,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "2000+",
+      "published_at": "2026-01-28T04:40:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=us dollar index&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLzzwG07uWKk03-PyNNKdzK6bwvGujwf4sArVQBXpEsyPld3lmSmNJG2M760s",
+        "source": "CNBC"
+      },
+      "news_articles": [
+        {
+          "headline": "Dollar suffers worst one-day slide since last April after Trump says currency hasn't fallen too low",
+          "url": "https://www.cnbc.com/2026/01/27/dollar-worst-one-day-rout-since-april-trump-says-hasnt-fallen-too-low.html",
+          "source": "CNBC",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLzzwG07uWKk03-PyNNKdzK6bwvGujwf4sArVQBXpEsyPld3lmSmNJG2M760s"
+        },
+        {
+          "headline": "Trump says value of the dollar is 'great', currency hits 4-year low",
+          "url": "https://www.reuters.com/world/trump-says-value-dollar-is-great-2026-01-27/",
+          "source": "Reuters",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDYAAc969FUe3qFI_UF2Tu9EArYfDzeaFa6ohztJkLx3xni9HIs1ZYf4v27bY"
+        },
+        {
+          "headline": "The US Dollar\u2019s Demise Could Just Be Getting Started",
+          "url": "https://www.forex.com/en-us/news-and-analysis/the-us-dollar-s-demise-could-just-be-getting-started/",
+          "source": "FOREX.com",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZQDGXdOIoRbUCpgFprqrhnhv-vQVJ0AWjjj31LiD5jkkrYe23lMg-4Xk8jY4"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "dillon brooks",
+      "region": "US",
+      "rank": 7,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T04:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=dillon brooks&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQCyAdi16vzmJ_s6sez7eqEMhSn7rfZHg74OO0BKSGVSPOIha7_Ba16l9xJrtM",
+        "source": "azcentral.com and The Arizona Republic"
+      },
+      "news_articles": [
+        {
+          "headline": "Suns' Dillon Brooks very close to suspension for techs, flagrant fouls",
+          "url": "https://www.azcentral.com/story/sports/nba/suns/2026/01/27/phoenix-suns-dillon-brooks-close-suspension-techs-flagrant-fouls/88388597007/",
+          "source": "azcentral.com and The Arizona Republic",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQCyAdi16vzmJ_s6sez7eqEMhSn7rfZHg74OO0BKSGVSPOIha7_Ba16l9xJrtM"
+        },
+        {
+          "headline": "\u201cIt\u2019s a Reputation Thing\u201d: Devin Booker Defends Dillon Brooks After He Picks Up 14th Technical of the Season",
+          "url": "https://sports.yahoo.com/articles/reputation-thing-devin-booker-defends-163547691.html",
+          "source": "Yahoo Sports",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSiT72CqGSCb_Hhfy7ovqVPKDdHWvPB2rpr84SqTJFZ-e9B0pv6Qi7UCwM3rk4"
+        },
+        {
+          "headline": "Referee Mitchell Ervin gave tech. \"It just looks \u2026",
+          "url": "https://www.hoopshype.com/story/sports/nba/rumors/2026/01/20/referee-mitchell-ervin-gave-tech-it-just-looks/88261554007/",
+          "source": "HoopsHype",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQoo5hDpeB2fuGFXdWXk9Yq4c4SoVxg_JMb0y9ShPEyr-O0kMNml8o7O4A4r5Q"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "cody williams",
+      "region": "US",
+      "rank": 8,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T04:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=cody williams&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1K84fnPV3-EUNt3tBugoUmm6P2DVdxFSyoVDO44zD_mQT33IHik_AB4tNaW4",
+        "source": "The Oklahoman"
+      },
+      "news_articles": [
+        {
+          "headline": "How Thunder star Jalen Williams gave brother Cody 'blueprint' for success with Jazz",
+          "url": "https://www.oklahoman.com/story/sports/nba/thunder/2026/01/26/okc-thunder-jalen-williams-brother-cody-utah-jazz-nba/88275100007/",
+          "source": "The Oklahoman",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1K84fnPV3-EUNt3tBugoUmm6P2DVdxFSyoVDO44zD_mQT33IHik_AB4tNaW4"
+        },
+        {
+          "headline": "Reflecting on the Jazz\u2019s 5-game road trip and the value of the team\u2019s veteran players",
+          "url": "https://www.deseret.com/sports/2026/01/19/reflecting-on-the-jazzs-five-game-road-trip-and-the-value-of-the-teams-veteran-players/",
+          "source": "Deseret News",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRo1fCbxMtJ6-VgyLuLK7idLAgr0Lj6PLCFEQVbk-OjYX0CHBMgPKDMSyQffTU"
+        },
+        {
+          "headline": "BREAKOUT: Utah Jazz's Brice Sensibaugh & Cody Williams SHINE On Youth-Driven Road Trip",
+          "url": "https://www.khou.com/video/sports/locked-on/lo-utah/jazz-show/breakout-utah-jazzs-brice-sensibaugh-cody-williams-shine-on-youth-driven-road-trip/535-c9d78028-514a-4404-a97b-3194f02d1fa0",
+          "source": "KHOU",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQiXeIIze1ipfywqca8fgRitpkyvwGNoQDcYlsCMazFszsl5V8bffAORhbBzrI"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "ivica zubac",
+      "region": "US",
+      "rank": 9,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "200+",
+      "published_at": "2026-01-28T04:30:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=ivica zubac&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSxLDVIAHojA7DbFTWhO_ZxVj_3LS9bzfJfIdikmMnE2L4x8Nv1emVsKajk7NI",
+        "source": "CBS Sports"
+      },
+      "news_articles": [
+        {
+          "headline": "Clippers' Ivica Zubac: Another double-double in win",
+          "url": "https://www.cbssports.com/fantasy/basketball/news/clippers-ivica-zubac-another-double-double-in-win/",
+          "source": "CBS Sports",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSxLDVIAHojA7DbFTWhO_ZxVj_3LS9bzfJfIdikmMnE2L4x8Nv1emVsKajk7NI"
+        },
+        {
+          "headline": "Ivica Zubac posts season-high 19 rebounds in win",
+          "url": "https://www.fantasypros.com/nba/news/567040/ivica-zubac-posts-season-high-19-rebounds-win.php",
+          "source": "FantasyPros",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRcTL1K5iL3ZKx9Bmjymr84ObeBI0lO6wGSEjGevzFXEj92agX89zc_qtSds7I"
+        },
+        {
+          "headline": "NBA: LA Clippers win, Zubac scores 11 points and grabs 10 rebounds",
+          "url": "https://www.portal.hr/en/novosti/sport-hr/104370-nba-pobjeda-la-clippersa-zubac-zabio-11-poena-uz-10-skokova",
+          "source": "www.portal.hr",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTIJe86cz0oGwed7wsfRVS10FTq3yHMOVR794R5IQzOWbT4ODARTqDfMeaO7Vc"
+        }
+      ],
+      "metadata": null
+    },
+    {
+      "keyword": "michael porter jr.",
+      "region": "US",
+      "rank": 10,
+      "source": "trendspyg:trending_searches_rss",
+      "traffic": "500+",
+      "published_at": "2026-01-28T04:20:00+00:00",
+      "explore_link": "https://trends.google.com/trends/explore?q=michael porter jr.&geo=US&hl=en-US",
+      "image": {
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9rrBgSE3xXO9d8GAP5w0Tz222lkl23sQVkIqPD15CzahHNlP2yxBsuvgAEIY",
+        "source": "NBC Sports Bay Area & California"
+      },
+      "news_articles": [
+        {
+          "headline": "Chandler Parsons makes case for Jonathan Kuminga-Michael Porter Jr. trade",
+          "url": "https://www.nbcsportsbayarea.com/nba/golden-state-warriors/jonathan-kuminga-michael-porter-jr-trade/1910577/",
+          "source": "NBC Sports Bay Area & California",
+          "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9rrBgSE3xXO9d8GAP5w0Tz222lkl23sQVkIqPD15CzahHNlP2yxBsuvgAEIY"
+        },
+        {
+          "headline": "Los Angeles Lakers Trade Proposal Lands Brooklyn Nets Center As Luka Don\u010di\u0107\u2019s Perfect Fit",
+          "url": "https://dallashoopsjournal.com/p/los-angeles-lakers-land-brooklyn-nets-nic-claxton-new-trade-proposal-nba-rumors/",
+          "source": "Dallas Hoops Journal",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcOV28Ufwqzx80UBDdcsGo00Cfl-Wn0JvmrE7pa-5Emaj1FRkgp5Gud0lYeWY"
+        },
+        {
+          "headline": "Siegel\u2019s Latest: MPJ, Warriors, Murphy, Giannis, Wolves, Magic",
+          "url": "https://www.hoopsrumors.com/2026/01/siegels-latest-mpj-warriors-murphy-giannis-wolves-magic.html",
+          "source": "Hoops Rumors",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSnNUJIS_1HKeCzIpc2zwIngLyH_KlYJeff6zr6qCoHou2Q2mplk2LStaNMKe4"
+        }
+      ],
+      "metadata": null
+    }
+  ],
+  "unique_keywords": [
+    "kevin james",
+    "frisco sledding accident",
+    "brook lopez",
+    "josh gad",
+    "sam rockwell",
+    "us dollar index",
+    "dillon brooks",
+    "cody williams",
+    "ivica zubac",
+    "michael porter jr."
+  ],
+  "related_topics_included": false,
+  "related_topics_source": null,
+  "related_topics": {},
+  "related_topics_errors": [],
+  "pipeline": "high-intent"
+}
