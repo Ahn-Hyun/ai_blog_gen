@@ -52,8 +52,8 @@ from config.settings import (  # noqa: E402
 from store.local_store import read_json, write_json  # noqa: E402
 
 DEFAULT_USER_AGENT = "Mozilla/5.0 (compatible; TrendBlogBot/1.0)"
-DEFAULT_MAX_SOURCE_CHARS = 2000
-DEFAULT_MAX_TOTAL_SOURCE_CHARS = 16000
+DEFAULT_MAX_SOURCE_CHARS = 10000
+DEFAULT_MAX_TOTAL_SOURCE_CHARS = 40000
 DEFAULT_SCRAPE_TIMEOUT = 12
 DEFAULT_SCRAPE_DELAY_SEC = 1.0
 DEFAULT_SCRAPE_MAX_RETRIES = 2
@@ -63,6 +63,7 @@ DEFAULT_GEMINI_MODEL_CONTENT = DEFAULT_GEMINI_MODEL
 DEFAULT_GEMINI_MODEL_META = DEFAULT_GEMINI_MODEL
 DEFAULT_GEMINI_TEMPERATURE = 0.6
 DEFAULT_GEMINI_MAX_TOKENS = 2600
+DEFAULT_GEMINI_TIMEOUT_SEC = 900
 DEFAULT_BLOG_DOMAIN = "https://blog.ship-write.com"
 DEFAULT_CONTENT_LANGUAGE = "English"
 DEFAULT_CONTENT_TONE = "neutral, informative"
@@ -390,6 +391,7 @@ class AutomationConfig:
     gemini_model_meta: str
     gemini_temperature: float
     gemini_max_tokens: int
+    gemini_timeout_sec: int
     blog_domain: str
     content_language: str
     content_tone: str
@@ -525,6 +527,11 @@ def _build_config() -> AutomationConfig:
     gemini_model_meta = env.get("GEMINI_MODEL_META", gemini_model)
     gemini_temperature = _parse_float(env.get("GEMINI_TEMPERATURE"), DEFAULT_GEMINI_TEMPERATURE)
     gemini_max_tokens = _parse_int(env.get("GEMINI_MAX_TOKENS"), DEFAULT_GEMINI_MAX_TOKENS)
+    gemini_timeout_sec = _parse_int(env.get("GEMINI_TIMEOUT_SEC"), DEFAULT_GEMINI_TIMEOUT_SEC)
+    if gemini_timeout_sec <= 0:
+        gemini_timeout_sec = DEFAULT_GEMINI_TIMEOUT_SEC
+    if gemini_timeout_sec > DEFAULT_GEMINI_TIMEOUT_SEC:
+        gemini_timeout_sec = DEFAULT_GEMINI_TIMEOUT_SEC
 
     blog_domain = env.get("BLOG_DOMAIN", DEFAULT_BLOG_DOMAIN)
     if not blog_domain.startswith("http"):
@@ -650,6 +657,7 @@ def _build_config() -> AutomationConfig:
         gemini_model_meta=gemini_model_meta,
         gemini_temperature=gemini_temperature,
         gemini_max_tokens=gemini_max_tokens,
+        gemini_timeout_sec=gemini_timeout_sec,
         blog_domain=blog_domain.rstrip("/"),
         content_language=content_language,
         content_tone=content_tone,
@@ -1217,9 +1225,10 @@ def _save_state(state: dict) -> None:
 
 
 class GeminiClient:
-    def __init__(self, api_key: str, model: str) -> None:
+    def __init__(self, api_key: str, model: str, timeout_sec: int) -> None:
         self.api_key = api_key
         self.model = model
+        self.timeout_sec = max(1, timeout_sec)
         self.base_url = "https://generativelanguage.googleapis.com/v1beta"
 
     def generate(self, prompt: str, *, temperature: float, max_tokens: int) -> str:
@@ -1239,7 +1248,7 @@ class GeminiClient:
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        with urlopen(request, timeout=30) as response:
+        with urlopen(request, timeout=self.timeout_sec) as response:
             data = json.loads(response.read().decode("utf-8"))
         candidates = data.get("candidates", [])
         if not candidates:
@@ -1279,7 +1288,7 @@ class GeminiClient:
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        with urlopen(request, timeout=30) as response:
+        with urlopen(request, timeout=self.timeout_sec) as response:
             data = json.loads(response.read().decode("utf-8"))
         candidates = data.get("candidates", [])
         if not candidates:
@@ -4393,8 +4402,16 @@ def _process_topics(
     used = set(state.get("topics") or state.get("keywords") or [])
     slugs = set(state.get("slugs", []))
 
-    writer = GeminiClient(config.gemini_api_key, config.gemini_model_content)
-    meta_writer = GeminiClient(config.gemini_api_key, config.gemini_model_meta)
+    writer = GeminiClient(
+        config.gemini_api_key,
+        config.gemini_model_content,
+        config.gemini_timeout_sec,
+    )
+    meta_writer = GeminiClient(
+        config.gemini_api_key,
+        config.gemini_model_meta,
+        config.gemini_timeout_sec,
+    )
     if ranker_enabled and config.use_multi_agent:
         topics = _rank_topics_with_llm(config, writer, topics)
     for topic in topics:
