@@ -63,23 +63,23 @@ DEFAULT_GEMINI_MODEL = "gemini-3-pro-preview"
 DEFAULT_GEMINI_MODEL_CONTENT = DEFAULT_GEMINI_MODEL
 DEFAULT_GEMINI_MODEL_META = DEFAULT_GEMINI_MODEL
 DEFAULT_GEMINI_TEMPERATURE = 0.6
-DEFAULT_GEMINI_MAX_TOKENS = 2600
+DEFAULT_GEMINI_MAX_TOKENS = 60000
 DEFAULT_GEMINI_TIMEOUT_SEC = 900
-DEFAULT_BLOG_DOMAIN = "https://blog.ship-write.com"
+DEFAULT_BLOG_DOMAIN = "blog.ship-write.com"
 DEFAULT_CONTENT_LANGUAGE = "English"
 DEFAULT_CONTENT_TONE = "neutral, informative"
 DEFAULT_CONTENT_TIMEZONE = "America/New_York"
 DEFAULT_USE_MULTI_AGENT = True
 DEFAULT_SEARCH_RSS_ENABLED = True
-DEFAULT_SEARCH_RSS_MAX_RESULTS = 6
+DEFAULT_SEARCH_RSS_MAX_RESULTS = 4
 DEFAULT_SEARCH_RSS_MAX_PER_QUERY = 3
-DEFAULT_MAX_EVIDENCE_SOURCES = 8
-DEFAULT_QUALITY_GATE_REVISIONS = 1
+DEFAULT_MAX_EVIDENCE_SOURCES = 4
+DEFAULT_QUALITY_GATE_REVISIONS = 0
 DEFAULT_FINAL_REVIEW_ENABLED = True
-DEFAULT_FINAL_REVIEW_REVISIONS = 1
+DEFAULT_FINAL_REVIEW_REVISIONS = 2
 DEFAULT_SEARCH_WEB_ENABLED = True
 DEFAULT_SEARCH_WEB_MAX_RESULTS = 5
-DEFAULT_SEARCH_WEB_MAX_PER_QUERY = 2
+DEFAULT_SEARCH_WEB_MAX_PER_QUERY = 3
 DEFAULT_SEARCH_WEB_DEPTH = "basic"
 DEFAULT_SEARCH_WEB_INCLUDE_ANSWER = True
 DEFAULT_SEARCH_WEB_INCLUDE_DOMAINS: tuple[str, ...] = ()
@@ -514,7 +514,7 @@ def _resolve_state_path() -> Path:
 
 def _build_config() -> AutomationConfig:
     env = _resolve_env()
-    regions = _parse_list(env.get("TREND_REGIONS"), ["KR"])
+    regions = _parse_list(env.get("TREND_REGIONS"), ["US"])
     interval_hours = _parse_float(env.get("POST_INTERVAL_HOURS"), 6.0)
     max_topic_rank = _parse_int(env.get("MAX_TOPIC_RANK"), 3)
 
@@ -638,7 +638,7 @@ def _build_config() -> AutomationConfig:
     if not fallback_tags:
         fallback_tags = ["topic"]
     fallback_tags = fallback_tags[:3]
-    post_draft = _parse_bool(env.get("POST_DRAFT"), True)
+    post_draft = _parse_bool(env.get("POST_DRAFT"), False)
 
     astro_root = Path(env.get("ASTRO_ROOT", "../ai_blog_v1_astro")).resolve()
     content_dir = astro_root / "src" / "content" / "blog"
@@ -720,14 +720,13 @@ def _build_config() -> AutomationConfig:
 def _build_high_intent_settings(config: AutomationConfig) -> dict[str, object]:
     env = _resolve_env()
     regions = _parse_list(env.get("HIGH_INTENT_REGIONS"), ["US"])
-    trend_source = env.get("HIGH_INTENT_TREND_SOURCE", "csv").strip().lower() or "csv"
-    trend_method = env.get("HIGH_INTENT_TREND_METHOD", config.trend_method).strip() or config.trend_method
+    trend_source = env.get("HIGH_INTENT_TREND_SOURCE", "rss").strip().lower() or "rss"
+    trend_method = env.get("HIGH_INTENT_TREND_METHOD", DEFAULT_TREND_METHOD).strip() or DEFAULT_TREND_METHOD
     trend_window_hours = _parse_int(env.get("HIGH_INTENT_TREND_WINDOW_HOURS"), 24)
-    csv_sort_by = env.get("HIGH_INTENT_CSV_SORT_BY", config.csv_sort_by)
-    trend_limit = _parse_int(env.get("HIGH_INTENT_TREND_LIMIT"), config.trend_limit)
-    trend_sleep_sec = _parse_float(env.get("HIGH_INTENT_TREND_SLEEP_SEC"), config.trend_sleep_sec)
-    max_topic_rank_default = max(config.max_topic_rank, 5)
-    max_topic_rank = _parse_int(env.get("HIGH_INTENT_MAX_TOPIC_RANK"), max_topic_rank_default)
+    csv_sort_by = env.get("HIGH_INTENT_CSV_SORT_BY", DEFAULT_CSV_SORT_BY)
+    trend_limit = _parse_int(env.get("HIGH_INTENT_TREND_LIMIT"), DEFAULT_LIMIT)
+    trend_sleep_sec = _parse_float(env.get("HIGH_INTENT_TREND_SLEEP_SEC"), 1.0)
+    max_topic_rank = _parse_int(env.get("HIGH_INTENT_MAX_TOPIC_RANK"), 5)
     csv_active_only = _parse_bool(env.get("HIGH_INTENT_CSV_ACTIVE_ONLY"), False)
     csv_download_dir = env.get("HIGH_INTENT_CSV_DOWNLOAD_DIR", "").strip()
     csv_max_retries = _parse_int(env.get("HIGH_INTENT_CSV_MAX_RETRIES"), 2)
