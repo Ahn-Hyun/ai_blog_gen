@@ -11,12 +11,12 @@ on:
           - high-intent
         default: recent
   schedule:
-    # 10:00 KST
-    - cron: "0 1 * * *"
-    # 17:00 KST
-    - cron: "0 8 * * *"
-    # 11:00 KST (high-intent)
-    - cron: "0 2 * * *"
+    # 10:00 ET (UTC-5)
+    - cron: "0 15 * * *"
+    # 17:00 ET (UTC-5)
+    - cron: "0 22 * * *"
+    # 11:00 ET (UTC-5, high-intent)
+    - cron: "0 16 * * *"
 
 concurrency:
   group: ai-blog-auto
@@ -53,7 +53,7 @@ jobs:
             exit 0
           fi
 
-          if [ "${{ github.event.schedule }}" = "0 2 * * *" ]; then
+          if [ "${{ github.event.schedule }}" = "0 16 * * *" ]; then
             echo "pipeline=high-intent" >> "$GITHUB_OUTPUT"
           else
             echo "pipeline=recent" >> "$GITHUB_OUTPUT"

@@ -22,6 +22,7 @@ import zlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Iterable
@@ -67,6 +68,7 @@ DEFAULT_GEMINI_TIMEOUT_SEC = 900
 DEFAULT_BLOG_DOMAIN = "https://blog.ship-write.com"
 DEFAULT_CONTENT_LANGUAGE = "English"
 DEFAULT_CONTENT_TONE = "neutral, informative"
+DEFAULT_CONTENT_TIMEZONE = "America/New_York"
 DEFAULT_USE_MULTI_AGENT = True
 DEFAULT_SEARCH_RSS_ENABLED = True
 DEFAULT_SEARCH_RSS_MAX_RESULTS = 6
@@ -395,6 +397,7 @@ class AutomationConfig:
     blog_domain: str
     content_language: str
     content_tone: str
+    content_timezone: ZoneInfo
     use_multi_agent: bool
     google_api_key: str
     youtube_api_key: str
@@ -487,6 +490,17 @@ def _resolve_env() -> dict[str, str]:
     return file_env
 
 
+def _resolve_timezone(env: dict[str, str]) -> ZoneInfo:
+    tz_name = str(env.get("CONTENT_TIMEZONE") or DEFAULT_CONTENT_TIMEZONE).strip()
+    if not tz_name:
+        tz_name = DEFAULT_CONTENT_TIMEZONE
+    try:
+        return ZoneInfo(tz_name)
+    except ZoneInfoNotFoundError:
+        logging.warning("Invalid CONTENT_TIMEZONE %r; falling back to UTC.", tz_name)
+        return ZoneInfo("UTC")
+
+
 def _resolve_state_path() -> Path:
     env = _resolve_env()
     raw = str(env.get("STATE_PATH") or "").strip()
@@ -538,6 +552,7 @@ def _build_config() -> AutomationConfig:
         blog_domain = f"https://{blog_domain}"
     content_language = env.get("CONTENT_LANGUAGE", DEFAULT_CONTENT_LANGUAGE).strip() or DEFAULT_CONTENT_LANGUAGE
     content_tone = env.get("CONTENT_TONE", DEFAULT_CONTENT_TONE).strip() or DEFAULT_CONTENT_TONE
+    content_timezone = _resolve_timezone(env)
     use_multi_agent = _parse_bool(env.get("USE_MULTI_AGENT"), DEFAULT_USE_MULTI_AGENT)
     youtube_api_key = env.get("YOUTUBE_API_KEY", "").strip() or google_api_key
     tavily_api_key = env.get("TAVILY_API_KEY", "").strip()
@@ -661,6 +676,7 @@ def _build_config() -> AutomationConfig:
         blog_domain=blog_domain.rstrip("/"),
         content_language=content_language,
         content_tone=content_tone,
+        content_timezone=content_timezone,
         use_multi_agent=use_multi_agent,
         google_api_key=google_api_key,
         youtube_api_key=youtube_api_key,
@@ -3168,7 +3184,7 @@ def _write_post(
     reference_urls: list[str],
     slug_hint: str,
 ) -> Path:
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    date_str = datetime.now(config.content_timezone).strftime("%Y-%m-%d")
     slug = _slugify(slug_hint) or f"topic-{int(time.time())}"
     post_path = config.content_dir / f"{date_str}-{slug}.mdx"
     if post_path.exists():
@@ -3330,7 +3346,7 @@ def _plan_research(
     priority_sources = _ensure_list_of_strings(data.get("priority_sources"))
     must_verify = _ensure_list_of_strings(data.get("must_verify"))
     if not queries:
-        year = datetime.now(timezone.utc).year
+        year = datetime.now(config.content_timezone).year
         queries = [
             f"{keyword} official statement {year}",
             f"{keyword} latest updates {year}",
@@ -3345,11 +3361,15 @@ def _plan_research(
     }
 
 
-def _build_question_queries(keyword: str, angle: str | None = None) -> list[str]:
+def _build_question_queries(
+    config: AutomationConfig,
+    keyword: str,
+    angle: str | None = None,
+) -> list[str]:
     base = keyword.strip()
     if not base:
         return []
-    year = datetime.now(timezone.utc).year
+    year = datetime.now(config.content_timezone).year
     angle_hint = f" {angle.strip()}" if angle else ""
     return [
         f"What changed about {base} in {year} and why now{angle_hint}?",
@@ -3456,6 +3476,7 @@ def _gather_sources_for_topic(
                 if added >= config.search_web_max_results:
                     break
             question_queries = _build_question_queries(
+                config,
                 keyword,
                 angle=str(topic.get("angle") or "").strip(),
             )
@@ -4315,8 +4336,8 @@ def _generate_post_for_topic(
     )
 
 
-def _save_trends_snapshot(payload: dict) -> None:
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d-%H%M%S")
+def _save_trends_snapshot(payload: dict, *, content_timezone: ZoneInfo) -> None:
+    timestamp = datetime.now(content_timezone).strftime("%Y-%m-%d-%H%M%S")
     path = ROOT_DIR / "data" / "trends" / f"{timestamp}-trends.json"
     write_json(path, payload)
 
@@ -4460,7 +4481,7 @@ def run_once(config: AutomationConfig) -> None:
         cache=config.rss_cache,
     )
     payload["pipeline"] = PIPELINE_RECENT
-    _save_trends_snapshot(payload)
+    _save_trends_snapshot(payload, content_timezone=config.content_timezone)
 
     topics = _select_topics_by_region(payload, config.regions, config.max_topic_rank)
     _process_topics(config, topics=topics, pipeline=PIPELINE_RECENT)
@@ -4515,7 +4536,7 @@ def run_high_intent(config: AutomationConfig) -> None:
                 min_matches=rss_min_matches,
             )
             payload["items"] = filtered
-        _save_trends_snapshot(payload)
+        _save_trends_snapshot(payload, content_timezone=config.content_timezone)
         max_topic_rank = int(settings["max_topic_rank"])
         topics = _select_topics_by_region(payload, regions, max_topic_rank)
         _process_topics(
@@ -4582,7 +4603,7 @@ def run_high_intent(config: AutomationConfig) -> None:
                 min_matches=rss_min_matches,
             )
             payload["items"] = filtered
-        _save_trends_snapshot(payload)
+        _save_trends_snapshot(payload, content_timezone=config.content_timezone)
         max_topic_rank = int(settings["max_topic_rank"])
         topics = _select_topics_by_region(payload, regions, max_topic_rank)
         _process_topics(
@@ -4593,7 +4614,7 @@ def run_high_intent(config: AutomationConfig) -> None:
         )
         return
     payload["pipeline"] = PIPELINE_HIGH_INTENT
-    _save_trends_snapshot(payload)
+    _save_trends_snapshot(payload, content_timezone=config.content_timezone)
 
     max_topic_rank = int(settings["max_topic_rank"])
     topics = _select_topics_by_region(payload, regions, max_topic_rank)
