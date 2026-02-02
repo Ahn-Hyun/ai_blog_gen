@@ -77,6 +77,9 @@ DEFAULT_MAX_EVIDENCE_SOURCES = 4
 DEFAULT_QUALITY_GATE_REVISIONS = 0
 DEFAULT_FINAL_REVIEW_ENABLED = True
 DEFAULT_FINAL_REVIEW_REVISIONS = 2
+DEFAULT_MDX_RENDER_GUARD_ENABLED = True
+DEFAULT_MDX_RENDER_GUARD_REVISIONS = 1
+DEFAULT_MDX_RENDER_AUTO_FIX = True
 DEFAULT_SEARCH_WEB_ENABLED = True
 DEFAULT_SEARCH_WEB_MAX_RESULTS = 5
 DEFAULT_SEARCH_WEB_MAX_PER_QUERY = 3
@@ -108,6 +111,33 @@ FINAL_REVIEW_SUSPICIOUS_PATTERNS = (
     r"\bContinue reading\b",
     r"\bRead more\b",
 )
+MDX_RENDER_MAX_HINTS = 16
+MDX_VOID_ELEMENTS = (
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
+)
+MDX_VOID_TAGS_PATTERN = "|".join(MDX_VOID_ELEMENTS)
+MDX_VOID_TAG_PATTERN = re.compile(
+    rf"<(?P<tag>{MDX_VOID_TAGS_PATTERN})\b(?P<attrs>[^>]*)>",
+    re.IGNORECASE,
+)
+MDX_UNCLOSED_VOID_TAG_PATTERN = re.compile(
+    rf"<(?P<tag>{MDX_VOID_TAGS_PATTERN})\b(?![^>]*\/\s*>)[^>]*>",
+    re.IGNORECASE,
+)
+MDX_STRAY_ANGLE_PATTERN = re.compile(r"<(?=\s|=|\d|-)")
 CONTENT_JSON_SCHEMA = (
     "Required JSON keys: summary (2-3 sentences), key_points (array of 3-5 strings), "
     "body_markdown (string, MDX-friendly, ~1500-2200 words), "
@@ -432,6 +462,9 @@ class AutomationConfig:
     quality_gate_revisions: int
     final_review_enabled: bool
     final_review_revisions: int
+    mdx_render_guard_enabled: bool
+    mdx_render_guard_revisions: int
+    mdx_render_auto_fix: bool
     google_image_enabled: bool
     google_image_model: str
     google_image_aspect_ratio: str
@@ -624,6 +657,18 @@ def _build_config() -> AutomationConfig:
         env.get("FINAL_REVIEW_REVISIONS"),
         DEFAULT_FINAL_REVIEW_REVISIONS,
     )
+    mdx_render_guard_enabled = _parse_bool(
+        env.get("MDX_RENDER_GUARD_ENABLED"),
+        DEFAULT_MDX_RENDER_GUARD_ENABLED,
+    )
+    mdx_render_guard_revisions = _parse_int(
+        env.get("MDX_RENDER_GUARD_REVISIONS"),
+        DEFAULT_MDX_RENDER_GUARD_REVISIONS,
+    )
+    mdx_render_auto_fix = _parse_bool(
+        env.get("MDX_RENDER_AUTO_FIX"),
+        DEFAULT_MDX_RENDER_AUTO_FIX,
+    )
     google_image_enabled = _parse_bool(
         env.get("GOOGLE_IMAGE_ENABLED"),
         DEFAULT_GOOGLE_IMAGE_ENABLED,
@@ -711,6 +756,9 @@ def _build_config() -> AutomationConfig:
         quality_gate_revisions=quality_gate_revisions,
         final_review_enabled=final_review_enabled,
         final_review_revisions=final_review_revisions,
+        mdx_render_guard_enabled=mdx_render_guard_enabled,
+        mdx_render_guard_revisions=mdx_render_guard_revisions,
+        mdx_render_auto_fix=mdx_render_auto_fix,
         google_image_enabled=google_image_enabled,
         google_image_model=google_image_model or DEFAULT_GOOGLE_IMAGE_MODEL,
         google_image_aspect_ratio=google_image_aspect_ratio or DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO,
@@ -1114,6 +1162,78 @@ def _collect_review_hints(body: str) -> list[str]:
                 hints.append(_truncate_plain(stripped, 240))
                 if len(hints) >= FINAL_REVIEW_MAX_HINTS:
                     break
+    return hints
+
+
+def _apply_to_non_fenced(text: str, transform) -> str:
+    if not text:
+        return text
+    lines = text.splitlines()
+    in_fence = False
+    fence_marker = ""
+    updated: list[str] = []
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped.startswith(("```", "~~~")):
+            marker = stripped[:3]
+            if not in_fence:
+                in_fence = True
+                fence_marker = marker
+            elif marker == fence_marker:
+                in_fence = False
+                fence_marker = ""
+            updated.append(line)
+            continue
+        if in_fence:
+            updated.append(line)
+            continue
+        updated.append(transform(line))
+    return "\n".join(updated)
+
+
+def _fix_mdx_void_elements(body: str) -> str:
+    if not body:
+        return body
+
+    def replacer(match: re.Match) -> str:
+        raw = match.group(0)
+        if raw.rstrip().endswith("/>"):
+            return raw
+        tag = match.group("tag")
+        attrs = (match.group("attrs") or "").rstrip()
+        if attrs:
+            return f"<{tag}{attrs} />"
+        return f"<{tag} />"
+
+    def apply_line(line: str) -> str:
+        return MDX_VOID_TAG_PATTERN.sub(replacer, line)
+
+    return _apply_to_non_fenced(body, apply_line)
+
+
+def _collect_mdx_render_hints(body: str) -> list[str]:
+    if not body:
+        return []
+    hints: list[str] = []
+    in_fence = False
+    fence_marker = ""
+    for line in body.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(("```", "~~~")):
+            marker = stripped[:3]
+            if not in_fence:
+                in_fence = True
+                fence_marker = marker
+            elif marker == fence_marker:
+                in_fence = False
+                fence_marker = ""
+            continue
+        if in_fence or not stripped:
+            continue
+        if MDX_UNCLOSED_VOID_TAG_PATTERN.search(stripped) or MDX_STRAY_ANGLE_PATTERN.search(stripped):
+            hints.append(_truncate_plain(stripped, 240))
+            if len(hints) >= MDX_RENDER_MAX_HINTS:
+                break
     return hints
 
 
@@ -2604,6 +2724,46 @@ Rules:
     return _compose_prompt(system, user)
 
 
+def _build_mdx_render_guard_prompt(*, full_mdx: str, hints: list[str]) -> str:
+    system = """
+You are an MDX rendering QA editor.
+Fix MDX/JSX syntax issues that could break rendering.
+Never add new facts or sources. Preserve citations and Markdown links.
+""".strip()
+    hints_block = json.dumps(hints, ensure_ascii=True)
+    user = f"""
+Article (MDX):
+{full_mdx}
+
+Suspicious snippets (if any):
+{hints_block}
+
+Review focus:
+- Void HTML elements must be self-closing (e.g., <br />, <img />).
+- Fix malformed tags, broken links, or stray angle brackets in plain text.
+- Preserve tables, headings, and citations.
+
+Decision:
+- status=pass if clean
+- status=fix if edits are needed
+
+Output JSON only:
+{{
+  "status": "pass|fix",
+  "issues": [
+    {{"type": "mdx|jsx|markdown", "detail": "...", "fix_hint": "..."}}
+  ],
+  "cleaned_mdx": "..."
+}}
+
+Rules:
+- If status is pass, cleaned_mdx must be an empty string.
+- If status is fix, cleaned_mdx must contain the full revised article.
+- Use valid JSON and escape newlines as \\n.
+""".strip()
+    return _compose_prompt(system, user)
+
+
 def _build_revision_prompt(*, full_mdx: str, issues_json: str, keyword: str) -> str:
     system = """
 You are a senior editor revising an article to address quality issues.
@@ -4030,6 +4190,58 @@ def _apply_final_review(
     return content
 
 
+def _apply_mdx_render_guard(
+    config: AutomationConfig,
+    writer: GeminiClient,
+    *,
+    full_mdx: str,
+) -> str:
+    if not full_mdx or not config.mdx_render_guard_enabled:
+        return full_mdx
+    content = full_mdx
+    if config.mdx_render_auto_fix:
+        content = _fix_mdx_void_elements(content)
+    hints = _collect_mdx_render_hints(content)
+    if not hints:
+        return content
+    if not config.gemini_api_key:
+        return content
+    attempts = max(config.mdx_render_guard_revisions, 0) + 1
+    for attempt in range(attempts):
+        prompt = _build_mdx_render_guard_prompt(full_mdx=content, hints=hints)
+        try:
+            response = writer.generate(
+                prompt,
+                temperature=min(config.gemini_temperature, 0.4),
+                max_tokens=config.gemini_max_tokens,
+            )
+            data = _extract_json_block(response)
+        except Exception as exc:
+            logging.warning("MDX render guard failed: %s", exc)
+            return content
+        if not isinstance(data, dict):
+            if attempt < attempts - 1:
+                continue
+            return content
+        status = str(data.get("status") or "").strip().lower()
+        issues = data.get("issues")
+        issue_count = len(issues) if isinstance(issues, list) else 0
+        logging.info("MDX render guard status: %s (issues=%s)", status, issue_count)
+        if status == "pass":
+            return content
+        cleaned = str(data.get("cleaned_mdx") or "").strip()
+        if status == "fix" and cleaned:
+            content = cleaned
+            if config.mdx_render_auto_fix:
+                content = _fix_mdx_void_elements(content)
+            hints = _collect_mdx_render_hints(content)
+            if not hints:
+                return content
+        if attempt >= attempts - 1:
+            return content
+    return content
+
+
 def _key_points_from_evidence(evidence: dict) -> list[str]:
     points: list[str] = []
     claims = evidence.get("claims") if isinstance(evidence, dict) else None
@@ -4250,6 +4462,15 @@ def _generate_post_for_topic(
     )
     if reviewed_body != body:
         body = _clean_body_text(reviewed_body)
+        body = _ensure_ascii_body(body, body)
+        summary = ""
+    mdx_checked_body = _apply_mdx_render_guard(
+        config,
+        writer,
+        full_mdx=body,
+    )
+    if mdx_checked_body != body:
+        body = _clean_body_text(mdx_checked_body)
         body = _ensure_ascii_body(body, body)
         summary = ""
 
