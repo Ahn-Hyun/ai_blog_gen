@@ -7,16 +7,11 @@ on:
         description: "Pipeline mode"
         type: choice
         options:
-          - recent
-          - high-intent
-        default: recent
+          - daily-impact
+        default: daily-impact
   schedule:
-    # 10:00 ET (UTC-5)
-    - cron: "0 15 * * *"
-    # 17:00 ET (UTC-5)
-    - cron: "0 22 * * *"
-    # 13:00 ET (UTC-5, high-intent)
-    - cron: "0 18 * * *"
+    - cron: "5 12 * * *"
+    - cron: "5 13 * * *"
 
 concurrency:
   group: ai-blog-auto
@@ -52,17 +47,13 @@ jobs:
             echo "pipeline=${{ github.event.inputs.pipeline }}" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-
-          if [ "${{ github.event.schedule }}" = "0 18 * * *" ]; then
-            echo "pipeline=high-intent" >> "$GITHUB_OUTPUT"
-          else
-            echo "pipeline=recent" >> "$GITHUB_OUTPUT"
-          fi
+          echo "pipeline=daily-impact" >> "$GITHUB_OUTPUT"
 
       - name: Generate posts
         env:
           ASTRO_ROOT: ${{ vars.ASTRO_ROOT || format('{0}/ai_blog_v1_astro', github.workspace) }}
           STATE_PATH: ${{ vars.STATE_PATH || format('{0}/ai_blog_v1_astro/.ai_state/published.json', github.workspace) }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
@@ -95,12 +86,12 @@ jobs:
           RSS_INCLUDE_ARTICLES: ${{ vars.RSS_INCLUDE_ARTICLES }}
           RSS_MAX_ARTICLES_PER_TREND: ${{ vars.RSS_MAX_ARTICLES_PER_TREND }}
           RSS_CACHE: ${{ vars.RSS_CACHE }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
-          GEMINI_MODEL_CONTENT: ${{ vars.GEMINI_MODEL_CONTENT }}
-          GEMINI_MODEL_META: ${{ vars.GEMINI_MODEL_META }}
-          GEMINI_TEMPERATURE: ${{ vars.GEMINI_TEMPERATURE }}
-          GEMINI_MAX_TOKENS: ${{ vars.GEMINI_MAX_TOKENS }}
-          GEMINI_TIMEOUT_SEC: ${{ vars.GEMINI_TIMEOUT_SEC }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+          ANTHROPIC_MODEL_CONTENT: ${{ vars.ANTHROPIC_MODEL_CONTENT }}
+          ANTHROPIC_MODEL_META: ${{ vars.ANTHROPIC_MODEL_META }}
+          ANTHROPIC_TEMPERATURE: ${{ vars.ANTHROPIC_TEMPERATURE }}
+          ANTHROPIC_MAX_TOKENS: ${{ vars.ANTHROPIC_MAX_TOKENS }}
+          ANTHROPIC_TIMEOUT_SEC: ${{ vars.ANTHROPIC_TIMEOUT_SEC }}
           SEARCH_WEB_ENABLED: ${{ vars.SEARCH_WEB_ENABLED }}
           SEARCH_WEB_MAX_RESULTS: ${{ vars.SEARCH_WEB_MAX_RESULTS }}
           SEARCH_WEB_MAX_PER_QUERY: ${{ vars.SEARCH_WEB_MAX_PER_QUERY }}
@@ -117,6 +108,7 @@ jobs:
           CONTENT_LANGUAGE: ${{ vars.CONTENT_LANGUAGE }}
           CONTENT_TONE: ${{ vars.CONTENT_TONE }}
           USE_MULTI_AGENT: ${{ vars.USE_MULTI_AGENT }}
+          DAILY_IMPACT_RUN_HOUR: ${{ vars.DAILY_IMPACT_RUN_HOUR || '8' }}
           QUALITY_GATE_REVISIONS: ${{ vars.QUALITY_GATE_REVISIONS }}
           SEARCH_RSS_ENABLED: ${{ vars.SEARCH_RSS_ENABLED }}
           SEARCH_RSS_MAX_RESULTS: ${{ vars.SEARCH_RSS_MAX_RESULTS }}
@@ -132,6 +124,11 @@ jobs:
           FINAL_REVIEW_ENABLED: ${{ vars.FINAL_REVIEW_ENABLED }}
           FINAL_REVIEW_REVISIONS: ${{ vars.FINAL_REVIEW_REVISIONS }}
         run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            export ENFORCE_LOCAL_RUN_HOUR=1
+          else
+            export ENFORCE_LOCAL_RUN_HOUR=0
+          fi
           python scripts/auto_blog.py --once --pipeline "${{ steps.pipeline.outputs.pipeline }}"
 
       - name: Commit and push to Astro repo
