@@ -1,0 +1,202 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "publish_date": "2026-03-31",
+    "publish_display_date": "March 31, 2026",
+    "target_date": "2026-03-30",
+    "display_date": "March 30, 2026",
+    "window_summary": "2026-03-30 00:00 EDT to 2026-03-30 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "1",
+      "title": "WTI crude oil surges back above $100/barrel on Middle East conflict escalation",
+      "summary": "Ceasefire hopes faded during the week ending March 27, 2026, pushing WTI crude back above $100/barrel. The ongoing war in Iran is the dominant macro theme, driving energy prices higher and creating stagflationary pressures across markets.",
+      "why_now": "Ceasefire negotiations broke down during the week, reversing an earlier oil price decline. The $100 threshold is psychologically significant and triggers reassessment of inflation forecasts, corporate margins, and consumer spending power.",
+      "market_relevance": "Oil above $100 raises input costs across transportation, manufacturing, chemicals, and agriculture. It compresses consumer discretionary spending, boosts energy sector revenues, and forces the Fed to weigh inflation risk against growth slowdown. This is the single most important macro variable for cross-asset allocation right now.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary",
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Which US airlines and trucking companies have the least fuel hedging exposure in Q2 2026?",
+          "Energy sector earnings revisions upward March 2026 E&P companies",
+          "Consumer discretionary retail stocks most vulnerable to gasoline price squeeze on household budgets 2026",
+          "Defense contractor stock performance during Iran conflict 2026"
+        ],
+        "real_estate": [
+          "Impact of $100 oil on heating and utility costs for commercial real estate operating expenses 2026",
+          "Housing affordability index changes in oil-producing regions like Permian Basin and North Dakota 2026",
+          "How do sustained high energy prices affect suburban vs urban housing demand and commuting cost sensitivity?"
+        ]
+      }
+    },
+    {
+      "event_id": "2",
+      "title": "10-year Treasury yield rises to 4.43%, above Nuveen's forecast range ceiling",
+      "summary": "The 10-year Treasury yield rose 5 bps to 4.43% for the week, now sitting above Nuveen's projected 4.00%-4.25% year-end range. The move was driven by oil-fueled inflation repricing. Month-to-date, the 10-year yield has risen 49 bps.",
+      "why_now": "The combination of persistent core inflation (PCE at 3.1%) and a new energy price shock is forcing the long end of the curve higher. A 49 bps monthly move in the 10-year is a significant repricing event that affects discount rates across all asset classes.",
+      "market_relevance": "Higher long-end yields directly increase mortgage rates, reduce equity valuations (especially growth/tech), raise corporate borrowing costs, and pressure leveraged balance sheets. The speed of the move matters as much as the level\u2014rapid repricing can trigger margin calls and portfolio rebalancing.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Which high-duration growth stocks and unprofitable tech companies are most sensitive to 10-year yield above 4.4%?",
+          "Utility and REIT sector performance during rapid Treasury yield increases March 2026",
+          "Bank net interest margin outlook with steepening yield curve and 10-year at 4.43% 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate tracking 10-year Treasury at 4.43% current level March 2026",
+          "Mortgage application volume and purchase index trend March 2026 amid rising rates",
+          "Commercial real estate refinancing wall exposure to higher long-term rates 2026-2027",
+          "CMBS delinquency rate trends March 2026 office and retail sectors"
+        ]
+      }
+    },
+    {
+      "event_id": "3",
+      "title": "Credit spreads widen broadly; high yield underperforms by 46 bps in one week",
+      "summary": "High yield corporate bonds underperformed duration-equivalent Treasuries by 46 bps, preferred securities by 45 bps, and emerging markets by 23 bps for the week. CMBS and MBS were relative outperformers with minimal spread widening.",
+      "why_now": "The spread widening reflects growing concern about a stagflationary scenario: higher oil prices simultaneously raise inflation and threaten corporate earnings and economic growth. This is a classic risk-off signal in credit markets.",
+      "market_relevance": "Widening HY spreads signal tightening financial conditions for lower-rated borrowers. Companies reliant on high-yield debt markets for refinancing face higher costs. The divergence between CMBS (relatively stable) and HY corporates suggests the market sees energy-sensitive corporate sectors as more vulnerable than real estate credit at this stage.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Leveraged companies with near-term high yield debt maturities 2026-2027 refinancing risk",
+          "CCC-rated corporate bond default rate forecast amid oil shock and spread widening 2026",
+          "Private equity portfolio company exposure to rising borrowing costs March 2026"
+        ],
+        "real_estate": [
+          "Why are CMBS spreads holding relatively tight compared to corporate HY in March 2026?",
+          "Commercial mortgage-backed securities performance by property type office retail industrial March 2026",
+          "Private real estate credit fund redemption pressure amid broader credit spread widening 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "4",
+      "title": "Fed rate cut expectations collapse to one cut in 2026; market aligns with hawkish dot plot",
+      "summary": "Markets have shifted from pricing over two rate cuts for 2026 to aligning with the FOMC's view of at most one cut. Nuveen still expects two cuts but acknowledges the second may be pushed into 2027. The oil shock has effectively eliminated near-term easing expectations.",
+      "why_now": "The March FOMC meeting (held March 18) combined with the oil price surge has forced a dramatic repricing. Core PCE at 3.1% and rising energy costs make it nearly impossible for the Fed to cut in the near term despite a weakening labor market.",
+      "market_relevance": "Fewer expected rate cuts mean higher-for-longer short-term rates, which keeps money market yields attractive (competing with equities for flows), maintains pressure on floating-rate borrowers, and constrains housing market recovery. The Fed is caught between conflicting mandates.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary",
+        "https://www.stlouisfed.org/on-the-economy/2026/mar/dual-mandate-balancing-current-tensions-inflation-employment"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Money market fund inflows vs equity fund flows March 2026 amid higher-for-longer rates",
+          "Floating rate loan exposure among mid-cap companies most at risk from no Fed cuts 2026",
+          "Homebuilder stock outlook if mortgage rates stay elevated through 2026 with no rate cuts"
+        ],
+        "real_estate": [
+          "Housing starts and permits forecast if Fed holds rates through Q3 2026",
+          "Adjustable rate mortgage reset schedule 2026 impact on homeowner distress",
+          "Multifamily apartment demand trends as homeownership affordability worsens with no rate cuts 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "5",
+      "title": "February NFP showed unexpected loss of 92,000 jobs; unemployment rate rises to 4.4%",
+      "summary": "The February non-farm payrolls report showed the US economy unexpectedly lost 92,000 jobs versus an expected gain of 55,000. The unemployment rate ticked up to 4.4%, continuing a slow but steady rise from the 3.4% low in April 2023.",
+      "why_now": "This data, released before the time window but still being digested by markets, represents a significant deterioration in labor market conditions. Combined with the oil shock, it raises the probability of a stagflationary outcome where the Fed cannot easily respond to either problem.",
+      "market_relevance": "A negative payrolls print of this magnitude is rare outside recessions. It undermines the 'strong US growth story' narrative and raises questions about consumer spending sustainability. The March jobs report (due end of April) becomes a critical confirmation or refutation point.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://www.stlouisfed.org/on-the-economy/2026/mar/dual-mandate-balancing-current-tensions-inflation-employment"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Which sectors drove the 92,000 job losses in February 2026 payrolls report?",
+          "Consumer confidence index March 2026 and retail spending outlook after job losses",
+          "Staffing company stocks Manpower Robert Half performance amid labor market weakening 2026"
+        ],
+        "real_estate": [
+          "Metropolitan areas with highest job loss concentration February 2026 and local housing market impact",
+          "Relationship between rising unemployment rate and mortgage delinquency rates historical pattern",
+          "Rental market vacancy rate trends in markets with weakening employment March 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "6",
+      "title": "Fed Chair Powell succession uncertainty: DOJ investigation and Warsh nomination stalled",
+      "summary": "Fed Chair Powell is pledging to stay until a DOJ investigation concludes or is dismissed. Senator Thom Tillis is blocking the nomination of Kevin Warsh as Powell's successor. Warsh has historically been hawkish but recently shifted dovish in alignment with the President's preferences.",
+      "why_now": "The leadership uncertainty at the Fed adds a layer of policy unpredictability at a moment when markets need clarity on the reaction function. Whether the next Chair is dovish or hawkish materially affects forward rate expectations and asset pricing.",
+      "market_relevance": "Fed leadership transitions historically create volatility in rates markets. If Warsh eventually takes over with a dovish mandate from the President, it could lead to earlier rate cuts than currently priced\u2014but his hawkish history creates ambiguity. The DOJ investigation itself raises institutional credibility concerns for the Fed.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Kevin Warsh Fed Chair nomination status and market reaction to dovish pivot 2026",
+          "Historical stock market volatility during Fed Chair transitions",
+          "Financial sector stocks sensitivity to Fed leadership change and policy direction uncertainty 2026"
+        ],
+        "real_estate": [
+          "How would a dovish Fed Chair Warsh affect mortgage rate expectations and housing market sentiment?",
+          "Fed independence concerns and impact on long-term Treasury yields and mortgage rates 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "7",
+      "title": "Core PCE inflation at 3.1% and rising, with tariff pass-through effects still incomplete",
+      "summary": "Core PCE rose for a second consecutive month to 3.1% in January 2026, well above the Fed's 2% target. Sources note that the full effect of tariffs has not yet fed through to prices, meaning inflation may have structural upward pressure even without the Iran war's energy price impact.",
+      "why_now": "The layering of multiple inflationary forces\u2014persistent services inflation, incomplete tariff pass-through, and now an energy shock\u2014creates a compounding inflation problem that is qualitatively different from any single driver.",
+      "market_relevance": "Persistent above-target inflation erodes real returns on fixed income, pressures the Fed to maintain restrictive policy, and compresses real wage growth (undermining consumer spending). Companies with pricing power outperform; those that cannot pass through costs see margin compression.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://www.stlouisfed.org/on-the-economy/2026/mar/dual-mandate-balancing-current-tensions-inflation-employment"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Companies with strongest pricing power and margin resilience during 3%+ inflation environment 2026",
+          "Tariff pass-through impact on retail and consumer goods company margins Q1 2026 earnings preview",
+          "TIPS breakeven inflation rate trend March 2026 and inflation-linked asset performance"
+        ],
+        "real_estate": [
+          "Real estate as inflation hedge: REIT performance during persistent above-3% inflation 2026",
+          "Construction material cost inflation from tariffs impact on new housing supply 2026",
+          "Rent growth vs wage growth divergence in high-inflation environment March 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "8",
+      "title": "Municipal bonds suffer sharp losses: -2.72% month-to-date, worst among fixed income sectors",
+      "summary": "The municipal bond index returned -0.81% for the week and -2.72% month-to-date, the worst performance among all fixed income sectors tracked by Nuveen. Taxable municipals were also down -3.08% month-to-date. High yield munis held up slightly better at -2.38% MTD.",
+      "why_now": "Rising Treasury yields hit long-duration munis particularly hard (effective duration 6.81 years). The combination of rate moves and potential tax-loss selling or fund outflows may be creating a negative feedback loop in muni markets.",
+      "market_relevance": "Municipal bond weakness directly affects state and local government borrowing costs, potentially constraining infrastructure spending and public services. For investors, the sharp drawdown may trigger outflows from muni funds, creating further selling pressure. However, the dislocation may also create buying opportunities for tax-sensitive investors.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Municipal bond fund outflow data March 2026 and impact on muni-focused asset managers like Nuveen BlackRock",
+          "State and local government infrastructure spending plans affected by higher muni borrowing costs 2026",
+          "Construction and engineering company backlogs dependent on municipal bond-funded projects"
+        ],
+        "real_estate": [
+          "Impact of higher municipal borrowing costs on tax increment financing for real estate development 2026",
+          "Public infrastructure bond-funded projects delays and effect on surrounding property values",
+          "State pension fund real estate allocation changes amid fixed income losses March 2026"
+        ]
+      }
+    }
+  ]
+}

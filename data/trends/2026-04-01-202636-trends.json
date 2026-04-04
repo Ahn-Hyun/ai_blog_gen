@@ -1,0 +1,209 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "publish_date": "2026-04-01",
+    "publish_display_date": "April 1, 2026",
+    "target_date": "2026-03-31",
+    "display_date": "March 31, 2026",
+    "window_summary": "2026-03-31 00:00 EDT to 2026-03-31 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "iran_war_energy_shock",
+      "title": "War in Iran disrupts global energy markets via Strait of Hormuz risk",
+      "summary": "An escalation of military conflict in Iran is threatening the Strait of Hormuz, which handles roughly 20% of global oil supply. Oil prices have risen sharply, driving a repricing of inflation expectations, consumer sentiment deterioration, and a reassessment of Fed policy trajectory. This is the dominant macro event shaping all asset classes.",
+      "why_now": "The conflict escalated in March 2026, with nearly two-thirds of the University of Michigan's March survey responses collected after the escalation. Oil prices remain elevated as of March 30, and the pass-through to gasoline prices and broader inflation is actively unfolding.",
+      "market_relevance": "Energy price spikes compress consumer discretionary spending, raise input costs across sectors, push short-term inflation expectations to 3.8% (from 3.4%), and delay expected Fed rate cuts. The S&P 500 is down ~8% from January highs and Nasdaq down >10%. Traditional diversification has broken down with stocks, bonds, and gold all under pressure simultaneously.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://argentfinancial.com/argent-insights/market-perspectives-march-2026/",
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "energy sector stock performance March 2026 oil price spike Iran",
+          "airline and transportation sector earnings impact from elevated oil prices Q1 2026",
+          "defense contractor stock inflows Iran conflict March 2026",
+          "consumer discretionary retail sector revenue impact gasoline price surge 2026",
+          "which S&P 500 sectors are most exposed to Strait of Hormuz disruption"
+        ],
+        "real_estate": [
+          "impact of rising energy costs on housing affordability 2026",
+          "commercial real estate operating costs energy price spike pass-through",
+          "Houston Texas Gulf Coast real estate demand oil price boom 2026",
+          "multifamily REIT occupancy trends as consumer spending compressed by energy costs"
+        ]
+      }
+    },
+    {
+      "event_id": "fed_holds_rates_one_cut_expected",
+      "title": "FOMC holds rates steady, dot plot converges on at most one cut in 2026",
+      "summary": "The March 2026 FOMC meeting left rates unchanged. The dot plot now shows concentrated views around one cut for the remainder of 2026, with markets aligning to this view. Core PCE at 3.1% and the Iran-driven energy shock have pushed rate cut expectations further out. The probability of a hike remains low but the window for easing has narrowed significantly.",
+      "why_now": "The March 18 FOMC decision and press conference crystallized the shift from markets pricing two cuts to one-or-none. Tariff effects have not yet fully fed through to inflation, and the Iran conflict adds a new inflationary impulse on top of already-sticky core PCE.",
+      "market_relevance": "Higher-for-longer rates directly impact equity valuations (especially growth/tech), corporate borrowing costs, and mortgage rates. Bond fund inflows slowed to $2.5B while short-duration funds attracted a record $11.1B, signaling a defensive posture. Treasury yields have moved higher.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://argentfinancial.com/argent-insights/market-perspectives-march-2026/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "growth stock valuations sensitivity to delayed Fed rate cuts 2026",
+          "bank sector net interest margin outlook higher-for-longer rates 2026",
+          "short-duration bond ETF inflows record March 2026 capital reallocation",
+          "high-yield credit fund outflows default risk rising rates 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate forecast delayed Fed rate cut 2026",
+          "housing demand impact from mortgage rates staying above 7% through 2026",
+          "commercial real estate refinancing risk higher-for-longer interest rates 2026",
+          "CMBS maturity wall 2026 impact of no rate cuts on office and retail"
+        ]
+      }
+    },
+    {
+      "event_id": "nonfarm_payrolls_negative_surprise",
+      "title": "February nonfarm payrolls show unexpected loss of 92,000 jobs",
+      "summary": "The February jobs report showed the US economy losing 92,000 jobs versus an expected gain of 55,000, with unemployment ticking up to 4.4%. This was a significant negative surprise that initially drove rate cut expectations higher before the Iran conflict shifted the calculus toward inflation concerns.",
+      "why_now": "The data was released in early March and shaped pre-FOMC market positioning. The labor market weakness is now competing with inflationary pressures from the Iran conflict, creating a stagflationary dynamic that complicates Fed decision-making.",
+      "market_relevance": "A weakening labor market reduces consumer spending power, threatens corporate revenue growth, and raises recession risk. Combined with persistent inflation, it creates a stagflation scenario where the Fed has limited room to act in either direction.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "which sectors drove February 2026 job losses nonfarm payrolls breakdown",
+          "consumer spending outlook weakening labor market stagflation risk 2026",
+          "staffing company stocks earnings impact rising unemployment rate 2026",
+          "recession probability models March 2026 labor market deterioration"
+        ],
+        "real_estate": [
+          "rising unemployment impact on mortgage delinquency rates 2026",
+          "housing demand decline from job losses regional concentration February 2026",
+          "multifamily rental demand impact from weakening employment 2026",
+          "first-time homebuyer qualification rates with 4.4% unemployment"
+        ]
+      }
+    },
+    {
+      "event_id": "powell_succession_uncertainty",
+      "title": "Fed Chair Powell pledges to stay amid DOJ investigation; Warsh nomination stalled",
+      "summary": "Fed Chair Jay Powell is pledging to remain in his position until a DOJ investigation concludes or is dismissed. Senator Thom Tillis is blocking the Senate advancement of Kevin Warsh's nomination as Powell's successor. Warsh has historically been hawkish but has recently adopted a more dovish stance aligned with the President's preference for rate cuts.",
+      "why_now": "The political standoff is active as of the March 18 FOMC press conference. The uncertainty around Fed leadership creates policy ambiguity at a critical juncture when markets need clarity on the inflation-vs-growth tradeoff.",
+      "market_relevance": "Fed leadership uncertainty adds a risk premium to rate-sensitive assets. If Warsh eventually takes over with a dovish mandate, it could signal politically-influenced monetary easing, potentially weakening the dollar and boosting inflation expectations. Markets must price in regime change risk.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Kevin Warsh Fed Chair nomination impact on financial sector stocks",
+          "market reaction to Fed leadership uncertainty historical precedents",
+          "dollar index impact from potential dovish Fed Chair transition 2026",
+          "gold and inflation hedge assets pricing Fed political interference risk"
+        ],
+        "real_estate": [
+          "potential mortgage rate impact if dovish Fed Chair Warsh confirmed 2026",
+          "housing market sensitivity to Fed leadership transition and policy shift",
+          "real estate investor sentiment Fed political uncertainty 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "tariff_inflation_passthrough_incomplete",
+      "title": "Tariff effects have not yet fully passed through to consumer prices",
+      "summary": "Multiple sources note that the full inflationary impact of existing tariffs has not yet been realized. Core PCE rose to 3.1% in January even before the Iran conflict, suggesting a structural inflation floor that tariffs will continue to elevate. This creates a compounding inflation problem layered on top of the energy shock.",
+      "why_now": "The March FOMC meeting explicitly acknowledged this lag. With inflation already persistent at 3.1% core PCE, additional tariff pass-through represents an upside inflation risk that could further delay rate cuts or even reintroduce hike discussions.",
+      "market_relevance": "Companies facing tariff-driven input cost increases will see margin compression unless they can pass costs to consumers, which risks demand destruction in a weakening labor market. Import-heavy sectors (retail, autos, tech hardware) are most exposed.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "retail sector margin compression tariff pass-through Q1 2026 earnings guidance",
+          "auto industry tariff cost impact US manufacturing 2026",
+          "tech hardware companies supply chain tariff exposure earnings risk 2026",
+          "domestic manufacturing stocks benefiting from tariff protection 2026"
+        ],
+        "real_estate": [
+          "construction material costs tariff impact new housing starts 2026",
+          "homebuilder profit margins lumber steel tariff cost increases 2026",
+          "commercial construction project delays due to tariff-driven cost escalation"
+        ]
+      }
+    },
+    {
+      "event_id": "consumer_sentiment_collapse",
+      "title": "University of Michigan consumer sentiment drops to 53.3, expectations component falls 9%",
+      "summary": "The final March University of Michigan consumer sentiment reading fell to 53.3 from 56.6 in February, a 6% monthly decline. The expectations component dropped nearly 9%, reflecting growing pessimism about the near-term economic outlook driven by energy prices and market volatility. One-year inflation expectations jumped to 3.8%.",
+      "why_now": "The final March reading captures post-Iran-escalation sentiment. The sharp deterioration in expectations signals that consumers are beginning to pull back, which could translate into reduced spending in coming months.",
+      "market_relevance": "Consumer spending drives roughly 70% of US GDP. A sharp decline in sentiment, particularly the forward-looking expectations component, is a leading indicator for retail sales weakness, potential earnings misses in consumer-facing sectors, and broader economic deceleration.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://argentfinancial.com/argent-insights/market-perspectives-march-2026/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "consumer discretionary ETF performance correlation with Michigan sentiment drop 2026",
+          "retail earnings guidance revisions after consumer confidence decline March 2026",
+          "consumer staples vs discretionary relative performance stagflation environment 2026"
+        ],
+        "real_estate": [
+          "home purchase intent survey data consumer confidence decline March 2026",
+          "housing market demand impact from consumer sentiment below 55",
+          "rental market demand shift as homebuying sentiment deteriorates 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "capital_flows_repositioning",
+      "title": "Record $37.2B weekly inflow to US equities alongside record $11.1B into short-duration bonds",
+      "summary": "For the week ending March 25, US equity funds saw $37.2B in inflows (largest in 2.5 months), reversing a multi-week outflow trend. Simultaneously, short-duration bond funds attracted a record $11.1B while high-yield credit saw $4.8B in outflows. European equity funds lost $7.5B. This signals tactical repositioning rather than capitulation.",
+      "why_now": "The flows occurred in the final week of March as markets digested the Iran conflict, FOMC decision, and equity selloff. The simultaneous equity buying and defensive bond positioning suggests institutional investors are selectively adding risk while hedging duration and credit exposure.",
+      "market_relevance": "The divergence between equity inflows and high-yield outflows suggests a quality rotation within risk assets. The record short-duration inflows confirm that institutional capital is prioritizing liquidity. European outflows may reflect relative geopolitical risk repricing given proximity to the Middle East conflict.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://argentfinancial.com/argent-insights/market-perspectives-march-2026/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "US large cap vs small cap fund flows quality rotation March 2026",
+          "European equity fund outflows geopolitical risk repricing Iran 2026",
+          "high-yield bond spread widening default risk repricing March 2026",
+          "money market fund outflows redeployment destination March 2026"
+        ],
+        "real_estate": [
+          "REIT fund flows March 2026 institutional repositioning",
+          "commercial mortgage-backed securities spreads high-yield credit stress 2026",
+          "real estate debt fund liquidity conditions tightening credit markets March 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "breakdown_traditional_diversification",
+      "title": "Stocks, bonds, and gold all decline simultaneously as real yields and dollar strengthen",
+      "summary": "A rare environment has emerged where equities, Treasuries, and gold are all under pressure at the same time. Rising real yields and a 2-3% stronger US dollar have increased the opportunity cost of holding non-yielding assets, while inflation repricing has pushed bond prices lower. Traditional portfolio hedges are failing.",
+      "why_now": "This dynamic intensified through March as the Iran conflict drove inflation expectations higher while the Fed signaled no imminent easing. The simultaneous failure of traditional hedges is forcing portfolio rebalancing and creating stress in multi-asset strategies.",
+      "market_relevance": "When diversification breaks down, volatility-targeting strategies and risk-parity funds are forced to deleverage, amplifying selling pressure. The stronger dollar pressures multinational earnings and emerging market debt. Investors are being pushed into cash and short-duration instruments as the only effective hedge.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://argentfinancial.com/argent-insights/market-perspectives-march-2026/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "risk parity fund deleveraging forced selling March 2026 market impact",
+          "S&P 500 multinational earnings impact stronger US dollar Q1 2026",
+          "volatility index VIX term structure March 2026 hedging costs",
+          "emerging market equity and debt outflows dollar strength March 2026"
+        ],
+        "real_estate": [
+          "rising real yields impact on REIT valuations cap rate expansion 2026",
+          "foreign investor US real estate demand stronger dollar impact 2026",
+          "real estate as inflation hedge effectiveness when bonds and gold fail 2026"
+        ]
+      }
+    }
+  ]
+}

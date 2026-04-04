@@ -1,0 +1,190 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "publish_date": "2026-04-01",
+    "publish_display_date": "April 1, 2026",
+    "target_date": "2026-03-31",
+    "display_date": "March 31, 2026",
+    "window_summary": "2026-03-31 00:00 EDT to 2026-03-31 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "1",
+      "title": "FOMC holds rates steady in March 2026; dot plot converges on one cut for remainder of year",
+      "summary": "The March 2026 FOMC meeting (concluded March 18) kept the federal funds rate at 3.5%-3.75%. The dot plot and market-implied probabilities now converge on at most one additional cut in 2026, a hawkish shift from earlier expectations of two cuts. Core PCE rose to 3.1% in January, reinforcing the Fed's caution. The market has repriced from ~2 cuts to ~1 cut for the rest of the year.",
+      "why_now": "The March FOMC statement and press conference are the most recent policy signal. The repricing from two expected cuts to one is a meaningful tightening of financial conditions expectations that would ripple through equity valuations, bond yields, and mortgage rates within the March 31 window.",
+      "market_relevance": "Fewer rate cuts than previously expected tighten financial conditions at the margin. This pressures rate-sensitive sectors (REITs, utilities, homebuilders, growth/tech), supports bank net interest margins, and keeps mortgage rates elevated, dampening housing affordability and transaction volumes.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://www.ainvest.com/news/federal-reserve-policy-market-reaction-weakening-labor-market-2026-2601",
+        "https://am.jpmorgan.com/us/en/asset-management/liq/insights/portfolio-insights/fixed-income/fixed-income-perspectives/fomc-statement-march-2026/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Impact of fewer 2026 Fed rate cuts on S&P 500 growth stock valuations",
+          "Bank sector net interest margin outlook with rates at 3.5%-3.75% through 2026",
+          "REIT and utility sector performance when rate cut expectations are repriced higher",
+          "Homebuilder stock earnings revisions March 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate forecast after March 2026 FOMC holds rates steady",
+          "Housing affordability index trend with fewer expected rate cuts in 2026",
+          "Refinancing application volume March 2026 after hawkish FOMC repricing",
+          "Commercial real estate cap rate adjustment to higher-for-longer rate environment 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "2",
+      "title": "February 2026 non-farm payrolls show unexpected loss of 92,000 jobs",
+      "summary": "The February 2026 jobs report showed the U.S. economy unexpectedly lost 92,000 jobs versus an expected gain of 55,000. Unemployment edged up to 4.4%. This is the weakest labor print in the current cycle and signals a potential inflection toward recession-like labor dynamics.",
+      "why_now": "This data was released in early March and is the freshest hard economic data informing market positioning on March 31. The magnitude of the miss (negative vs. positive consensus) is a significant shock that raises recession probability estimates.",
+      "market_relevance": "A sharply negative payrolls print raises recession risk, which is bearish for cyclical equities, consumer discretionary, and credit spreads. It is also bearish for commercial real estate occupancy and rent growth. However, it creates a tug-of-war with the Fed's inflation concerns, limiting the policy response.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Recession probability models after February 2026 negative payrolls",
+          "Consumer discretionary sector earnings risk from rising unemployment 2026",
+          "High yield credit spread widening after weak February 2026 jobs report",
+          "Staffing company stock performance after negative NFP print"
+        ],
+        "real_estate": [
+          "Rental vacancy rate trends in major metros with rising unemployment 2026",
+          "Office space demand impact from job losses February 2026",
+          "Multifamily rent growth deceleration amid weakening labor market 2026",
+          "Housing demand impact from rising unemployment rate 4.4% 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "3",
+      "title": "War in Iran drives energy price spike and inflation uncertainty",
+      "summary": "A Middle East conflict involving Iran is referenced as an active geopolitical event affecting energy prices and inflation expectations. The TreasurySpring analysis notes the war's pass-through effects on inflation, consumer spending, and growth are the key unknown for the FOMC and markets.",
+      "why_now": "The conflict appears to have escalated in the weeks before March 31, 2026. Energy price shocks feed into CPI within 1-2 months and immediately affect consumer sentiment, transportation costs, and corporate margins.",
+      "market_relevance": "Energy price spikes benefit oil & gas producers but hurt airlines, logistics, consumer discretionary, and any energy-intensive sector. For real estate, higher energy costs raise operating expenses for commercial properties and reduce consumer purchasing power for housing. The inflation impulse also reduces the probability of Fed rate cuts, keeping mortgage rates elevated.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Oil and gas sector stock performance during Iran conflict March 2026",
+          "Airline and logistics company margin compression from energy price spike 2026",
+          "Defense sector stock inflows during Middle East escalation March 2026",
+          "Consumer sentiment index impact from rising gasoline prices March 2026"
+        ],
+        "real_estate": [
+          "Commercial real estate operating cost increase from energy price spike 2026",
+          "Housing affordability impact from combined higher energy costs and sticky mortgage rates",
+          "Industrial real estate demand near energy infrastructure during Iran conflict",
+          "Sunbelt housing market sensitivity to gasoline price increases"
+        ]
+      }
+    },
+    {
+      "event_id": "4",
+      "title": "Fed leadership transition uncertainty: Powell vs. Warsh nomination battle",
+      "summary": "Fed Chair Jay Powell is pledging to stay until a DoJ investigation concludes or is dismissed. Senator Thom Tillis is attempting to block the nomination of Kevin Warsh as Powell's successor. Warsh, historically hawkish, has recently adopted a more dovish stance aligned with President Trump's preference for rate cuts. The leadership outcome could shift the FOMC's policy direction materially.",
+      "why_now": "This is an active political and institutional drama as of the March 18 FOMC press conference. The uncertainty over who will lead the Fed creates a policy volatility premium that markets must price on March 31.",
+      "market_relevance": "Fed chair transitions historically create volatility in rates markets. A Warsh appointment with dovish leanings could lead to faster rate cuts, boosting rate-sensitive assets. Continued Powell tenure maintains the current cautious approach. The uncertainty itself is a headwind for long-duration positioning.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Historical equity market volatility during Fed chair transitions",
+          "Kevin Warsh policy views and implications for financial sector regulation",
+          "Market pricing of Fed policy path under Warsh vs Powell scenarios 2026",
+          "Political risk premium in Treasury yields from Fed leadership uncertainty"
+        ],
+        "real_estate": [
+          "Mortgage rate volatility during Fed leadership transitions historical precedent",
+          "Housing market transaction volume sensitivity to policy uncertainty",
+          "CMBS spread impact from Fed governance uncertainty 2026",
+          "Builder confidence index during periods of monetary policy leadership change"
+        ]
+      }
+    },
+    {
+      "event_id": "5",
+      "title": "Core PCE inflation rises to 3.1%, well above Fed's 2% target",
+      "summary": "Core PCE inflation rose for a second consecutive month in January 2026 to 3.1%, confirming that inflation remains sticky and well above the Fed's 2% target. This is occurring even before the full pass-through of tariffs and the Iran conflict's energy price effects.",
+      "why_now": "The January core PCE reading was highlighted in the February FOMC minutes and is the most recent inflation data shaping market expectations. With tariff effects still feeding through and energy prices rising from the Iran conflict, the inflation trajectory is worsening.",
+      "market_relevance": "Persistent above-target inflation constrains the Fed's ability to cut rates even as the labor market weakens, creating a stagflationary dynamic. This is negative for bonds (higher real yields), growth stocks (higher discount rates), and real estate (higher cap rates and mortgage rates). TIPS and commodities may benefit.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://www.ainvest.com/news/federal-reserve-policy-market-reaction-weakening-labor-market-2026-2601"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Stagflation scenario equity sector performance historical analysis",
+          "TIPS ETF flows and breakeven inflation rates March 2026",
+          "Consumer staples vs discretionary relative performance in sticky inflation environment",
+          "Tariff pass-through timeline to consumer prices and corporate margins 2026"
+        ],
+        "real_estate": [
+          "Real estate cap rate expansion under persistent 3%+ inflation with no rate cuts",
+          "Rent growth vs wage growth gap with core PCE at 3.1% 2026",
+          "Commercial real estate debt refinancing risk with higher-for-longer rates",
+          "Inflation-adjusted home price trends in major US metros Q1 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "6",
+      "title": "Tariff effects still feeding through to prices, compounding inflation",
+      "summary": "TreasurySpring notes that the full effect of tariffs has not yet been reflected in inflation data, meaning core PCE at 3.1% may understate the true inflationary impulse. This adds another layer of upward price pressure on top of the Iran-related energy shock.",
+      "why_now": "Tariff pass-through operates on a lag of several months. As of March 31, 2026, the cumulative effect is still building, making forward inflation expectations increasingly uncertain and complicating Fed policy.",
+      "market_relevance": "Tariff-driven cost increases compress margins for importers, retailers, and manufacturers reliant on global supply chains. They also raise input costs for construction materials, directly affecting housing supply costs and commercial real estate development economics.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Retail sector margin compression from tariff cost pass-through 2026",
+          "US manufacturing input cost index trends Q1 2026",
+          "Import-dependent consumer electronics companies earnings guidance revisions",
+          "Domestic manufacturing stocks benefiting from tariff protection 2026"
+        ],
+        "real_estate": [
+          "Construction material cost inflation from tariffs impact on new housing starts 2026",
+          "Lumber and steel price trends affecting homebuilder costs Q1 2026",
+          "New home price increases attributable to tariff-driven input costs",
+          "Commercial construction project delays due to tariff-related cost overruns"
+        ]
+      }
+    },
+    {
+      "event_id": "7",
+      "title": "10-year Treasury yield expected to remain in 3.75%-4.25% range",
+      "summary": "LPL Research forecasts the 10-year Treasury yield to hover between 3.75% and 4.25% in 2026, reflecting a rangebound rate environment as the Fed maintains a 'slightly restrictive' stance. This range anchors mortgage rates and discount rates for asset valuations.",
+      "why_now": "With the March FOMC confirming the higher-for-longer stance and inflation remaining sticky, this yield range is being validated by market pricing as of March 31.",
+      "market_relevance": "A 10-year yield in the 3.75%-4.25% range keeps 30-year mortgage rates likely in the 6.5%-7.0% range, constraining housing demand and refinancing. For equities, it maintains pressure on long-duration growth stocks while supporting financial sector earnings. For commercial real estate, it keeps cap rates elevated and transaction volumes subdued.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.ainvest.com/news/federal-reserve-policy-market-reaction-weakening-labor-market-2026-2601"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Growth vs value stock performance with 10-year yield at 4% 2026",
+          "Investment grade corporate bond issuance trends Q1 2026",
+          "Equity risk premium compression with 10-year yield at 4%",
+          "Dividend stock attractiveness relative to Treasury yields March 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate forecast given 10-year Treasury at 4% 2026",
+          "Existing home sales volume with mortgage rates near 7% Q1 2026",
+          "Commercial real estate transaction volume with 10-year yield at 4%",
+          "Multifamily CMBS delinquency rates with sustained higher interest rates 2026"
+        ]
+      }
+    }
+  ]
+}

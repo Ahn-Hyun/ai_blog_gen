@@ -19,8 +19,8 @@ import sys
 import tempfile
 import time
 import zlib
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from dataclasses import dataclass, replace
+from datetime import date, datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from html.parser import HTMLParser
@@ -59,12 +59,12 @@ DEFAULT_SCRAPE_TIMEOUT = 12
 DEFAULT_SCRAPE_DELAY_SEC = 1.0
 DEFAULT_SCRAPE_MAX_RETRIES = 2
 DEFAULT_SCRAPE_BACKOFF_SEC = 5.0
-DEFAULT_GEMINI_MODEL = "gemini-3-pro-preview"
-DEFAULT_GEMINI_MODEL_CONTENT = DEFAULT_GEMINI_MODEL
-DEFAULT_GEMINI_MODEL_META = DEFAULT_GEMINI_MODEL
-DEFAULT_GEMINI_TEMPERATURE = 0.6
-DEFAULT_GEMINI_MAX_TOKENS = 60000
-DEFAULT_GEMINI_TIMEOUT_SEC = 900
+DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-6"
+DEFAULT_ANTHROPIC_MODEL_CONTENT = DEFAULT_ANTHROPIC_MODEL
+DEFAULT_ANTHROPIC_MODEL_META = DEFAULT_ANTHROPIC_MODEL
+DEFAULT_ANTHROPIC_TEMPERATURE = 0.6
+DEFAULT_ANTHROPIC_MAX_TOKENS = 60000
+DEFAULT_ANTHROPIC_TIMEOUT_SEC = 900
 DEFAULT_BLOG_DOMAIN = "blog.ship-write.com"
 DEFAULT_CONTENT_LANGUAGE = "English"
 DEFAULT_CONTENT_TONE = "neutral, informative"
@@ -96,6 +96,9 @@ DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO = "16:9"
 DEFAULT_GRADIENT_WIDTH = 1600
 DEFAULT_GRADIENT_HEIGHT = 900
 DEFAULT_GRADIENT_JPEG_QUALITY = 90
+MAX_INLINE_VISUALS = 4
+MAX_INLINE_CHARTS = 2
+MAX_GENERATED_INLINE_IMAGES = 2
 FINAL_REVIEW_MAX_HINTS = 16
 FINAL_REVIEW_SUSPICIOUS_PATTERNS = (
     r"\bhtt\b",
@@ -175,7 +178,35 @@ GOOGLE_NEWS_LANGUAGE_MAP = {
 }
 PIPELINE_RECENT = "recent"
 PIPELINE_HIGH_INTENT = "high-intent"
-PIPELINE_CHOICES = (PIPELINE_RECENT, PIPELINE_HIGH_INTENT)
+PIPELINE_DAILY_IMPACT = "daily-impact"
+PIPELINE_CHOICES = (PIPELINE_RECENT, PIPELINE_HIGH_INTENT, PIPELINE_DAILY_IMPACT)
+DAILY_IMPACT_DISCOVERY_TOPICS = (
+    "federal reserve policy inflation labor market unemployment treasury yields",
+    "housing market mortgage rates home sales homebuilder inventory affordability",
+    "trade tariffs sanctions foreign policy diplomacy supply chains shipping energy",
+    "congress white house fiscal policy tax budget regulation antitrust",
+    "banking credit spreads commercial real estate refinancing defaults lending standards",
+    "oil natural gas electricity utilities commodity prices weather disaster infrastructure",
+    "consumer confidence retail spending wages layoffs immigration population migration",
+    "earnings guidance layoffs bankruptcies mergers regulation court ruling",
+)
+DAILY_IMPACT_CATEGORY_LABELS = {
+    "stocks": "stocks",
+    "real_estate": "real-estate",
+}
+DAILY_IMPACT_TAG_HINTS = {
+    "stocks": ["market-impact", "stocks", "macro"],
+    "real_estate": ["market-impact", "real-estate", "housing"],
+}
+HIGH_INTENT_FIXED_TREND_SOURCE = "rss"
+HIGH_INTENT_FIXED_TREND_METHOD = "realtime_trending_searches"
+HIGH_INTENT_FIXED_TREND_LIMIT = 20
+HIGH_INTENT_FIXED_MIN_MATCHES = 1
+HIGH_INTENT_FIXED_MAX_TOPIC_RANK = 20
+HIGH_INTENT_FIXED_CATEGORIES = (
+    "real_estate",
+    "stocks",
+)
 TRENDSPYG_CATEGORIES = {
     "all",
     "autos",
@@ -230,124 +261,177 @@ DEFAULT_HIGH_INTENT_CATEGORY_HINTS = (
     "tech",
 )
 HIGH_INTENT_RSS_CATEGORY_KEYWORDS: dict[str, tuple[str, ...]] = {
-    "business": (
-        "saas",
-        "b2b",
-        "enterprise",
-        "subscription",
-        "pricing",
-        "invoice",
-        "billing",
-        "payroll",
-        "crm",
-        "erp",
-        "procurement",
-        "vendor",
-        "fintech",
-        "bank",
-        "banking",
-        "loan",
+    "real_estate": (
+        "real estate",
+        "real-estate",
+        "realestate",
+        "housing market",
+        "housing",
+        "home price",
+        "home prices",
+        "home sales",
+        "homebuyer",
         "mortgage",
-        "insurance",
-        "insurer",
-        "policy",
-        "premium",
-        "credit",
-        "credit card",
-        "debit",
-        "broker",
-        "investment",
-        "investor",
+        "mortgage rate",
+        "property",
+        "properties",
+        "apartment",
+        "apartments",
+        "condo",
+        "condos",
+        "rental",
+        "rent",
+        "lease",
+        "landlord",
+        "realtor",
+        "residential",
+        "commercial real estate",
+        "cre",
+    ),
+    "stocks": (
         "stock",
         "stocks",
+        "stock market",
+        "share price",
+        "shares",
+        "equity",
+        "equities",
+        "market cap",
+        "ipo",
+        "etf",
+        "earnings",
+        "dividend",
+        "nasdaq",
+        "nyse",
+        "dow",
+        "s&p",
+        "s&p 500",
+        "index",
+        "trading",
+        "trader",
+    ),
+    "finance": (
+        "finance",
+        "financial",
+        "personal finance",
+        "wealth",
+        "asset",
+        "assets",
+        "asset allocation",
+        "portfolio",
+        "investment",
+        "investing",
+        "savings",
+        "saving",
+        "deposit",
+        "interest rate",
+        "rate hike",
         "bond",
         "bonds",
-        "treasury",
-        "yield",
-        "rate",
-        "interest",
-        "forex",
-        "currency",
-        "dollar",
-        "index",
-        "cpi",
-        "inflation",
-        "earnings",
-        "guidance",
-        "ipo",
-        "sec",
+        "fund",
+        "funds",
+        "pension",
+        "retirement",
+        "insurance",
+        "tax",
+        "tax planning",
+        "재테크",
+        "제테크",
+        "자산관리",
+        "투자",
+        "저축",
+        "예금",
+        "적금",
+        "금리",
+        "채권",
+        "펀드",
+        "연금",
+        "보험",
+        "절세",
+        "세테크",
     ),
-    "jobs": (
-        "job",
-        "jobs",
-        "hiring",
-        "hire",
-        "recruit",
-        "recruiting",
-        "recruiter",
-        "resume",
-        "cv",
-        "interview",
-        "salary",
-        "compensation",
-        "layoff",
-        "layoffs",
-        "unemployment",
-        "career",
-        "internship",
-        "degree",
-        "university",
-        "college",
-        "school",
-        "tuition",
-        "scholarship",
-        "course",
-        "bootcamp",
-        "certification",
-        "training",
-        "exam",
-        "admission",
-        "student",
+    "entertainment": (
+        "entertainment",
+        "celebrity",
+        "celeb",
+        "actor",
+        "actress",
+        "singer",
+        "music",
+        "album",
+        "concert",
+        "movie",
+        "film",
+        "tv",
+        "series",
+        "drama",
+        "k-pop",
+        "kpop",
+        "idol",
+        "연예",
+        "연예인",
+        "배우",
+        "가수",
+        "드라마",
+        "영화",
+        "예능",
+        "콘서트",
+        "음악",
     ),
-    "technology": (
+    "side_hustle": (
+        "side hustle",
+        "side-hustle",
+        "sidehustle",
+        "side job",
+        "second job",
+        "part-time",
+        "part time",
+        "gig",
+        "freelance",
+        "freelancer",
+        "extra income",
+        "online business",
+        "affiliate",
+        "dropshipping",
+        "부업",
+        "부수입",
+        "n잡",
+        "투잡",
+        "알바",
+        "프리랜서",
+    ),
+    "tech": (
+        "tech",
+        "technology",
         "software",
+        "hardware",
         "app",
-        "application",
-        "api",
+        "apps",
         "cloud",
-        "aws",
-        "azure",
-        "gcp",
-        "google cloud",
-        "microsoft",
-        "github",
-        "gitlab",
-        "docker",
-        "kubernetes",
-        "devops",
+        "saas",
+        "startup",
         "cybersecurity",
         "security",
-        "sso",
-        "identity",
-        "database",
-        "analytics",
+        "data",
         "ai",
+        "artificial intelligence",
         "machine learning",
         "ml",
         "llm",
-        "model",
-        "sdk",
-        "framework",
-        "programming",
+        "semiconductor",
+        "chip",
         "developer",
-        "code",
-        "ide",
-        "automation",
-        "platform",
-        "tool",
-        "tools",
-        "integration",
-        "data",
+        "programming",
+        "tech stack",
+        "테크",
+        "기술",
+        "인공지능",
+        "소프트웨어",
+        "하드웨어",
+        "클라우드",
+        "보안",
+        "스타트업",
+        "반도체",
     ),
 }
 HIGH_INTENT_TEMPLATE_REQUIREMENTS = """
@@ -362,6 +446,21 @@ Rules:
 - Use only facts supported by the provided sources and citations.
 - Reuse existing citations inside the table or bullets when possible.
 - If evidence is thin, label details as "unknown" or "varies" and avoid numbers.
+""".strip()
+DAILY_IMPACT_TEMPLATE_REQUIREMENTS = """
+Template requirements (fixed order):
+1) Open with a concise thesis that explains why the prior day's event matters for the target market.
+2) Include one section that maps the transmission chain from event -> mechanism -> market effect.
+3) Include one section focused on the highest-signal evidence or data points from the prior day.
+4) Include one scenario section covering base case, upside, and downside with clear uncertainty.
+5) End with a "What to watch next" section listing concrete indicators or triggers.
+
+Rules:
+- Use visual variety at section breaks: combine concise Markdown tables with chart-friendly numeric context and image-friendly explanatory moments. Markdown tables should be used selectively because the pipeline may inject charts/images.
+- Do not rewrite the news chronologically.
+- Distinguish verified facts from inference or uncertainty.
+- Emphasize second-order effects, timing, and who is affected.
+- Keep the analysis grounded in the prior day's evidence and explicitly note when evidence is thin.
 """.strip()
 
 
@@ -418,12 +517,13 @@ class AutomationConfig:
     rss_max_articles_per_trend: int
     rss_cache: bool
     gemini_api_key: str
-    gemini_model: str
-    gemini_model_content: str
-    gemini_model_meta: str
-    gemini_temperature: float
-    gemini_max_tokens: int
-    gemini_timeout_sec: int
+    anthropic_api_key: str
+    anthropic_model: str
+    anthropic_model_content: str
+    anthropic_model_meta: str
+    anthropic_temperature: float
+    anthropic_max_tokens: int
+    anthropic_timeout_sec: int
     blog_domain: str
     content_language: str
     content_tone: str
@@ -569,16 +669,26 @@ def _build_config() -> AutomationConfig:
         gemini_api_key = google_api_key
     if not google_api_key and gemini_api_key:
         google_api_key = gemini_api_key
-    gemini_model = env.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
-    gemini_model_content = env.get("GEMINI_MODEL_CONTENT", gemini_model)
-    gemini_model_meta = env.get("GEMINI_MODEL_META", gemini_model)
-    gemini_temperature = _parse_float(env.get("GEMINI_TEMPERATURE"), DEFAULT_GEMINI_TEMPERATURE)
-    gemini_max_tokens = _parse_int(env.get("GEMINI_MAX_TOKENS"), DEFAULT_GEMINI_MAX_TOKENS)
-    gemini_timeout_sec = _parse_int(env.get("GEMINI_TIMEOUT_SEC"), DEFAULT_GEMINI_TIMEOUT_SEC)
-    if gemini_timeout_sec <= 0:
-        gemini_timeout_sec = DEFAULT_GEMINI_TIMEOUT_SEC
-    if gemini_timeout_sec > DEFAULT_GEMINI_TIMEOUT_SEC:
-        gemini_timeout_sec = DEFAULT_GEMINI_TIMEOUT_SEC
+    anthropic_api_key = env.get("ANTHROPIC_API_KEY", "").strip()
+    anthropic_model = env.get("ANTHROPIC_MODEL", DEFAULT_ANTHROPIC_MODEL)
+    anthropic_model_content = env.get("ANTHROPIC_MODEL_CONTENT", anthropic_model)
+    anthropic_model_meta = env.get("ANTHROPIC_MODEL_META", anthropic_model)
+    anthropic_temperature = _parse_float(
+        env.get("ANTHROPIC_TEMPERATURE"),
+        DEFAULT_ANTHROPIC_TEMPERATURE,
+    )
+    anthropic_max_tokens = _parse_int(
+        env.get("ANTHROPIC_MAX_TOKENS"),
+        DEFAULT_ANTHROPIC_MAX_TOKENS,
+    )
+    anthropic_timeout_sec = _parse_int(
+        env.get("ANTHROPIC_TIMEOUT_SEC"),
+        DEFAULT_ANTHROPIC_TIMEOUT_SEC,
+    )
+    if anthropic_timeout_sec <= 0:
+        anthropic_timeout_sec = DEFAULT_ANTHROPIC_TIMEOUT_SEC
+    if anthropic_timeout_sec > DEFAULT_ANTHROPIC_TIMEOUT_SEC:
+        anthropic_timeout_sec = DEFAULT_ANTHROPIC_TIMEOUT_SEC
 
     blog_domain = env.get("BLOG_DOMAIN", DEFAULT_BLOG_DOMAIN)
     if not blog_domain.startswith("http"):
@@ -712,12 +822,13 @@ def _build_config() -> AutomationConfig:
         rss_max_articles_per_trend=rss_max_articles,
         rss_cache=rss_cache,
         gemini_api_key=gemini_api_key,
-        gemini_model=gemini_model,
-        gemini_model_content=gemini_model_content,
-        gemini_model_meta=gemini_model_meta,
-        gemini_temperature=gemini_temperature,
-        gemini_max_tokens=gemini_max_tokens,
-        gemini_timeout_sec=gemini_timeout_sec,
+        anthropic_api_key=anthropic_api_key,
+        anthropic_model=anthropic_model,
+        anthropic_model_content=anthropic_model_content,
+        anthropic_model_meta=anthropic_model_meta,
+        anthropic_temperature=anthropic_temperature,
+        anthropic_max_tokens=anthropic_max_tokens,
+        anthropic_timeout_sec=anthropic_timeout_sec,
         blog_domain=blog_domain.rstrip("/"),
         content_language=content_language,
         content_tone=content_tone,
@@ -838,6 +949,15 @@ def _build_high_intent_filter_text(topic: dict) -> str:
     return " ".join(chunks).lower()
 
 
+def _keyword_matches(text: str, keyword: str) -> bool:
+    key = keyword.strip().lower()
+    if not key:
+        return False
+    if len(key) <= 3 and key.isascii() and key.isalnum():
+        return re.search(rf"\b{re.escape(key)}\b", text) is not None
+    return key in text
+
+
 def _filter_high_intent_rss_items(
     items: list[dict],
     categories: list[str],
@@ -860,7 +980,7 @@ def _filter_high_intent_rss_items(
         matched: list[str] = []
         for category in allowed:
             keywords = HIGH_INTENT_RSS_CATEGORY_KEYWORDS.get(category, ())
-            hits = sum(1 for kw in keywords if kw and kw in text)
+            hits = sum(1 for kw in keywords if kw and _keyword_matches(text, kw))
             if hits >= min_matches:
                 matched.append(category)
         if matched:
@@ -950,6 +1070,26 @@ def _ensure_list_of_strings(value) -> list[str]:
         if text:
             items.append(text)
     return items
+
+
+def _normalize_search_queries(value, *, limit: int = 8, max_length: int = 180) -> list[str]:
+    items = _ensure_list_of_strings(value)
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        text = re.sub(r"\s+", " ", str(item)).strip()
+        if not text:
+            continue
+        if len(text) > max_length:
+            text = _truncate_plain(text, max_length).rstrip(" ?!.,;:")
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        normalized.append(text)
+        if len(normalized) >= limit:
+            break
+    return normalized
 
 
 def _slugify(text: str) -> str:
@@ -1048,6 +1188,11 @@ def _truncate_plain(text: str, limit: int) -> str:
 
 def _extract_urls(item: dict) -> list[str]:
     urls: list[str] = []
+    source_urls = item.get("source_urls") or []
+    if isinstance(source_urls, list):
+        for value in source_urls:
+            if _is_valid_url(value) and str(value).startswith("http"):
+                urls.append(str(value))
     explore_link = item.get("explore_link")
     if _is_valid_url(explore_link) and explore_link.startswith("http"):
         urls.append(explore_link)
@@ -1123,7 +1268,27 @@ def _remove_ellipsis_sentences(line: str) -> str:
     return " ".join(kept).strip()
 
 
+def _strip_embedded_frontmatter_block(body: str) -> str:
+    if not body:
+        return body
+    match = re.match(
+        r"^\s*---\s*\n(?P<yaml>.*?)\n---\s*(?:\n+)?",
+        body,
+        flags=re.DOTALL,
+    )
+    if not match:
+        return body
+    yaml_block = match.group("yaml") or ""
+    if not re.search(
+        r"(?im)^\s*(title|description|primary_keyword|category|tags)\s*:",
+        yaml_block,
+    ):
+        return body
+    return body[match.end() :].lstrip("\n")
+
+
 def _clean_body_text(body: str) -> str:
+    body = _strip_embedded_frontmatter_block(body)
     cleaned_lines: list[str] = []
     for line in body.splitlines():
         stripped = line.strip()
@@ -1281,7 +1446,8 @@ def _source_snippets(sources: list[dict], limit: int = 3) -> list[str]:
             continue
         url = source.get("url") or ""
         if _is_valid_url(url):
-            sentence = f"{sentence} ({_format_reference(url)})"
+            source_name = _ensure_ascii_text(urlparse(url).netloc, "Source")
+            sentence = f"{sentence} (Source: {source_name})"
         snippets.append(sentence)
         if len(snippets) >= limit:
             break
@@ -1359,38 +1525,54 @@ def _save_state(state: dict) -> None:
     write_json(state_path, state)
 
 
-class GeminiClient:
+class ClaudeClient:
     def __init__(self, api_key: str, model: str, timeout_sec: int) -> None:
         self.api_key = api_key
         self.model = model
         self.timeout_sec = max(1, timeout_sec)
-        self.base_url = "https://generativelanguage.googleapis.com/v1beta"
+        self.base_url = "https://api.anthropic.com/v1/messages"
 
-    def generate(self, prompt: str, *, temperature: float, max_tokens: int) -> str:
-        if not self.api_key:
-            raise RuntimeError("GEMINI_API_KEY is not set.")
-        url = f"{self.base_url}/models/{self.model}:generateContent?key={self.api_key}"
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "temperature": temperature,
-                "maxOutputTokens": max_tokens,
-            },
-        }
+    def _post(self, payload: dict) -> dict:
         request = Request(
-            url,
+            self.base_url,
             data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "x-api-key": self.api_key,
+                "anthropic-api-key": self.api_key,
+                "anthropic-version": "2023-06-01",
+            },
             method="POST",
         )
         with urlopen(request, timeout=self.timeout_sec) as response:
-            data = json.loads(response.read().decode("utf-8"))
-        candidates = data.get("candidates", [])
-        if not candidates:
-            raise RuntimeError("Gemini returned no candidates.")
-        parts = candidates[0].get("content", {}).get("parts", [])
-        text_parts = [part.get("text", "") for part in parts if isinstance(part, dict)]
-        return "\n".join(text_parts).strip()
+            return json.loads(response.read().decode("utf-8"))
+
+    @staticmethod
+    def _extract_text(data: dict) -> str:
+        blocks = data.get("content", [])
+        if not isinstance(blocks, list):
+            raise RuntimeError("Claude returned no content blocks.")
+        text_parts = [
+            block.get("text", "")
+            for block in blocks
+            if isinstance(block, dict) and block.get("type") == "text"
+        ]
+        text = "\n".join(part for part in text_parts if part).strip()
+        if not text:
+            raise RuntimeError("Claude returned no text.")
+        return text
+
+    def generate(self, prompt: str, *, temperature: float, max_tokens: int) -> str:
+        if not self.api_key:
+            raise RuntimeError("ANTHROPIC_API_KEY is not set.")
+        payload = {
+            "model": self.model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
+        }
+        data = self._post(payload)
+        return self._extract_text(data)
 
     def generate_with_image(
         self,
@@ -1402,35 +1584,32 @@ class GeminiClient:
         max_tokens: int,
     ) -> str:
         if not self.api_key:
-            raise RuntimeError("GEMINI_API_KEY is not set.")
+            raise RuntimeError("ANTHROPIC_API_KEY is not set.")
         if not image_bytes:
             raise RuntimeError("Image bytes are empty.")
-        url = f"{self.base_url}/models/{self.model}:generateContent?key={self.api_key}"
-        inline_data = {
-            "mimeType": mime_type,
-            "data": base64.b64encode(image_bytes).decode("utf-8"),
-        }
         payload = {
-            "contents": [{"parts": [{"text": prompt}, {"inlineData": inline_data}]}],
-            "generationConfig": {
-                "temperature": temperature,
-                "maxOutputTokens": max_tokens,
-            },
+            "model": self.model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": mime_type,
+                                "data": base64.b64encode(image_bytes).decode("utf-8"),
+                            },
+                        },
+                        {"type": "text", "text": prompt},
+                    ],
+                }
+            ],
         }
-        request = Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        with urlopen(request, timeout=self.timeout_sec) as response:
-            data = json.loads(response.read().decode("utf-8"))
-        candidates = data.get("candidates", [])
-        if not candidates:
-            raise RuntimeError("Gemini returned no candidates.")
-        parts = candidates[0].get("content", {}).get("parts", [])
-        text_parts = [part.get("text", "") for part in parts if isinstance(part, dict)]
-        return "\n".join(text_parts).strip()
+        data = self._post(payload)
+        return self._extract_text(data)
 
 
 def _extract_json_block(text: str) -> dict | None:
@@ -1710,6 +1889,55 @@ def _parse_pub_date(value: str | None) -> str | None:
         return None
 
 
+def _parse_datetime_value(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        parsed = _parse_pub_date(value)
+        if not parsed:
+            return None
+        try:
+            return datetime.fromisoformat(parsed.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+
+
+def _previous_day_window(
+    content_timezone: ZoneInfo,
+    *,
+    publish_date: date | None = None,
+) -> tuple[datetime, datetime]:
+    base_date = publish_date or datetime.now(content_timezone).date()
+    target_date = base_date - timedelta(days=1)
+    start = datetime(target_date.year, target_date.month, target_date.day, tzinfo=content_timezone)
+    end = start + timedelta(days=1) - timedelta(microseconds=1)
+    return start, end
+
+
+def _build_window_labels(start: datetime, end: datetime, *, publish_date: date) -> dict[str, str]:
+    return {
+        "publish_date": publish_date.strftime("%Y-%m-%d"),
+        "publish_display_date": publish_date.strftime("%B %-d, %Y"),
+        "target_date": start.strftime("%Y-%m-%d"),
+        "display_date": start.strftime("%B %-d, %Y"),
+        "window_summary": (
+            f"{start.strftime('%Y-%m-%d %H:%M %Z')} to {end.strftime('%Y-%m-%d %H:%M %Z')}"
+        ),
+    }
+
+
+def _is_within_window(value: str | None, start: datetime, end: datetime) -> bool:
+    parsed = _parse_datetime_value(value)
+    if parsed is None:
+        return False
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    localized = parsed.astimezone(start.tzinfo or timezone.utc)
+    return start <= localized <= end
+
+
 def _search_news_rss(
     query: str,
     *,
@@ -1841,6 +2069,98 @@ def _search_web_tavily(
         )
     logging.info("Tavily search results: %s (query=%s)", len(results), query)
     return results
+
+
+def _collect_candidates_for_queries(
+    config: AutomationConfig,
+    *,
+    queries: list[str],
+    region: str,
+    language: str,
+    window_start: datetime | None = None,
+    window_end: datetime | None = None,
+    web_limit: int | None = None,
+    rss_limit: int | None = None,
+) -> list[dict]:
+    normalized_queries = [query.strip() for query in queries if query and query.strip()]
+    if not normalized_queries:
+        return []
+    candidates: list[dict] = []
+    web_budget = max(web_limit or config.search_web_max_results, 0)
+    rss_budget = max(rss_limit or config.search_rss_max_results, 0)
+    web_added = 0
+    rss_added = 0
+    for query in normalized_queries:
+        if config.search_web_enabled and config.tavily_api_key and web_added < web_budget:
+            remaining = min(config.search_web_max_per_query, web_budget - web_added)
+            results = _search_web_tavily(
+                query,
+                max_results=max(remaining, 0),
+                config=config,
+                search_depth="advanced",
+                include_answer=True,
+            )
+            candidates.extend(results)
+            web_added += len(results)
+        if config.search_rss_enabled and rss_added < rss_budget:
+            remaining = min(config.search_rss_max_per_query, rss_budget - rss_added)
+            results = _search_news_rss(
+                query,
+                region=region,
+                language=language,
+                max_results=max(remaining, 0),
+                config=config,
+            )
+            candidates.extend(results)
+            rss_added += len(results)
+        if web_added >= web_budget and rss_added >= rss_budget:
+            break
+    deduped = _dedupe_candidates(candidates)
+    if window_start and window_end:
+        in_window = [
+            candidate
+            for candidate in deduped
+            if _is_within_window(str(candidate.get("published_at") or ""), window_start, window_end)
+        ]
+        if len(in_window) >= min(3, len(deduped)):
+            return in_window
+        if in_window:
+            merged = in_window[:]
+            seen = {_normalize_url_for_dedupe(str(item.get("url") or "")) for item in in_window}
+            for candidate in deduped:
+                normalized = _normalize_url_for_dedupe(str(candidate.get("url") or ""))
+                if normalized in seen:
+                    continue
+                merged.append(candidate)
+            return merged
+    return deduped
+
+
+def _gather_raw_sources_for_queries(
+    config: AutomationConfig,
+    *,
+    queries: list[str],
+    region: str,
+    language: str,
+    window_start: datetime | None = None,
+    window_end: datetime | None = None,
+    max_sources: int | None = None,
+    web_limit: int | None = None,
+    rss_limit: int | None = None,
+) -> list[dict]:
+    candidates = _collect_candidates_for_queries(
+        config,
+        queries=queries,
+        region=region,
+        language=language,
+        window_start=window_start,
+        window_end=window_end,
+        web_limit=web_limit,
+        rss_limit=rss_limit,
+    )
+    if not candidates:
+        return []
+    return _fetch_sources_from_candidates(candidates, config, max_sources=max_sources)
 
 
 def _extract_web_content_tavily(
@@ -2108,13 +2428,18 @@ def _fetch_sources_from_candidates(
             if limit is not None and len(sources) >= limit:
                 break
             normalized = _normalize_url_for_dedupe(url)
+            candidate = candidate_by_url.get(normalized, {})
             item = extracted_map.get(normalized)
+            fallback_text = str(candidate.get("snippet") or "").strip()
             if not item:
                 missing_extracts += 1
-                continue
-            content = str(item.get("content") or "").strip()
+                if not fallback_text:
+                    continue
+            content = str(item.get("content") or "").strip() if item else ""
             if not content:
                 empty_content += 1
+                content = fallback_text
+            if not content:
                 continue
             cleaned = _truncate(re.sub(r"\s+", " ", content), config.max_source_chars)
             if total_chars >= config.max_total_source_chars:
@@ -2132,11 +2457,10 @@ def _fetch_sources_from_candidates(
                 total_chars += len(cleaned)
             if not cleaned:
                 continue
-            candidate = candidate_by_url.get(normalized, {})
             sources.append(
                 {
                     "url": url,
-                    "title": item.get("title") or candidate.get("title") or "Untitled",
+                    "title": (item.get("title") if item else None) or candidate.get("title") or "Untitled",
                     "publisher": candidate.get("publisher") or urlparse(url).netloc,
                     "published_at": candidate.get("published_at") or None,
                     "text": cleaned,
@@ -2157,6 +2481,7 @@ def _fetch_sources_from_candidates(
 def _build_content_prompt(
     keyword: str,
     region: str,
+    angle: str | None,
     traffic: str | None,
     sources: list[dict],
     image_urls: list[str],
@@ -2193,6 +2518,9 @@ def _build_content_prompt(
     template_block = ""
     if template_mode == PIPELINE_HIGH_INTENT:
         template_block = f"\n\n{HIGH_INTENT_TEMPLATE_REQUIREMENTS}"
+    elif template_mode == PIPELINE_DAILY_IMPACT:
+        template_block = f"\n\n{DAILY_IMPACT_TEMPLATE_REQUIREMENTS}"
+    angle_block = f"Angle: {angle}\n" if angle else ""
 
     return f"""
 Role: Columnist and investigative writer.
@@ -2200,7 +2528,7 @@ Write in {language} only. ASCII characters only.
 
 Primary keyword: {keyword}
 Region: {region}
-Traffic: {traffic or "unknown"}
+{angle_block}Traffic: {traffic or "unknown"}
 
 Source notes (use these to build original analysis, not a list of links):
 {sources_text}
@@ -2208,7 +2536,7 @@ Source notes (use these to build original analysis, not a list of links):
 Image URLs you MUST embed in the body (use Markdown images):
 {images_text}
 
-Reference URLs (include in a final reference list):
+Reference URLs (frontmatter metadata only, never in body text):
 {refs_text}
 
 Output JSON only. {CONTENT_JSON_SCHEMA}
@@ -2222,16 +2550,14 @@ SEO requirements:
 Editorial requirements:
 - Write a full topic column, not a summary or bullet digest.
 - Provide depth: background, recent trigger, evidence/data, stakeholder impact, and forward-looking analysis.
-- Include at least 3 inline citations with Markdown links inside paragraphs.
 - Do NOT use the headings "Overview", "Key Points", or "Implications".
 - Use 4-7 meaningful section headings tailored to the story.
 - Include an opening paragraph with a clear angle, and a closing paragraph with a takeaway.
-- Integrate at least 2 source links inline in the body (e.g., "According to [Source](url)...").
+- Mention source names as plain text (e.g. "According to Nuveen") but do NOT include any hyperlinks, URLs, or Markdown link syntax in the body. All URLs belong in frontmatter only.
 - {image_requirement}
-- Avoid listing raw URLs; all URLs must be Markdown links.
 - Do not tell readers to click the links for details; include the details in the column.
 - Never include ellipses or truncated fragments. Rewrite into complete sentences.
-- Target 5000-6000 words total.
+- Target 2200-3200 words total.
 - Do not include frontmatter.
 {template_block}
 """.strip()
@@ -2393,6 +2719,85 @@ Output JSON:
     return _compose_prompt(system, user)
 
 
+def _build_daily_event_map_prompt(*, window_label: str, raw_sources_json: str) -> str:
+    system = """
+You are a market-aware news analyst.
+Review prior-day source material and extract only events that could plausibly move stocks or real estate.
+You must think in causal chains, not headlines.
+For each event, identify likely transmission mechanisms and propose follow-up searches for stocks and real estate separately.
+""".strip()
+    user = f"""
+Time window: {window_label}
+
+Raw sources:
+{raw_sources_json}
+
+Output JSON:
+{{
+  "events": [
+    {{
+      "event_id": "...",
+      "title": "...",
+      "summary": "...",
+      "why_now": "...",
+      "market_relevance": "...",
+      "evidence_urls": ["..."],
+      "priority": "high|medium|low",
+      "follow_up_queries": {{
+        "stocks": ["..."],
+        "real_estate": ["..."]
+      }}
+    }}
+  ]
+}}
+
+Rules:
+- Use only the provided sources.
+- Keep only 4-8 events with meaningful market relevance.
+- Follow-up queries must search for second-order effects, not repeat the same headline.
+- Stocks queries should focus on sectors, earnings, capital flows, regulation, rates, costs, or sentiment.
+- Real-estate queries should focus on mortgage rates, affordability, housing demand, supply, refinancing, commercial real estate, or regional spillovers.
+- If evidence is thin, lower priority and keep the summary cautious.
+""".strip()
+    return _compose_prompt(system, user)
+
+
+def _build_daily_lane_selector_prompt(*, lane: str, window_label: str, events_json: str) -> str:
+    lane_label = "stocks" if lane == "stocks" else "real estate"
+    system = f"""
+You are selecting the single best {lane_label} analysis topic for a daily market briefing.
+Choose the event with the clearest evidence, strongest transmission mechanism, and best potential for an original analysis article.
+Prefer topics where the market consequence is more important than the headline itself.
+""".strip()
+    user = f"""
+Time window: {window_label}
+Target lane: {lane_label}
+
+Candidate events JSON:
+{events_json}
+
+Output JSON:
+{{
+  "keyword": "...",
+  "title": "...",
+  "angle": "...",
+  "why_now": "...",
+  "focus_points": ["..."],
+  "queries": ["..."],
+  "source_urls": ["..."],
+  "risk": "low|medium|high"
+}}
+
+Rules:
+- Pick exactly one event.
+- The angle must explain the mechanism and likely impact on {lane_label}.
+- queries must extend the original event into actionable follow-up research.
+- focus_points should be 3-5 concise analytical questions or subtopics.
+- Avoid generic titles like "latest updates" or "what happened".
+""".strip()
+    return _compose_prompt(system, user)
+
+
 def _build_web_research_prompt(
     *,
     queries: list[str],
@@ -2496,6 +2901,8 @@ Template requirements:
 - Include at least one section focused on pricing/cost or decision criteria.
 - Ensure headings fit high-intent readers looking for choices or fixes.
 """.strip()
+    elif template_mode == PIPELINE_DAILY_IMPACT:
+        template_block = DAILY_IMPACT_TEMPLATE_REQUIREMENTS
     user = f"""
 Topic: {keyword}
 Angle: {angle}
@@ -2559,6 +2966,57 @@ Rules:
     return _compose_prompt(system, user)
 
 
+def _build_chart_plan_prompt(
+    *,
+    keyword: str,
+    angle: str,
+    summary: str,
+    key_points: list[str],
+    body_excerpt: str,
+) -> str:
+    key_points_text = "\n".join(f"- {point}" for point in key_points) or "- None"
+    return f"""
+SYSTEM:
+You are a data-visual planner for financial/market explainers.
+Return a compact JSON plan for up to 2 simple charts.
+
+USER:
+Topic: {keyword}
+Angle: {angle}
+Summary: {summary}
+Key points:
+{key_points_text}
+
+Body excerpt:
+{body_excerpt}
+
+Rules:
+- Use only numeric relationships explicitly stated in the input.
+- Do not infer or invent values. If evidence is insufficient, return an empty chart list.
+- chart_type must be one of: bar, line.
+- labels and values must be equal length (2-6 items).
+- values must be numbers only.
+- Keep captions concise and factual.
+- alt_text must describe the chart clearly.
+- Output JSON only with this exact shape.
+
+Output JSON:
+{{
+  "charts": [
+    {{
+      "title": "...",
+      "chart_type": "bar|line",
+      "labels": ["..."],
+      "values": [1.0, 2.0],
+      "unit": "...",
+      "alt_text": "...",
+      "caption": "..."
+    }}
+  ]
+}}
+""".strip()
+
+
 def _build_section_writer_prompt(
     *,
     section_heading: str,
@@ -2570,8 +3028,8 @@ def _build_section_writer_prompt(
     system = """
 You are a section writer for a single part of the article.
 Write with precision and evidence. Do not invent facts.
-Every factual statement must be supported by a citation.
-Use Markdown links for citations and avoid raw URLs.
+Ground factual statements in the provided evidence and sources.
+Mention source names as plain text only; do not include hyperlinks, URLs, or Markdown links in the body.
 If evidence is thin, be cautious and state uncertainty explicitly.
 """.strip()
     user = f"""
@@ -2583,8 +3041,8 @@ Language: {language}
 
 Writing rules:
 - 4-7 paragraphs, 4-6 sentences each
-- Include at least 2 inline citations with Markdown links
-- Do not make claims without citations
+- Mention source names as plain text only (for example, "According to Nuveen")
+- Do not make unsupported claims
 - Avoid hype or sensational wording
 - Do not add a heading; the assembler will add it
 - Prefer clear cause -> evidence -> implication flow
@@ -2610,12 +3068,15 @@ def _build_assembler_prompt(
 You are the editor in chief.
 Assemble sections into a coherent article with smooth transitions.
 Add an intro, conclusion, and FAQ without adding new facts.
-Preserve all citations and do not invent sources.
+Preserve source attributions as plain text names only and do not invent sources.
+Do not include hyperlinks, raw URLs, or Markdown link syntax in the body.
 Maintain a consistent voice and avoid redundancy across sections.
 """.strip()
     template_block = ""
     if template_mode == PIPELINE_HIGH_INTENT:
         template_block = f"\n{HIGH_INTENT_TEMPLATE_REQUIREMENTS}"
+    elif template_mode == PIPELINE_DAILY_IMPACT:
+        template_block = f"\n{DAILY_IMPACT_TEMPLATE_REQUIREMENTS}"
     user = f"""
 Inputs:
 sections: {json.dumps(section_mdx_list, ensure_ascii=True)}
@@ -2630,6 +3091,7 @@ Requirements:
 - Intro should set scope and "why now" context using existing evidence
 - Conclusion should summarize evidence and note remaining uncertainties
 - FAQ answers must be concise and evidence-based
+- Mention source names as plain text only; do not include hyperlinks, URLs, or Markdown link syntax in the body. All URLs belong in frontmatter only.
 - Target 5000-6000 words total
 {template_block}
 
@@ -2651,7 +3113,7 @@ Input:
 {full_mdx}
 
 Checklist:
-- Every factual claim has a citation
+- Factual claims are supported by source attribution in plain text (no hyperlinks)
 - Primary keyword appears in title, first paragraph, and conclusion
 - Sections are specific and non generic
 - Paragraphs are not overly long
@@ -2682,7 +3144,7 @@ def _build_final_review_prompt(
     system = """
 You are a meticulous MDX editor and QA reviewer.
 Check sentence structure, grammar, and scraping artifacts.
-Never add new facts or sources. Preserve citations and Markdown links.
+Never add new facts or sources. Keep source names as plain text only and remove hyperlinks/URLs from the body.
 """.strip()
     hints_block = json.dumps(hints, ensure_ascii=True)
     user = f"""
@@ -2698,8 +3160,7 @@ Suspicious snippets (if any):
 Review focus:
 - Sentences are grammatical and complete
 - No UI/ads/navigation remnants or garbage text
-- No broken URLs or partial links (e.g., "htt")
-- No empty Markdown links/images
+- No hyperlinks or URLs in body text
 - Markdown structure remains valid
 
 Decision:
@@ -2728,7 +3189,7 @@ def _build_mdx_render_guard_prompt(*, full_mdx: str, hints: list[str]) -> str:
     system = """
 You are an MDX rendering QA editor.
 Fix MDX/JSX syntax issues that could break rendering.
-Never add new facts or sources. Preserve citations and Markdown links.
+Never add new facts or sources. Keep source names as plain text only and remove hyperlinks/URLs from the body.
 """.strip()
     hints_block = json.dumps(hints, ensure_ascii=True)
     user = f"""
@@ -2740,8 +3201,8 @@ Suspicious snippets (if any):
 
 Review focus:
 - Void HTML elements must be self-closing (e.g., <br />, <img />).
-- Fix malformed tags, broken links, or stray angle brackets in plain text.
-- Preserve tables, headings, and citations.
+- Fix malformed tags or stray angle brackets in plain text.
+- Preserve tables, headings, and source attributions as plain text names only.
 
 Decision:
 - status=pass if clean
@@ -2768,7 +3229,7 @@ def _build_revision_prompt(*, full_mdx: str, issues_json: str, keyword: str) -> 
     system = """
 You are a senior editor revising an article to address quality issues.
 You must fix the issues without adding new facts or sources.
-Preserve existing citations and only adjust wording or structure.
+Preserve existing source attributions as plain text names and only adjust wording or structure.
 """.strip()
     user = f"""
 Article:
@@ -2781,7 +3242,7 @@ Rules:
 - Do not add new claims or sources.
 - Keep the primary keyword "{keyword}" in the first paragraph and conclusion.
 - Keep paragraphs short and avoid redundancy.
-- Preserve all Markdown links.
+- Mention source names as plain text only; do not include hyperlinks, URLs, or Markdown link syntax in the body.
 
 Output (MDX):
 revised article body
@@ -2868,10 +3329,10 @@ Output JSON:
 
 def _describe_image_urls(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     image_urls: list[str],
 ) -> list[dict]:
-    if not image_urls or not config.gemini_api_key:
+    if not image_urls or not config.anthropic_api_key:
         return []
     prompt = _build_image_description_prompt()
     results: list[dict] = []
@@ -2894,8 +3355,8 @@ def _describe_image_urls(
                 prompt,
                 image_bytes,
                 mime_type,
-                temperature=min(config.gemini_temperature, 0.4),
-                max_tokens=min(config.gemini_max_tokens, 600),
+                temperature=min(config.anthropic_temperature, 0.4),
+                max_tokens=min(config.anthropic_max_tokens, 600),
             )
             data = _extract_json_block(response)
         except Exception as exc:
@@ -3051,6 +3512,241 @@ def _ensure_images_in_body(body: str, image_urls: list[str], alt_text: str) -> s
         insert_at = 2 if len(parts) > 2 else len(parts)
     parts[insert_at:insert_at] = blocks
     return "\n\n".join(parts)
+
+
+def _xml_escape(text: str) -> str:
+    return (
+        str(text)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def _normalize_chart_specs(raw: object) -> list[dict]:
+    if not isinstance(raw, list):
+        return []
+    normalized: list[dict] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        chart_type = str(item.get("chart_type") or "").strip().lower()
+        if chart_type not in {"bar", "line"}:
+            continue
+        labels = [
+            _ensure_ascii_text(str(label).strip(), "")
+            for label in (item.get("labels") or [])
+            if str(label).strip()
+        ]
+        values_raw = item.get("values") or []
+        values: list[float] = []
+        for value in values_raw:
+            try:
+                values.append(float(value))
+            except (TypeError, ValueError):
+                values = []
+                break
+        if len(labels) < 2 or len(labels) > 6 or len(labels) != len(values):
+            continue
+        if max(values) == min(values):
+            continue
+        normalized.append(
+            {
+                "title": _ensure_ascii_text(str(item.get("title") or "Market signal").strip(), "Market signal"),
+                "chart_type": chart_type,
+                "labels": labels,
+                "values": values,
+                "unit": _ensure_ascii_text(str(item.get("unit") or "").strip(), ""),
+                "alt_text": _ensure_ascii_text(
+                    str(item.get("alt_text") or item.get("title") or "Chart").strip(),
+                    "Chart",
+                ),
+                "caption": _ensure_ascii_text(str(item.get("caption") or "").strip(), ""),
+            }
+        )
+        if len(normalized) >= MAX_INLINE_CHARTS:
+            break
+    return normalized
+
+
+def _plan_inline_charts(
+    config: AutomationConfig,
+    writer: ClaudeClient,
+    *,
+    keyword: str,
+    angle: str,
+    summary: str,
+    key_points: list[str],
+    body: str,
+) -> list[dict]:
+    prompt = _build_chart_plan_prompt(
+        keyword=keyword,
+        angle=angle,
+        summary=summary,
+        key_points=key_points,
+        body_excerpt=_truncate(_strip_markdown(body), 2200),
+    )
+    try:
+        response = writer.generate(
+            prompt,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
+        )
+        data = _extract_json_block(response)
+    except Exception as exc:
+        logging.warning("Chart planning failed: %s", exc)
+        return []
+    if not isinstance(data, dict):
+        return []
+    return _normalize_chart_specs(data.get("charts"))
+
+
+def _fallback_daily_impact_chart_spec(
+    *,
+    keyword: str,
+    summary: str,
+    key_points: list[str],
+    body: str,
+) -> dict:
+    text = " ".join([summary, " ".join(key_points), _truncate(_strip_markdown(body), 2400)]).lower()
+    factor_tokens = [
+        ("Inflation", ("inflation", "cpi", "price", "prices")),
+        ("Rates", ("yield", "yields", "rate", "rates", "fed")),
+        ("Growth", ("growth", "gdp", "demand", "jobs", "employment")),
+        ("Risk", ("risk", "volatility", "uncertainty", "downside", "stress")),
+    ]
+    labels: list[str] = []
+    values: list[float] = []
+    for idx, (label, tokens) in enumerate(factor_tokens, start=1):
+        score = 0
+        for token in tokens:
+            score += text.count(token)
+        score = max(score, 1)
+        score += idx * 0.1
+        labels.append(label)
+        values.append(round(float(score), 2))
+    return {
+        "title": _ensure_ascii_text(f"{keyword} macro signal emphasis", "Macro signal emphasis"),
+        "chart_type": "bar",
+        "labels": labels,
+        "values": values,
+        "unit": "signal score",
+        "alt_text": _ensure_ascii_text(
+            f"Heuristic macro signal emphasis chart for {keyword}",
+            "Heuristic macro signal emphasis chart",
+        ),
+        "caption": "Pipeline fallback chart based on topic emphasis in the article text.",
+    }
+
+
+def _render_chart_svg(spec: dict) -> str:
+    width = 1000
+    height = 560
+    left = 90
+    right = 50
+    top = 90
+    bottom = 130
+    plot_w = width - left - right
+    plot_h = height - top - bottom
+    labels = spec.get("labels") or []
+    values = spec.get("values") or []
+    title = _xml_escape(spec.get("title") or "Market signal")
+    unit = _xml_escape(spec.get("unit") or "")
+    min_v = min(values)
+    max_v = max(values)
+    span = max(max_v - min_v, 1e-9)
+
+    def y_of(value: float) -> float:
+        return top + (max_v - value) / span * plot_h
+
+    svg_lines = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{_xml_escape(spec.get("alt_text") or spec.get("title") or "Chart")}">',
+        '<rect width="100%" height="100%" fill="#ffffff" />',
+        f'<text x="{left}" y="46" font-size="28" font-family="Arial, sans-serif" fill="#111827">{title}</text>',
+        f'<line x1="{left}" y1="{top + plot_h}" x2="{left + plot_w}" y2="{top + plot_h}" stroke="#9ca3af" stroke-width="2"/>',
+        f'<line x1="{left}" y1="{top}" x2="{left}" y2="{top + plot_h}" stroke="#9ca3af" stroke-width="2"/>',
+    ]
+
+    ticks = 4
+    for i in range(ticks + 1):
+        val = min_v + (span * i / ticks)
+        y = y_of(val)
+        svg_lines.append(
+            f'<line x1="{left}" y1="{y:.2f}" x2="{left + plot_w}" y2="{y:.2f}" stroke="#e5e7eb" stroke-width="1"/>'
+        )
+        label = f"{val:.2f}".rstrip("0").rstrip(".")
+        if unit:
+            label = f"{label} {unit}"
+        svg_lines.append(
+            f'<text x="{left - 12}" y="{y + 5:.2f}" text-anchor="end" font-size="13" font-family="Arial, sans-serif" fill="#6b7280">{_xml_escape(label)}</text>'
+        )
+
+    count = len(labels)
+    if spec.get("chart_type") == "bar":
+        slot = plot_w / count
+        bar_w = slot * 0.6
+        for idx, (label, value) in enumerate(zip(labels, values, strict=False)):
+            x = left + idx * slot + (slot - bar_w) / 2
+            y = y_of(value)
+            h = top + plot_h - y
+            svg_lines.append(
+                f'<rect x="{x:.2f}" y="{y:.2f}" width="{bar_w:.2f}" height="{h:.2f}" fill="#2563eb" rx="4"/>'
+            )
+            svg_lines.append(
+                f'<text x="{x + bar_w / 2:.2f}" y="{top + plot_h + 28}" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#374151">{_xml_escape(label)}</text>'
+            )
+    else:
+        step = plot_w / (count - 1)
+        points: list[str] = []
+        for idx, (label, value) in enumerate(zip(labels, values, strict=False)):
+            x = left + idx * step
+            y = y_of(value)
+            points.append(f"{x:.2f},{y:.2f}")
+            svg_lines.append(
+                f'<circle cx="{x:.2f}" cy="{y:.2f}" r="5" fill="#2563eb"/>'
+            )
+            svg_lines.append(
+                f'<text x="{x:.2f}" y="{top + plot_h + 28}" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#374151">{_xml_escape(label)}</text>'
+            )
+        points_attr = " ".join(points)
+        svg_lines.append(
+            f'<polyline fill="none" stroke="#2563eb" stroke-width="3" points="{points_attr}"/>'
+        )
+
+    svg_lines.append("</svg>")
+    return "\n".join(svg_lines)
+
+
+def _build_visual_markdown_block(*, alt_text: str, path: str, caption: str) -> str:
+    image_line = f"![{alt_text}]({path})"
+    safe_caption = _ensure_ascii_text(caption.strip(), "")
+    if not safe_caption:
+        return image_line
+    return f"{image_line}\n\n*{safe_caption}*"
+
+
+def _insert_visual_blocks(body: str, visual_blocks: list[str]) -> str:
+    if not body or not visual_blocks:
+        return body
+    blocks = [part for part in body.split("\n\n") if part is not None]
+    if not blocks:
+        return body
+    h2_indices = [i for i, part in enumerate(blocks) if part.strip().startswith("## ")]
+    anchor_indices = h2_indices[1:] if len(h2_indices) > 1 else h2_indices
+    if not anchor_indices:
+        blocks.extend(visual_blocks)
+        return "\n\n".join(blocks)
+    placements: list[tuple[int, str]] = []
+    total = len(visual_blocks)
+    for idx, visual in enumerate(visual_blocks):
+        anchor_pos = int(((idx + 1) * len(anchor_indices)) / (total + 1))
+        if anchor_pos >= len(anchor_indices):
+            anchor_pos = len(anchor_indices) - 1
+        placements.append((anchor_indices[anchor_pos], visual))
+    for anchor, visual in sorted(placements, key=lambda item: item[0], reverse=True):
+        blocks.insert(anchor + 1, visual)
+    return "\n\n".join(blocks)
 
 
 def _parse_aspect_ratio(value: str | None) -> tuple[int, int]:
@@ -3292,6 +3988,57 @@ def _generate_hero_image(prompt: str, output_path: Path, config: AutomationConfi
         logging.warning("Hero image placeholder missing: %s", placeholder)
 
 
+def _materialize_inline_visuals(
+    config: AutomationConfig,
+    *,
+    date_str: str,
+    slug: str,
+    chart_specs: list[dict],
+    inline_image_prompts: list[str],
+) -> list[str]:
+    asset_key = f"{date_str}-{slug}"
+    asset_dir = config.hero_base_dir / asset_key
+    asset_dir.mkdir(parents=True, exist_ok=True)
+    base_url = f"/images/posts/{asset_key}"
+    visual_blocks: list[str] = []
+
+    for idx, spec in enumerate(chart_specs[:MAX_INLINE_CHARTS], start=1):
+        try:
+            svg_path = asset_dir / f"chart-{idx}.svg"
+            svg_path.write_text(_render_chart_svg(spec), encoding="utf-8")
+            visual_blocks.append(
+                _build_visual_markdown_block(
+                    alt_text=_ensure_ascii_text(str(spec.get("alt_text") or "Chart").strip(), "Chart"),
+                    path=f"{base_url}/chart-{idx}.svg",
+                    caption=str(spec.get("caption") or "").strip(),
+                )
+            )
+        except Exception as exc:
+            logging.warning("Inline chart generation failed (%s): %s", idx, exc)
+
+    for idx, prompt in enumerate(inline_image_prompts[:MAX_GENERATED_INLINE_IMAGES], start=1):
+        safe_prompt = _ensure_ascii_text(prompt.strip(), "")
+        if not safe_prompt:
+            continue
+        image_path = asset_dir / f"inline-{idx}.jpg"
+        try:
+            generated = _generate_hero_image_google(safe_prompt, image_path, config)
+            if not generated:
+                generated = _generate_hero_gradient(image_path, config)
+            if not generated:
+                continue
+            visual_blocks.append(
+                _build_visual_markdown_block(
+                    alt_text=_ensure_ascii_text(f"{safe_prompt} illustration", "Related illustration"),
+                    path=f"{base_url}/inline-{idx}.jpg",
+                    caption="Generated supporting visual",
+                )
+            )
+        except Exception as exc:
+            logging.warning("Inline image generation failed (%s): %s", idx, exc)
+    return visual_blocks[:MAX_INLINE_VISUALS]
+
+
 def _build_frontmatter(
     *,
     title: str,
@@ -3300,6 +4047,7 @@ def _build_frontmatter(
     slug: str,
     category: list[str],
     tags: list[str],
+    reference_urls: list[str],
     draft: bool,
     hero_alt: str,
     domain: str,
@@ -3309,6 +4057,12 @@ def _build_frontmatter(
     safe_alt = hero_alt.replace('"', '\\"')
     category_list = ", ".join(f'"{item}"' for item in category)
     tag_list = ", ".join(f'"{tag}"' for tag in tags)
+    references_yaml = (
+        "references:\n"
+        + "\n".join(f'  - "{url.replace(chr(34), r"\\\"")}"' for url in reference_urls)
+        if reference_urls
+        else "references: []"
+    )
     canonical = f"{domain}/blog/{date_str}-{slug}"
     return (
         "---\n"
@@ -3318,6 +4072,7 @@ def _build_frontmatter(
         f"updatedDate: {date_str}\n"
         f"category: [{category_list}]\n"
         f"tags: [{tag_list}]\n"
+        f"{references_yaml}\n"
         f"draft: {str(draft).lower()}\n"
         "heroImage:\n"
         f'  src: "/images/posts/{date_str}-{slug}/hero.jpg"\n'
@@ -3341,14 +4096,19 @@ def _write_post(
     hero_alt: str,
     image_prompt: str,
     reference_urls: list[str],
+    chart_specs: list[dict] | None,
+    inline_image_prompts: list[str] | None,
     slug_hint: str,
+    date_str: str | None = None,
 ) -> Path:
-    date_str = datetime.now(config.content_timezone).strftime("%Y-%m-%d")
+    date_str = date_str or datetime.now(config.content_timezone).strftime("%Y-%m-%d")
     slug = _slugify(slug_hint) or f"topic-{int(time.time())}"
     post_path = config.content_dir / f"{date_str}-{slug}.mdx"
     if post_path.exists():
         slug = f"{slug}-{int(time.time())}"
         post_path = config.content_dir / f"{date_str}-{slug}.mdx"
+
+    unique_refs = [url for url in dict.fromkeys(reference_urls) if _is_valid_url(url)]
 
     frontmatter = _build_frontmatter(
         title=title,
@@ -3357,18 +4117,22 @@ def _write_post(
         slug=slug,
         category=category,
         tags=tags,
+        reference_urls=unique_refs,
         draft=config.post_draft,
         hero_alt=hero_alt or title,
         domain=config.blog_domain,
     )
 
-    unique_refs = [url for url in dict.fromkeys(reference_urls) if _is_valid_url(url)]
-    references = "\n".join(
-        f"- {_format_reference(url)}" for url in unique_refs if _format_reference(url)
-    )
     content = body.strip()
-    if references:
-        content = f"{content}\n\n## References\n\n{references}\n"
+    visual_blocks = _materialize_inline_visuals(
+        config,
+        date_str=date_str,
+        slug=slug,
+        chart_specs=chart_specs or [],
+        inline_image_prompts=inline_image_prompts or [],
+    )
+    if visual_blocks:
+        content = _insert_visual_blocks(content, visual_blocks)
 
     config.content_dir.mkdir(parents=True, exist_ok=True)
     post_path.write_text(frontmatter + "\n" + content + "\n", encoding="utf-8")
@@ -3387,7 +4151,9 @@ def _build_fallback_body(
     titles = [source.get("title") or "Untitled" for source in sources]
     links = [source.get("url") for source in sources if source.get("url")]
     title_snippet = ", ".join(titles[:3])
-    link_snippet = [_format_reference(link) for link in links[:3]]
+    link_snippet = [
+        _ensure_ascii_text(urlparse(str(link)).netloc, "Source") for link in links[:3] if _is_valid_url(str(link))
+    ]
     detail_snippets = _source_snippets(sources, limit=3)
     detail_text = " ".join(detail_snippets)
 
@@ -3401,7 +4167,7 @@ def _build_fallback_body(
         f"The coverage suggests a broader shift around {keyword} that goes beyond a one-day spike. "
         f"If you read the reporting closely, the throughline is about momentum and what it implies "
         f"for the next 6-12 months. "
-        f"{'Key reporting can be found at ' + ', '.join(link_snippet) + '.' if link_snippet else ''}\n\n"
+        f"{'Key reporting comes from ' + ', '.join(link_snippet) + '.' if link_snippet else ''}\n\n"
         f"{detail_text}\n\n"
         f"## The real takeaway\n\n"
         f"The headline may be new, but the underlying forces are not. The most useful way to read "
@@ -3417,7 +4183,7 @@ def _build_fallback_body(
 
 def _rank_topics_with_llm(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     topics: list[dict],
 ) -> list[dict]:
     if not topics:
@@ -3442,8 +4208,8 @@ def _rank_topics_with_llm(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         data = _extract_json_block(response)
     except Exception as exc:
@@ -3477,7 +4243,7 @@ def _rank_topics_with_llm(
 
 def _plan_research(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     keyword: str,
     angle: str,
@@ -3492,8 +4258,8 @@ def _plan_research(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         data = _extract_json_block(response)
     except Exception as exc:
@@ -3529,7 +4295,11 @@ def _build_question_queries(
     if not base:
         return []
     year = datetime.now(config.content_timezone).year
-    angle_hint = f" {angle.strip()}" if angle else ""
+    angle_hint = ""
+    if angle:
+        concise_angle = _truncate_plain(re.sub(r"\s+", " ", angle.strip()), 80).rstrip(" ?!.,;:")
+        if concise_angle:
+            angle_hint = f" {concise_angle}"
     return [
         f"What changed about {base} in {year} and why now{angle_hint}?",
         f"Who is affected by {base} and what are the impacts in {year}?",
@@ -3539,7 +4309,7 @@ def _build_question_queries(
 
 def _rescue_research_plan(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     keyword: str,
     angle: str,
@@ -3557,8 +4327,8 @@ def _rescue_research_plan(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         data = _extract_json_block(response)
     except Exception as exc:
@@ -3574,7 +4344,7 @@ def _rescue_research_plan(
 
 def _gather_sources_for_topic(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     topic: dict,
     research_plan: dict,
 ) -> list[dict]:
@@ -3754,7 +4524,7 @@ def _gather_sources_for_topic(
 
 def _extract_structured_sources(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     raw_sources: list[dict],
     queries: list[str],
@@ -3771,8 +4541,8 @@ def _extract_structured_sources(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         data = _extract_json_block(response)
     except Exception as exc:
@@ -3819,7 +4589,7 @@ def _extract_structured_sources(
 
 def _build_evidence_from_sources(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     sources: list[dict],
 ) -> dict:
     sources_json = json.dumps({"sources": sources}, ensure_ascii=True)
@@ -3827,8 +4597,8 @@ def _build_evidence_from_sources(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         data = _extract_json_block(response)
     except Exception as exc:
@@ -3839,9 +4609,118 @@ def _build_evidence_from_sources(
     return {"timeline": [], "claims": [], "open_questions": [], "conflicts": []}
 
 
+def _discover_daily_market_events(
+    config: AutomationConfig,
+    writer: ClaudeClient,
+    *,
+    raw_sources: list[dict],
+    window_label: str,
+) -> list[dict]:
+    if not raw_sources:
+        return []
+    prompt = _build_daily_event_map_prompt(
+        window_label=window_label,
+        raw_sources_json=json.dumps(raw_sources, ensure_ascii=True),
+    )
+    try:
+        response = writer.generate(
+            prompt,
+            temperature=min(config.anthropic_temperature, 0.4),
+            max_tokens=config.anthropic_max_tokens,
+        )
+        data = _extract_json_block(response)
+    except Exception as exc:
+        logging.warning("Daily event mapping failed: %s", exc)
+        data = None
+    events = data.get("events") if isinstance(data, dict) else None
+    if not isinstance(events, list):
+        return []
+    normalized: list[dict] = []
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        follow_up = event.get("follow_up_queries") if isinstance(event.get("follow_up_queries"), dict) else {}
+        normalized.append(
+            {
+                "event_id": str(event.get("event_id") or "").strip() or _slugify(str(event.get("title") or "event")),
+                "title": str(event.get("title") or "").strip(),
+                "summary": str(event.get("summary") or "").strip(),
+                "why_now": str(event.get("why_now") or "").strip(),
+                "market_relevance": str(event.get("market_relevance") or "").strip(),
+                "priority": str(event.get("priority") or "medium").strip() or "medium",
+                "evidence_urls": _ensure_list_of_strings(event.get("evidence_urls")),
+                "follow_up_queries": {
+                    "stocks": _ensure_list_of_strings(follow_up.get("stocks")),
+                    "real_estate": _ensure_list_of_strings(follow_up.get("real_estate")),
+                },
+            }
+        )
+    return [event for event in normalized if event.get("title")]
+
+
+def _select_daily_lane_topic(
+    config: AutomationConfig,
+    writer: ClaudeClient,
+    *,
+    lane: str,
+    events: list[dict],
+    window_label: str,
+) -> dict | None:
+    if not events:
+        return None
+    prompt = _build_daily_lane_selector_prompt(
+        lane=lane,
+        window_label=window_label,
+        events_json=json.dumps(events, ensure_ascii=True),
+    )
+    try:
+        response = writer.generate(
+            prompt,
+            temperature=min(config.anthropic_temperature, 0.4),
+            max_tokens=config.anthropic_max_tokens,
+        )
+        data = _extract_json_block(response)
+    except Exception as exc:
+        logging.warning("Daily lane selector failed (%s): %s", lane, exc)
+        data = None
+    if not isinstance(data, dict):
+        return None
+    evidence_urls = _ensure_list_of_strings(data.get("source_urls"))
+    event_lookup = {
+        str(event.get("title") or "").strip().lower(): event
+        for event in events
+        if str(event.get("title") or "").strip()
+    }
+    matched_event = event_lookup.get(str(data.get("title") or "").strip().lower())
+    queries = _normalize_search_queries(data.get("queries"))
+    if matched_event:
+        queries = _normalize_search_queries([
+            *queries,
+            *matched_event.get("follow_up_queries", {}).get(lane, []),
+        ])
+        if not evidence_urls:
+            evidence_urls = _ensure_list_of_strings(matched_event.get("evidence_urls"))
+    keyword = str(data.get("keyword") or data.get("title") or "").strip()
+    if not keyword:
+        return None
+    return {
+        "keyword": keyword,
+        "title": str(data.get("title") or keyword).strip() or keyword,
+        "angle": str(data.get("angle") or "").strip(),
+        "why_now": str(data.get("why_now") or "").strip(),
+        "focus_points": _ensure_list_of_strings(data.get("focus_points")),
+        "queries": _normalize_search_queries(queries),
+        "source_urls": evidence_urls,
+        "risk": str(data.get("risk") or "medium").strip() or "medium",
+        "analysis_lane": lane,
+        "category_label": DAILY_IMPACT_CATEGORY_LABELS.get(lane, lane),
+        "event_summary": str((matched_event or {}).get("summary") or "").strip(),
+    }
+
+
 def _build_outline(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     keyword: str,
     angle: str,
@@ -3857,8 +4736,8 @@ def _build_outline(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         data = _extract_json_block(response)
     except Exception as exc:
@@ -3905,12 +4784,40 @@ def _build_outline(
                 "evidence_refs": [],
             },
         )
+    elif template_mode == PIPELINE_DAILY_IMPACT:
+        fallback_sections = [
+            {
+                "heading": f"Why the prior day matters for {keyword}",
+                "goal": "State the thesis, the event, and why this matters now.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"How the event flows into {keyword}",
+                "goal": "Map the transmission mechanism from event to market effect.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"The strongest evidence behind the {keyword} view",
+                "goal": "Highlight the most important data points, claims, and caveats.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"Scenarios and risk signals for {keyword}",
+                "goal": "Lay out base, upside, downside, and uncertainty.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"What to watch next for {keyword}",
+                "goal": "List concrete signals, releases, or thresholds to monitor next.",
+                "evidence_refs": [],
+            },
+        ]
     return {"title_direction": "", "sections": fallback_sections, "faq": []}
 
 
 def _allocate_resources(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     outline: dict,
     sources: list[dict],
@@ -3924,8 +4831,8 @@ def _allocate_resources(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         data = _extract_json_block(response)
     except Exception as exc:
@@ -4025,7 +4932,7 @@ def _filter_evidence_for_sources(evidence: dict, sources: list[dict]) -> dict:
 
 def _write_sections(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     outline: dict,
     evidence: dict,
@@ -4053,8 +4960,8 @@ def _write_sections(
         try:
             response = writer.generate(
                 prompt,
-                temperature=config.gemini_temperature,
-                max_tokens=config.gemini_max_tokens,
+                temperature=config.anthropic_temperature,
+                max_tokens=config.anthropic_max_tokens,
             )
             section_body = response.strip()
         except Exception as exc:
@@ -4068,7 +4975,7 @@ def _write_sections(
 
 def _assemble_article(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     section_mdx_list: list[str],
     faq_list: list[str],
@@ -4085,8 +4992,8 @@ def _assemble_article(
     try:
         response = writer.generate(
             prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         return response.strip()
     except Exception as exc:
@@ -4096,7 +5003,7 @@ def _assemble_article(
 
 def _apply_quality_gate(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     full_mdx: str,
     keyword: str,
@@ -4109,8 +5016,8 @@ def _apply_quality_gate(
         try:
             response = writer.generate(
                 prompt,
-                temperature=config.gemini_temperature,
-                max_tokens=config.gemini_max_tokens,
+                temperature=config.anthropic_temperature,
+                max_tokens=config.anthropic_max_tokens,
             )
             data = _extract_json_block(response)
         except Exception as exc:
@@ -4131,8 +5038,8 @@ def _apply_quality_gate(
         try:
             revised = writer.generate(
                 revise_prompt,
-                temperature=config.gemini_temperature,
-                max_tokens=config.gemini_max_tokens,
+                temperature=config.anthropic_temperature,
+                max_tokens=config.anthropic_max_tokens,
             )
             content = revised.strip() or content
         except Exception as exc:
@@ -4143,14 +5050,14 @@ def _apply_quality_gate(
 
 def _apply_final_review(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     full_mdx: str,
     keyword: str,
 ) -> str:
     if not full_mdx or not config.final_review_enabled:
         return full_mdx
-    if not config.gemini_api_key:
+    if not config.anthropic_api_key:
         return full_mdx
     content = full_mdx
     hints = _collect_review_hints(content)
@@ -4165,8 +5072,8 @@ def _apply_final_review(
         try:
             response = writer.generate(
                 prompt,
-                temperature=min(config.gemini_temperature, 0.4),
-                max_tokens=config.gemini_max_tokens,
+                temperature=min(config.anthropic_temperature, 0.4),
+                max_tokens=config.anthropic_max_tokens,
             )
             data = _extract_json_block(response)
         except Exception as exc:
@@ -4192,7 +5099,7 @@ def _apply_final_review(
 
 def _apply_mdx_render_guard(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     full_mdx: str,
 ) -> str:
@@ -4204,7 +5111,7 @@ def _apply_mdx_render_guard(
     hints = _collect_mdx_render_hints(content)
     if not hints:
         return content
-    if not config.gemini_api_key:
+    if not config.anthropic_api_key:
         return content
     attempts = max(config.mdx_render_guard_revisions, 0) + 1
     for attempt in range(attempts):
@@ -4212,8 +5119,8 @@ def _apply_mdx_render_guard(
         try:
             response = writer.generate(
                 prompt,
-                temperature=min(config.gemini_temperature, 0.4),
-                max_tokens=config.gemini_max_tokens,
+                temperature=min(config.anthropic_temperature, 0.4),
+                max_tokens=config.anthropic_max_tokens,
             )
             data = _extract_json_block(response)
         except Exception as exc:
@@ -4257,7 +5164,7 @@ def _key_points_from_evidence(evidence: dict) -> list[str]:
 
 def _generate_article_multi_agent(
     config: AutomationConfig,
-    writer: GeminiClient,
+    writer: ClaudeClient,
     *,
     topic: dict,
     pipeline: str | None = None,
@@ -4265,15 +5172,45 @@ def _generate_article_multi_agent(
     keyword = str(topic.get("keyword") or "").strip()
     if not keyword:
         return None
-    template_mode = PIPELINE_HIGH_INTENT if pipeline == PIPELINE_HIGH_INTENT else None
-    angle = str(topic.get("angle") or "").strip() or f"latest developments and impact for {keyword}"
-    research_plan = _plan_research(
+    template_mode = pipeline if pipeline in {PIPELINE_HIGH_INTENT, PIPELINE_DAILY_IMPACT} else None
+    default_angle = f"latest developments and impact for {keyword}"
+    if template_mode == PIPELINE_DAILY_IMPACT:
+        lane = str(topic.get("analysis_lane") or "").strip() or "market"
+        default_angle = f"how prior-day developments could affect {lane.replace('_', ' ')} through second-order impacts"
+    angle = str(topic.get("angle") or "").strip() or default_angle
+    provided_plan = topic.get("research_plan") if isinstance(topic.get("research_plan"), dict) else {}
+    planned = _plan_research(
         config,
         writer,
         keyword=keyword,
         angle=angle,
         region=str(topic.get("region") or ""),
     )
+    research_plan = {
+        "queries": _normalize_search_queries(
+            [
+                *_ensure_list_of_strings(provided_plan.get("queries")),
+                *_ensure_list_of_strings(planned.get("queries")),
+            ],
+            limit=8,
+        ),
+        "priority_sources": list(
+            dict.fromkeys(
+                [
+                    *_ensure_list_of_strings(provided_plan.get("priority_sources")),
+                    *_ensure_list_of_strings(planned.get("priority_sources")),
+                ]
+            )
+        )[:6],
+        "must_verify": list(
+            dict.fromkeys(
+                [
+                    *_ensure_list_of_strings(provided_plan.get("must_verify")),
+                    *_ensure_list_of_strings(planned.get("must_verify")),
+                ]
+            )
+        )[:8],
+    }
     raw_sources = _gather_sources_for_topic(config, writer, topic, research_plan)
     if not raw_sources:
         return None
@@ -4328,11 +5265,18 @@ def _generate_article_multi_agent(
     key_points = _key_points_from_evidence(evidence)
     hero_hint = ""
     hero_alt = ""
+    inline_image_prompts: list[str] = []
     if isinstance(resources, dict):
         hero = resources.get("hero_image")
         if isinstance(hero, dict):
             hero_hint = str(hero.get("style_prompt") or "").strip()
             hero_alt = str(hero.get("alt_text") or "").strip()
+        for item in resources.get("inline_images") or []:
+            if not isinstance(item, dict):
+                continue
+            prompt = _ensure_ascii_text(str(item.get("prompt_or_query") or "").strip(), "")
+            if prompt:
+                inline_image_prompts.append(prompt)
     image_prompt_hint = hero_hint or keyword
     reference_urls = [s.get("url") for s in structured_sources if _is_valid_url(s.get("url"))]
     for video in youtube_videos:
@@ -4346,19 +5290,22 @@ def _generate_article_multi_agent(
         "image_prompt_hint": image_prompt_hint,
         "hero_alt_hint": hero_alt,
         "reference_urls": reference_urls,
+        "inline_image_prompts": inline_image_prompts[:MAX_GENERATED_INLINE_IMAGES],
     }
 
 
 def _generate_post_for_topic(
     config: AutomationConfig,
-    writer: GeminiClient,
-    meta_writer: GeminiClient,
+    writer: ClaudeClient,
+    meta_writer: ClaudeClient,
     topic: dict,
     pipeline: str | None = None,
 ) -> Path | None:
     keyword = topic.get("keyword")
     if not keyword:
         return None
+    forced_category = str(topic.get("category_label") or "").strip()
+    forced_tags = DAILY_IMPACT_TAG_HINTS.get(str(topic.get("analysis_lane") or "").strip(), [])
 
     image_urls = _extract_image_urls(topic)
     urls = _extract_urls(topic)
@@ -4372,7 +5319,9 @@ def _generate_post_for_topic(
     hero_alt_hint = ""
     reference_urls = list(urls)
 
-    template_mode = PIPELINE_HIGH_INTENT if pipeline == PIPELINE_HIGH_INTENT else None
+    template_mode = pipeline if pipeline in {PIPELINE_HIGH_INTENT, PIPELINE_DAILY_IMPACT} else None
+    inline_image_prompts: list[str] = []
+    chart_specs: list[dict] = []
     if config.use_multi_agent:
         article = _generate_article_multi_agent(
             config,
@@ -4393,6 +5342,7 @@ def _generate_post_for_topic(
                 "",
             )
             reference_urls = list(article.get("reference_urls") or reference_urls)
+            inline_image_prompts = _ensure_list_of_strings(article.get("inline_image_prompts"))
 
     if not body:
         candidates = [
@@ -4411,6 +5361,7 @@ def _generate_post_for_topic(
         content_prompt = _build_content_prompt(
             keyword=keyword,
             region=topic.get("region", ""),
+            angle=str(topic.get("angle") or "").strip() or None,
             traffic=topic.get("traffic"),
             sources=sources,
             image_urls=image_urls,
@@ -4423,8 +5374,8 @@ def _generate_post_for_topic(
         try:
             response = writer.generate(
                 content_prompt,
-                temperature=config.gemini_temperature,
-                max_tokens=config.gemini_max_tokens,
+                temperature=config.anthropic_temperature,
+                max_tokens=config.anthropic_max_tokens,
             )
             content_data = _extract_json_block(response)
         except Exception as exc:
@@ -4451,7 +5402,6 @@ def _generate_post_for_topic(
     if image_infos:
         body = _insert_images_by_relevance(body, image_infos)
     body = _ensure_images_in_body(body, image_urls, alt_text)
-    body = _linkify_urls(body)
     body = _clean_body_text(body)
     body = _ensure_ascii_body(body, fallback_body or body)
     reviewed_body = _apply_final_review(
@@ -4480,6 +5430,26 @@ def _generate_post_for_topic(
             "Trend summary of the topic.",
         )
 
+    if template_mode == PIPELINE_DAILY_IMPACT:
+        chart_specs = _plan_inline_charts(
+            config,
+            writer,
+            keyword=str(keyword),
+            angle=str(topic.get("angle") or "").strip() or str(keyword),
+            summary=summary,
+            key_points=key_points,
+            body=body,
+        )
+        if not chart_specs:
+            chart_specs = [
+                _fallback_daily_impact_chart_spec(
+                    keyword=str(keyword),
+                    summary=summary,
+                    key_points=key_points,
+                    body=body,
+                )
+            ]
+
     meta_prompt = _build_meta_prompt(
         keyword=keyword,
         summary=summary,
@@ -4492,8 +5462,8 @@ def _generate_post_for_topic(
     try:
         meta_response = meta_writer.generate(
             meta_prompt,
-            temperature=config.gemini_temperature,
-            max_tokens=config.gemini_max_tokens,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
         )
         meta_data = _extract_json_block(meta_response)
     except Exception as exc:
@@ -4504,6 +5474,8 @@ def _generate_post_for_topic(
     fallback_tags = [
         _ensure_ascii_text(tag, "topic") for tag in config.fallback_tags if tag
     ] or ["topic"]
+    if forced_tags:
+        fallback_tags = list(dict.fromkeys([*forced_tags, *fallback_tags]))
     fallback_tags = fallback_tags[:3]
 
     if meta_data:
@@ -4515,7 +5487,7 @@ def _generate_post_for_topic(
             str(meta_data.get("description") or summary).strip(),
             "Key updates and context around the topic.",
         )
-        category_list = _normalize_category_list(
+        category_list = [forced_category] if forced_category else _normalize_category_list(
             meta_data.get("category"),
             [fallback_category],
         )
@@ -4529,18 +5501,36 @@ def _generate_post_for_topic(
             image_prompt_hint,
         )
     else:
-        title = _ensure_ascii_text(f"{keyword} trend summary", "Trend summary")
+        default_title = f"{keyword} trend summary"
+        if forced_category:
+            default_title = f"{keyword}: what it means for {forced_category}"
+        title = _ensure_ascii_text(default_title, "Trend summary")
         description = _ensure_ascii_text(
             summary or f"Key updates and context around {keyword}.",
             "Key updates and context around the topic.",
         )
-        category_list = [fallback_category]
+        category_list = [forced_category] if forced_category else [fallback_category]
         tags_list = fallback_tags
         hero_alt = _ensure_ascii_text(f"{keyword} hero image", "Hero image")
         image_prompt = _ensure_ascii_text(
             image_prompt_hint or f"{keyword} concept illustration",
             "Concept illustration",
         )
+
+    inline_image_prompts = [
+        _ensure_ascii_text(prompt, "")
+        for prompt in inline_image_prompts
+        if _ensure_ascii_text(prompt, "")
+    ]
+
+    if template_mode == PIPELINE_DAILY_IMPACT and not inline_image_prompts:
+        base_angle = _ensure_ascii_text(str(topic.get("angle") or "").strip(), "")
+        inline_image_prompts = [
+            _ensure_ascii_text(
+                f"Editorial-style market illustration for {title}. Focus on {base_angle or keyword}. No text, no logos.",
+                "Market illustration without text",
+            )
+        ]
 
     return _write_post(
         config,
@@ -4552,7 +5542,10 @@ def _generate_post_for_topic(
         hero_alt=hero_alt,
         image_prompt=image_prompt,
         reference_urls=reference_urls,
+        chart_specs=chart_specs,
+        inline_image_prompts=inline_image_prompts,
         slug_hint=title,
+        date_str=str(topic.get("publish_date") or "").strip() or None,
     )
 
 
@@ -4628,6 +5621,131 @@ def _collect_trends_payload(
     return payload
 
 
+def _build_daily_impact_discovery_queries(window_labels: dict[str, str]) -> list[str]:
+    display_date = window_labels.get("display_date") or window_labels.get("target_date") or ""
+    queries: list[str] = []
+    for topic in DAILY_IMPACT_DISCOVERY_TOPICS:
+        queries.append(f"{display_date} {topic} United States market impact")
+        queries.append(f"{display_date} {topic} stocks housing real estate")
+    return list(dict.fromkeys(query for query in queries if query))
+
+
+def _should_run_daily_impact_now(config: AutomationConfig) -> bool:
+    env = _resolve_env()
+    if not _parse_bool(env.get("ENFORCE_LOCAL_RUN_HOUR"), False):
+        return True
+    target_hour = _parse_int(env.get("DAILY_IMPACT_RUN_HOUR"), 8)
+    now_local = datetime.now(config.content_timezone)
+    return now_local.hour == target_hour
+
+
+def run_daily_impact(
+    config: AutomationConfig,
+    *,
+    publish_date: date | None = None,
+    force: bool = False,
+) -> None:
+    if not force and not _should_run_daily_impact_now(config):
+        logging.info("Daily impact pipeline skipped due to local-hour guard.")
+        return
+    config = replace(
+        config,
+        content_language="English",
+        content_tone="analytical, evidence-driven, plainspoken",
+        youtube_search_enabled=False,
+    )
+    resolved_publish_date = publish_date or datetime.now(config.content_timezone).date()
+    window_start, window_end = _previous_day_window(
+        config.content_timezone,
+        publish_date=resolved_publish_date,
+    )
+    window_labels = _build_window_labels(
+        window_start,
+        window_end,
+        publish_date=resolved_publish_date,
+    )
+    state = _load_state()
+    completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
+    if window_labels["target_date"] in completed_runs:
+        logging.info("Daily impact already completed for %s", window_labels["target_date"])
+        return
+    writer = ClaudeClient(
+        config.anthropic_api_key,
+        config.anthropic_model_content,
+        config.anthropic_timeout_sec,
+    )
+    discovery_queries = _build_daily_impact_discovery_queries(window_labels)
+    discovery_sources = _gather_raw_sources_for_queries(
+        config,
+        queries=discovery_queries,
+        region="US",
+        language=config.content_language,
+        window_start=window_start,
+        window_end=window_end,
+        max_sources=max(config.max_evidence_sources * 2, 8),
+        web_limit=max(config.search_web_max_results * 2, 8),
+        rss_limit=max(config.search_rss_max_results * 2, 8),
+    )
+    if not discovery_sources:
+        logging.warning("Daily impact pipeline found no discovery sources for %s", window_labels["display_date"])
+        return
+    events = _discover_daily_market_events(
+        config,
+        writer,
+        raw_sources=discovery_sources,
+        window_label=window_labels["window_summary"],
+    )
+    if not events:
+        logging.warning("Daily impact pipeline could not derive market events.")
+        return
+    payload = {
+        "pipeline": PIPELINE_DAILY_IMPACT,
+        "window": window_labels,
+        "events": events,
+    }
+    _save_trends_snapshot(payload, content_timezone=config.content_timezone)
+    topics: list[dict] = []
+    for lane in ("stocks", "real_estate"):
+        selected = _select_daily_lane_topic(
+            config,
+            writer,
+            lane=lane,
+            events=events,
+            window_label=window_labels["window_summary"],
+        )
+        if not selected:
+            logging.warning("Daily impact pipeline could not select a %s topic.", lane)
+            continue
+        follow_up_queries = _normalize_search_queries([
+            *selected.get("queries", []),
+            *[f"{selected['title']} {point}" for point in selected.get("focus_points", [])],
+        ])
+        selected["region"] = "US"
+        selected["research_plan"] = {
+            "queries": follow_up_queries,
+            "priority_sources": [],
+            "must_verify": selected.get("focus_points", []),
+        }
+        selected["pipeline_window_label"] = window_labels["window_summary"]
+        selected["pipeline_date"] = window_labels["target_date"]
+        selected["publish_date"] = window_labels["publish_date"]
+        topics.append(selected)
+    if not topics:
+        logging.warning("Daily impact pipeline produced no publishable topics.")
+        return
+    _process_topics(
+        config,
+        topics=topics,
+        ranker_enabled=False,
+        pipeline=PIPELINE_DAILY_IMPACT,
+    )
+    state = _load_state()
+    completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
+    completed_runs.add(window_labels["target_date"])
+    state["daily_impact_runs"] = sorted(completed_runs)
+    _save_state(state)
+
+
 def _process_topics(
     config: AutomationConfig,
     *,
@@ -4643,15 +5761,15 @@ def _process_topics(
     used = set(state.get("topics") or state.get("keywords") or [])
     slugs = set(state.get("slugs", []))
 
-    writer = GeminiClient(
-        config.gemini_api_key,
-        config.gemini_model_content,
-        config.gemini_timeout_sec,
+    writer = ClaudeClient(
+        config.anthropic_api_key,
+        config.anthropic_model_content,
+        config.anthropic_timeout_sec,
     )
-    meta_writer = GeminiClient(
-        config.gemini_api_key,
-        config.gemini_model_meta,
-        config.gemini_timeout_sec,
+    meta_writer = ClaudeClient(
+        config.anthropic_api_key,
+        config.anthropic_model_meta,
+        config.anthropic_timeout_sec,
     )
     if ranker_enabled and config.use_multi_agent:
         topics = _rank_topics_with_llm(config, writer, topics)
@@ -4660,7 +5778,11 @@ def _process_topics(
         if not keyword:
             continue
         normalized = _normalize_keyword(str(keyword))
-        topic_key = f"{topic.get('region', '')}:{normalized}"
+        if pipeline == PIPELINE_DAILY_IMPACT:
+            publish_key = str(topic.get("publish_date") or topic.get("pipeline_date") or "").strip()
+            topic_key = f"{publish_key}:{topic.get('region', '')}:{normalized}"
+        else:
+            topic_key = f"{topic.get('region', '')}:{normalized}"
         if topic_key in used:
             logging.info("Skip already processed topic: %s", topic_key)
             continue
@@ -4674,6 +5796,9 @@ def _process_topics(
         if post_path:
             used.add(topic_key)
             slugs.add(post_path.stem)
+            state["topics"] = sorted(used)
+            state["slugs"] = sorted(slugs)
+            _save_state(state)
             logging.info("Post created: %s", post_path)
 
     state["topics"] = sorted(used)
@@ -4711,133 +5836,57 @@ def run_high_intent(config: AutomationConfig) -> None:
     settings = _build_high_intent_settings(config)
     regions = settings["regions"]
     if not isinstance(regions, list) or not regions:
-        logging.warning("HIGH_INTENT_REGIONS is empty; skipping pipeline.")
+        regions = config.regions
+    if not isinstance(regions, list) or not regions:
+        logging.warning("High-intent regions are empty; skipping pipeline.")
         return
-    raw_categories = settings["raw_categories"]
-    categories = _normalize_high_intent_categories(raw_categories)
+    categories = list(HIGH_INTENT_FIXED_CATEGORIES)
     if not categories:
-        logging.warning("HIGH_INTENT_TREND_CATEGORIES resolved to empty; skipping pipeline.")
+        logging.warning("High-intent fixed categories are empty; skipping pipeline.")
         return
-    logging.info("High-intent category filters: %s", categories)
-    csv_download_dir = settings["csv_download_dir"]
-    if not csv_download_dir:
-        csv_download_dir = str((ROOT_DIR / "data" / "downloads").resolve())
-    allow_rss_fallback = bool(settings["allow_rss_fallback"])
-    rss_min_matches = int(settings["rss_min_matches"])
-    trend_source = str(settings["trend_source"]).strip().lower()
-    if trend_source == "rss":
-        payload = _collect_trends_payload(
-            regions=regions,
-            trend_limit=int(settings["trend_limit"]),
-            trend_sleep_sec=float(settings["trend_sleep_sec"]),
-            trend_method=str(settings["trend_method"]),
-            trend_source="rss",
-            trend_window_hours=int(settings["trend_window_hours"]),
-            csv_sort_by=str(settings["csv_sort_by"]),
-            categories=None,
-            csv_active_only=False,
-            csv_download_dir=None,
-            csv_max_retries=1,
-            csv_retry_delay_sec=0.0,
-            include_images=config.rss_include_images,
-            include_articles=config.rss_include_articles,
-            max_articles_per_trend=config.rss_max_articles_per_trend,
-            cache=config.rss_cache,
-            allow_rss_fallback=False,
-        )
-        payload["pipeline"] = PIPELINE_HIGH_INTENT
-        payload["rss_filter_categories"] = categories
-        payload["rss_filter_min_matches"] = rss_min_matches
-        items = payload.get("items", [])
-        if isinstance(items, list):
-            filtered = _filter_high_intent_rss_items(
-                items,
-                categories,
-                min_matches=rss_min_matches,
-            )
-            payload["items"] = filtered
-        _save_trends_snapshot(payload, content_timezone=config.content_timezone)
-        max_topic_rank = int(settings["max_topic_rank"])
-        topics = _select_topics_by_region(payload, regions, max_topic_rank)
-        _process_topics(
-            config,
-            topics=topics,
-            ranker_enabled=False,
-            pipeline=PIPELINE_HIGH_INTENT,
-        )
-        return
-    if trend_source != "csv":
-        logging.warning("Unknown trend source; forcing csv for high-intent.")
-        trend_source = "csv"
-    try:
-        payload = _collect_trends_payload(
-            regions=regions,
-            trend_limit=int(settings["trend_limit"]),
-            trend_sleep_sec=float(settings["trend_sleep_sec"]),
-            trend_method=str(settings["trend_method"]),
-            trend_source=trend_source,
-            trend_window_hours=int(settings["trend_window_hours"]),
-            csv_sort_by=str(settings["csv_sort_by"]),
-            categories=categories,
-            csv_active_only=bool(settings["csv_active_only"]),
-            csv_download_dir=csv_download_dir,
-            csv_max_retries=int(settings["csv_max_retries"]),
-            csv_retry_delay_sec=float(settings["csv_retry_delay_sec"]),
-            include_images=config.rss_include_images,
-            include_articles=config.rss_include_articles,
-            max_articles_per_trend=config.rss_max_articles_per_trend,
-            cache=config.rss_cache,
-            allow_rss_fallback=False,
-        )
-    except RuntimeError as exc:
-        logging.warning("High-intent CSV collection failed. Error: %s", exc)
-        if not allow_rss_fallback:
-            return
-        payload = _collect_trends_payload(
-            regions=regions,
-            trend_limit=int(settings["trend_limit"]),
-            trend_sleep_sec=float(settings["trend_sleep_sec"]),
-            trend_method=str(settings["trend_method"]),
-            trend_source="rss",
-            trend_window_hours=int(settings["trend_window_hours"]),
-            csv_sort_by=str(settings["csv_sort_by"]),
-            categories=None,
-            csv_active_only=False,
-            csv_download_dir=None,
-            csv_max_retries=1,
-            csv_retry_delay_sec=0.0,
-            include_images=config.rss_include_images,
-            include_articles=config.rss_include_articles,
-            max_articles_per_trend=config.rss_max_articles_per_trend,
-            cache=config.rss_cache,
-            allow_rss_fallback=False,
-        )
-        payload["pipeline"] = PIPELINE_HIGH_INTENT
-        payload["rss_filter_categories"] = categories
-        payload["rss_filter_min_matches"] = rss_min_matches
-        items = payload.get("items", [])
-        if isinstance(items, list):
-            filtered = _filter_high_intent_rss_items(
-                items,
-                categories,
-                min_matches=rss_min_matches,
-            )
-            payload["items"] = filtered
-        _save_trends_snapshot(payload, content_timezone=config.content_timezone)
-        max_topic_rank = int(settings["max_topic_rank"])
-        topics = _select_topics_by_region(payload, regions, max_topic_rank)
-        _process_topics(
-            config,
-            topics=topics,
-            ranker_enabled=False,
-            pipeline=PIPELINE_HIGH_INTENT,
-        )
-        return
+    logging.info("High-intent fixed category filters: %s", categories)
+    logging.info(
+        "High-intent fixed trend config (source=%s, method=%s, limit=%s)",
+        HIGH_INTENT_FIXED_TREND_SOURCE,
+        HIGH_INTENT_FIXED_TREND_METHOD,
+        HIGH_INTENT_FIXED_TREND_LIMIT,
+    )
+    payload = _collect_trends_payload(
+        regions=regions,
+        trend_limit=HIGH_INTENT_FIXED_TREND_LIMIT,
+        trend_sleep_sec=float(settings["trend_sleep_sec"]),
+        trend_method=HIGH_INTENT_FIXED_TREND_METHOD,
+        trend_source=HIGH_INTENT_FIXED_TREND_SOURCE,
+        trend_window_hours=int(settings["trend_window_hours"]),
+        csv_sort_by=str(settings["csv_sort_by"]),
+        categories=None,
+        csv_active_only=False,
+        csv_download_dir=None,
+        csv_max_retries=1,
+        csv_retry_delay_sec=0.0,
+        include_images=config.rss_include_images,
+        include_articles=config.rss_include_articles,
+        max_articles_per_trend=config.rss_max_articles_per_trend,
+        cache=config.rss_cache,
+        allow_rss_fallback=False,
+    )
     payload["pipeline"] = PIPELINE_HIGH_INTENT
+    payload["rss_filter_categories"] = categories
+    payload["rss_filter_min_matches"] = HIGH_INTENT_FIXED_MIN_MATCHES
+    items = payload.get("items", [])
+    if isinstance(items, list):
+        filtered = _filter_high_intent_rss_items(
+            items,
+            categories,
+            min_matches=HIGH_INTENT_FIXED_MIN_MATCHES,
+        )
+        payload["items"] = filtered
     _save_trends_snapshot(payload, content_timezone=config.content_timezone)
-
-    max_topic_rank = int(settings["max_topic_rank"])
-    topics = _select_topics_by_region(payload, regions, max_topic_rank)
+    topics = _select_topics_by_region(
+        payload,
+        regions,
+        HIGH_INTENT_FIXED_MAX_TOPIC_RANK,
+    )
     _process_topics(
         config,
         topics=topics,
@@ -4846,7 +5895,16 @@ def run_high_intent(config: AutomationConfig) -> None:
     )
 
 
-def run_pipeline(config: AutomationConfig, *, pipeline: str) -> None:
+def run_pipeline(
+    config: AutomationConfig,
+    *,
+    pipeline: str,
+    publish_date: date | None = None,
+    force: bool = False,
+) -> None:
+    if pipeline == PIPELINE_DAILY_IMPACT:
+        run_daily_impact(config, publish_date=publish_date, force=force)
+        return
     if pipeline == PIPELINE_HIGH_INTENT:
         run_high_intent(config)
         return
@@ -4858,6 +5916,13 @@ def _configure_logging(level: str) -> None:
         level=getattr(logging, level),
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
+
+
+def _parse_publish_date(raw: str, *, content_timezone: ZoneInfo) -> date:
+    try:
+        return datetime.strptime(raw.strip(), "%Y-%m-%d").date()
+    except ValueError as exc:
+        raise SystemExit(f"Invalid --publish-date {raw!r}. Use YYYY-MM-DD.") from exc
 
 
 def parse_args() -> argparse.Namespace:
@@ -4875,6 +5940,17 @@ def parse_args() -> argparse.Namespace:
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="Logging level",
     )
+    parser.add_argument(
+        "--publish-date",
+        default="",
+        help="Publication date for daily-impact runs (YYYY-MM-DD)",
+    )
+    parser.add_argument(
+        "--backfill-days",
+        type=int,
+        default=0,
+        help="Run daily-impact for the last N publication dates ending today",
+    )
     return parser.parse_args()
 
 
@@ -4889,7 +5965,26 @@ def main() -> int:
     )
 
     if args.once:
-        run_pipeline(config, pipeline=args.pipeline)
+        publish_date = None
+        if args.publish_date:
+            publish_date = _parse_publish_date(args.publish_date, content_timezone=config.content_timezone)
+        if args.pipeline == PIPELINE_DAILY_IMPACT and args.backfill_days > 0:
+            total_days = max(1, args.backfill_days)
+            today_local = datetime.now(config.content_timezone).date()
+            for offset in range(total_days - 1, -1, -1):
+                run_pipeline(
+                    config,
+                    pipeline=args.pipeline,
+                    publish_date=today_local - timedelta(days=offset),
+                    force=True,
+                )
+            return 0
+        run_pipeline(
+            config,
+            pipeline=args.pipeline,
+            publish_date=publish_date,
+            force=bool(publish_date),
+        )
         return 0
 
     while True:

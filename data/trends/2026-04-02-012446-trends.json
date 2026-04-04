@@ -1,0 +1,213 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "publish_date": "2026-04-01",
+    "publish_display_date": "April 1, 2026",
+    "target_date": "2026-03-31",
+    "display_date": "March 31, 2026",
+    "window_summary": "2026-03-31 00:00 EDT to 2026-03-31 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "fomc-hold-march-2026",
+      "title": "FOMC holds rates steady in March 2026, signals at most one cut for remainder of year",
+      "summary": "The Federal Reserve held the federal funds rate unchanged at its March 2026 meeting. The dot plot and market-implied probabilities converged on a single cut at most for the rest of 2026, with a meaningful probability of no cut at all. This represents a hawkish shift from earlier market expectations of two cuts.",
+      "why_now": "Markets had previously priced in roughly two cuts for 2026 (one around July, one by year-end). The FOMC's updated dot plot and Powell's commentary have pulled market expectations toward the Fed's own more restrictive guidance, reducing the likelihood of near-term easing.",
+      "market_relevance": "Higher-for-longer rates compress equity valuations (especially growth/tech), support the dollar, weigh on rate-sensitive sectors (homebuilders, REITs, utilities), and keep mortgage rates elevated, directly impacting housing affordability and transaction volumes.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://am.jpmorgan.com/us/en/asset-management/liq/insights/portfolio-insights/fixed-income/fixed-income-perspectives/fomc-statement-march-2026/",
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "impact of higher-for-longer Fed rates on growth stock valuations Q1 2026",
+          "rate-sensitive sector performance (utilities, REITs, homebuilders) after March 2026 FOMC",
+          "bank net interest margin outlook with Fed holding rates steady 2026",
+          "S&P 500 earnings revisions following hawkish FOMC March 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate forecast after March 2026 FOMC hold",
+          "housing affordability index trend with rates above 6.5% spring 2026",
+          "existing home sales volume impact from delayed Fed rate cuts 2026",
+          "commercial real estate refinancing wall exposure to prolonged high rates 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "us-labor-market-deterioration-feb-2026",
+      "title": "US economy unexpectedly lost 92,000 jobs in February; unemployment rose to 4.4%",
+      "summary": "February 2026 non-farm payrolls showed a loss of 92,000 jobs versus an expected gain of 55,000 \u2014 a roughly 147,000 miss. The unemployment rate ticked up to 4.4%. This is a significant negative surprise suggesting the labor market may be cracking under the weight of sustained high rates and geopolitical disruption.",
+      "why_now": "The data was released in early March and formed a key input to the FOMC's March deliberations. The combination of weakening employment and persistent inflation creates a stagflationary dynamic that constrains Fed policy options.",
+      "market_relevance": "Rising unemployment threatens consumer spending (70% of GDP), increases credit delinquency risk for banks and consumer lenders, and could trigger defensive sector rotation. For real estate, weaker employment undermines housing demand and increases foreclosure risk, particularly in regions dependent on cyclical industries.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "consumer discretionary earnings risk from rising US unemployment spring 2026",
+          "credit card and auto loan delinquency rates Q1 2026 labor market weakness",
+          "defensive sector rotation (healthcare, staples) during US employment downturn 2026",
+          "which US industries drove February 2026 job losses by sector"
+        ],
+        "real_estate": [
+          "housing demand impact from rising unemployment rate 4.4% US 2026",
+          "mortgage delinquency and forbearance trends spring 2026",
+          "multifamily rental demand changes during labor market softening 2026",
+          "regional housing markets most exposed to February 2026 job losses"
+        ]
+      }
+    },
+    {
+      "event_id": "core-pce-inflation-persistent-3-1",
+      "title": "Core PCE inflation rose to 3.1% in January 2026, second consecutive monthly increase",
+      "summary": "The Fed's preferred inflation gauge, core PCE, climbed to 3.1% in January \u2014 well above the 2% target and rising for a second straight month. This persistent inflation, even before the full pass-through of tariffs and the Iran conflict's energy price effects, severely limits the Fed's ability to cut rates to support the weakening labor market.",
+      "why_now": "The January reading was confirmed ahead of the March FOMC meeting. With tariff effects still feeding through and energy prices spiking from the Middle East conflict, the inflation trajectory is likely to worsen before improving.",
+      "market_relevance": "Persistent above-target inflation erodes real consumer purchasing power, pressures corporate margins (especially for companies unable to pass through costs), and keeps the risk-free discount rate elevated. For real estate, it sustains high mortgage rates and increases construction input costs.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "companies with strongest pricing power during persistent 3%+ inflation 2026",
+          "TIPS breakeven inflation expectations shift after core PCE 3.1% January 2026",
+          "consumer staples vs discretionary relative performance during stagflation 2026",
+          "corporate profit margin compression from input cost inflation Q1 2026"
+        ],
+        "real_estate": [
+          "construction material cost inflation impact on new housing supply 2026",
+          "rent inflation trends vs wage growth with core PCE at 3.1% 2026",
+          "real estate as inflation hedge \u2014 REIT performance during persistent inflation 2026",
+          "homebuilder cost pass-through ability with elevated lumber and labor costs 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "iran-war-energy-price-shock",
+      "title": "Middle East conflict (war in Iran) driving energy prices higher, adding inflationary pressure",
+      "summary": "An ongoing military conflict involving Iran is disrupting energy markets and pushing oil prices higher. The TreasurySpring analysis notes this as a key variable for the inflation outlook, with the size and duration of the energy price shock being the 'great unknown.' The conflict was referenced as a factor the FOMC must now look through when setting policy.",
+      "why_now": "The conflict appears to have escalated in the weeks before the March FOMC meeting. Energy price spikes feed into transportation, manufacturing, and consumer costs with a lag of weeks to months, meaning the full inflationary impact has not yet materialized.",
+      "market_relevance": "Energy price spikes benefit oil & gas producers and defense contractors while hurting airlines, transportation, chemicals, and consumer-facing businesses. Elevated energy costs act as a tax on consumers and businesses, potentially tipping a weakening economy into recession. For real estate, higher energy costs increase operating expenses for commercial properties and reduce household discretionary income available for housing.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "oil and gas producer stock performance during Iran conflict 2026",
+          "defense contractor revenue and order book growth from Middle East war 2026",
+          "airline and transportation sector earnings impact from elevated crude oil prices 2026",
+          "energy price shock recession probability models US 2026"
+        ],
+        "real_estate": [
+          "commercial real estate operating cost increase from energy price spike 2026",
+          "Sunbelt housing markets sensitivity to gasoline and utility cost increases",
+          "industrial and warehouse real estate demand near energy infrastructure 2026",
+          "impact of geopolitical risk on foreign capital flows into US real estate 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "tariff-inflation-passthrough-incomplete",
+      "title": "Tariff effects have not yet fully passed through to consumer prices",
+      "summary": "Analysis indicates that the full inflationary impact of previously imposed tariffs has not yet been reflected in price data. This means inflation may have remained well above the 2% target even without the Iran war's energy price effects, suggesting structural upward pressure on prices that the Fed cannot easily address with monetary policy alone.",
+      "why_now": "With core PCE already at 3.1% and tariff pass-through still incomplete, the inflation outlook is deteriorating. This creates a policy trap: the Fed cannot cut rates to support employment without risking further inflation acceleration.",
+      "market_relevance": "Companies reliant on imported inputs face continued margin pressure. Retailers and manufacturers with global supply chains are most exposed. The prospect of sustained tariff-driven inflation may force the Fed to maintain restrictive policy longer than markets expect, weighing on valuations broadly.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "US retailers most exposed to tariff cost pass-through 2026",
+          "reshoring and nearshoring beneficiary stocks amid persistent tariff regime 2026",
+          "import-dependent manufacturing sector margin outlook with tariffs and inflation 2026",
+          "which consumer goods categories showing largest tariff-driven price increases 2026"
+        ],
+        "real_estate": [
+          "tariff impact on building materials costs (steel, lumber, appliances) for new construction 2026",
+          "housing starts forecast given tariff-inflated construction costs spring 2026",
+          "warehouse and logistics real estate demand shifts from supply chain restructuring 2026",
+          "affordable housing supply constraints worsened by tariff-driven material costs 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "fed-chair-transition-uncertainty",
+      "title": "Fed Chair Powell pledges to stay; Warsh nomination blocked by Sen. Tillis \u2014 leadership uncertainty",
+      "summary": "Fed Chair Jay Powell is pledging to remain in his position until a DoJ investigation concludes or is dismissed. Meanwhile, Senator Thom Tillis is attempting to block the Senate confirmation of Kevin Warsh, the President's nominee to replace Powell. Warsh has historically been hawkish but has recently adopted a more dovish stance aligned with the President's preference for rate cuts. The outcome of this leadership contest could significantly alter the Fed's policy direction.",
+      "why_now": "The political maneuvering around the Fed Chair position is actively unfolding and creates binary risk for markets. A Powell-to-Warsh transition could signal a shift toward more accommodative policy, while Powell staying maintains the current data-dependent, cautious approach.",
+      "market_relevance": "Fed leadership transitions create policy uncertainty that affects term premia in bonds, equity risk premiums, and dollar valuation. A more dovish successor could reprice the entire rate curve lower, benefiting rate-sensitive assets. Conversely, prolonged uncertainty itself is a headwind for risk assets.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "market reaction to Fed Chair transition uncertainty historical precedents",
+          "Kevin Warsh policy views and implications for equity markets 2026",
+          "Fed independence risk premium in Treasury yields and equity valuations 2026",
+          "financial sector stocks sensitivity to potential dovish Fed pivot under Warsh"
+        ],
+        "real_estate": [
+          "mortgage rate outlook under potential dovish Fed Chair Kevin Warsh 2026",
+          "housing market impact of Fed leadership change and rate expectations shift",
+          "commercial real estate cap rate sensitivity to Fed policy regime change 2026",
+          "REIT valuations and Fed Chair transition risk 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "fed-2026-stress-test-scenarios",
+      "title": "Federal Reserve publishes 2026 bank stress test scenarios",
+      "summary": "The Federal Reserve released the final 2026 stress test scenarios for large banks, with an effective balance sheet date of December 31, 2025. These scenarios define the hypothetical adverse conditions under which banks must demonstrate adequate capitalization. The severity of the scenarios will determine capital buffer requirements, which directly affect banks' ability to return capital to shareholders and extend credit.",
+      "why_now": "The scenarios were finalized in early 2026 and results will be published later in the year. Banks are currently running their models against these scenarios, and the implied capital requirements will influence dividend and buyback decisions in the second half of 2026.",
+      "market_relevance": "Stress test results determine bank capital return capacity (dividends, buybacks) and can trigger re-ratings of bank stocks. Stricter scenarios could constrain lending, affecting credit availability across the economy. For real estate, bank stress tests that include severe CRE loss scenarios could tighten commercial real estate lending standards.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.federalreserve.gov/publications/2026-stress-test-scenarios.htm"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "2026 Fed stress test scenario severity compared to 2025 \u2014 implications for bank capital returns",
+          "large bank stock buyback and dividend capacity after 2026 DFAST results",
+          "regional bank exposure to stress test CRE loss assumptions 2026",
+          "which banks face highest supplementary leverage ratio pressure from 2026 stress tests"
+        ],
+        "real_estate": [
+          "commercial real estate loss assumptions in 2026 Fed stress test severely adverse scenario",
+          "bank CRE lending standards tightening from stress test capital requirements 2026",
+          "office and retail property loan exposure in large bank stress test portfolios 2026",
+          "impact of stress test results on construction lending availability 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "stagflation-risk-convergence",
+      "title": "Stagflation risk rising: simultaneous job losses, persistent inflation, and geopolitical energy shock",
+      "summary": "The convergence of a negative jobs print (-92K), rising core PCE (3.1%), incomplete tariff pass-through, and an Iran-related energy price shock creates a textbook stagflationary environment. The Fed is effectively boxed in \u2014 unable to cut rates due to inflation, unable to tighten further without deepening labor market weakness. This macro regime is historically hostile to both equities and bonds simultaneously.",
+      "why_now": "All of these factors crystallized in the weeks leading up to and including the March 2026 FOMC meeting, making this the first meeting where the full stagflationary picture was visible to policymakers and markets.",
+      "market_relevance": "Stagflation historically favors real assets (commodities, energy, gold), inflation-protected securities, and companies with pricing power, while punishing long-duration bonds, growth equities, and leveraged balance sheets. For real estate, stagflation creates a mixed picture: nominal property values may hold due to inflation, but transaction volumes collapse as financing costs remain high and income growth stalls.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "stagflation portfolio positioning \u2014 best performing sectors and asset classes historically",
+          "gold and commodity equity performance during US stagflation episodes",
+          "high-leverage corporate balance sheet risk during stagflation 2026",
+          "value vs growth equity rotation in stagflationary macro environment 2026"
+        ],
+        "real_estate": [
+          "real estate performance during historical US stagflation periods (1970s comparison)",
+          "multifamily vs office vs industrial property resilience during stagflation 2026",
+          "housing transaction volume forecast with simultaneous high rates and rising unemployment",
+          "real estate debt fund distress risk in stagflationary environment 2026"
+        ]
+      }
+    }
+  ]
+}

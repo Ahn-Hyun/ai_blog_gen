@@ -1,0 +1,182 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "publish_date": "2026-04-01",
+    "publish_display_date": "April 1, 2026",
+    "target_date": "2026-03-31",
+    "display_date": "March 31, 2026",
+    "window_summary": "2026-03-31 00:00 EDT to 2026-03-31 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "oil-above-100-middle-east-conflict",
+      "title": "WTI Crude Back Above $100/bbl on Escalating Middle East Conflict",
+      "summary": "Failed ceasefire negotiations caused WTI crude to end the week above $100 per barrel. This is the dominant macro theme driving cross-asset repricing: higher inflation expectations, wider credit spreads, and rising Treasury yields.",
+      "why_now": "Ceasefire optimism faded during the week ending March 27, 2026, pushing oil prices sharply higher. Markets are now repricing inflation risk and growth expectations heading into Q2.",
+      "market_relevance": "Oil above $100 is a stagflationary signal. It raises input costs across the economy, compresses consumer discretionary spending, widens credit spreads (high yield widened 46 bps vs Treasuries in one week), and complicates the Fed's rate-cut path. Energy producers benefit while airlines, chemicals, and consumer-facing sectors face margin pressure.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "energy sector earnings revisions Q2 2026 oil above $100",
+          "airline and transportation sector margin impact from $100 oil 2026",
+          "consumer discretionary spending slowdown high gasoline prices 2026",
+          "chemical sector feedstock cost pressure crude oil spike"
+        ],
+        "real_estate": [
+          "impact of $100 oil on suburban commuter housing demand 2026",
+          "energy-belt real estate markets Texas North Dakota housing demand oil boom 2026",
+          "commercial real estate operating costs energy price inflation 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "treasury-yields-rise-inflation-repricing",
+      "title": "10-Year Treasury Yield Rises to 4.43%, Breaching Nuveen's Forecast Range",
+      "summary": "The 10-year Treasury yield rose 5 bps to 4.43%, now above Nuveen's projected 4.00%-4.25% year-end range. The 30-year yield reached 4.97%. The move reflects oil-driven inflation repricing rather than growth optimism.",
+      "why_now": "Energy-driven inflation expectations are pushing yields higher at a time when the Fed is on pause. The yield curve steepened with 30-year yields near 5%, signaling term premium expansion.",
+      "market_relevance": "Higher long-end yields directly raise mortgage rates, increase corporate borrowing costs, compress equity valuations (especially growth/duration-sensitive stocks), and pressure leveraged real estate. The 30-year near 5% is a psychologically important level for housing affordability.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "growth stock valuations sensitivity to 10-year yield above 4.4% 2026",
+          "bank net interest margin outlook rising long-term yields Q2 2026",
+          "utility and REIT sector performance rising Treasury yields 2026",
+          "corporate investment grade issuance pace higher borrowing costs spring 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate forecast April 2026 Treasury yield 4.43%",
+          "housing affordability index impact 30-year yield near 5% 2026",
+          "commercial real estate refinancing risk higher long-term rates 2026",
+          "multifamily cap rate expansion rising Treasury yields 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "fed-rate-cut-delay-second-cut-2027",
+      "title": "Fed Rate Cut Timeline Pushed Back \u2014 Second Cut May Slip to 2027",
+      "summary": "Nuveen now expects only two 25-bp Fed rate cuts in 2026, with near-term inflationary pressures from oil potentially pushing the second cut into 2027. The March FOMC held rates steady, consistent with J.P. Morgan's coverage of the statement.",
+      "why_now": "Oil-driven inflation is extending the Fed's pause. Markets had been pricing in more accommodative policy; the shift toward fewer and later cuts reprices rate-sensitive assets.",
+      "market_relevance": "A delayed easing cycle keeps financial conditions tighter for longer, pressuring leveraged borrowers, floating-rate debt holders, and rate-sensitive sectors. It also delays mortgage rate relief for housing.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary",
+        "https://am.jpmorgan.com/us/en/asset-management/liq/insights/portfolio-insights/fixed-income/fixed-income-perspectives/fomc-statement-march-2026/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Fed funds futures implied rate cuts 2026 2027 repricing",
+          "small cap and leveraged company performance extended Fed pause 2026",
+          "private equity portfolio company refinancing risk fewer rate cuts 2026",
+          "regional bank loan loss provisions tighter-for-longer monetary policy"
+        ],
+        "real_estate": [
+          "mortgage rate relief timeline delayed Fed rate cuts 2026 2027",
+          "home purchase application volume spring 2026 elevated mortgage rates",
+          "CRE loan maturity wall 2026 2027 refinancing with higher rates",
+          "multifamily rent growth vs mortgage rate lock-in effect 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "credit-spreads-widening-high-yield",
+      "title": "High Yield and Preferred Spreads Widen Sharply on Stagflation Fears",
+      "summary": "High yield corporates underperformed Treasuries by 46 bps and preferreds by 45 bps in a single week. Emerging market debt also widened by 23 bps. The spread widening reflects dual concerns: higher input costs squeezing margins and slower growth.",
+      "why_now": "The combination of $100+ oil and rising yields is a classic stagflationary setup that hits lower-quality credit hardest. This widening occurred rapidly, suggesting potential for further dislocation if oil stays elevated.",
+      "market_relevance": "Wider high yield spreads raise the cost of capital for leveraged issuers, increase default risk pricing, and can trigger forced selling in credit ETFs and CLOs. Preferred spread widening hits bank capital instruments and income-oriented investors.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "high yield ETF outflows HYG JNK spring 2026",
+          "CLO manager exposure to energy and consumer credit stress 2026",
+          "leveraged loan default rate forecast rising oil prices tighter credit 2026",
+          "preferred stock issuers bank capital impact spread widening 2026"
+        ],
+        "real_estate": [
+          "CMBS spread performance relative to high yield widening March 2026",
+          "CRE mezzanine debt repricing credit spread widening 2026",
+          "real estate private credit fund redemption risk tighter conditions 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "municipal-bonds-underperformance",
+      "title": "Municipal Bonds Down 2.72% Month-to-Date, Underperforming Treasuries",
+      "summary": "Investment grade munis returned -0.81% for the week and -2.72% month-to-date, significantly underperforming Treasuries (-2.34% MTD). The muni yield of 3.83% with 6.81 years duration suggests tax-exempt investors are facing notable losses.",
+      "why_now": "Rising rates combined with potential supply pressures and tax-loss selling dynamics are hitting munis harder than taxable bonds. This is unusual and may signal liquidity stress or repositioning ahead of Q2.",
+      "market_relevance": "Muni underperformance affects state and local government borrowing costs, infrastructure project financing, and the wealth of high-net-worth investors who hold munis for tax efficiency. It may also signal stress in muni-focused funds.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "municipal bond fund outflows March 2026 Nuveen Vanguard",
+          "state and local government infrastructure bond issuance costs rising rates 2026",
+          "muni bond insurer exposure AMBAC Assured Guaranty credit stress 2026"
+        ],
+        "real_estate": [
+          "tax-exempt housing bond issuance affordable housing impact rising muni yields 2026",
+          "municipal infrastructure spending impact on regional real estate development 2026",
+          "state and local government fiscal stress property tax revenue 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "fed-2026-stress-test-scenarios-published",
+      "title": "Federal Reserve Publishes Final 2026 Bank Stress Test Scenarios",
+      "summary": "The Fed released final 2026 stress test scenarios incorporating updated data through year-end 2025. The severely adverse scenario retains its narrative and severity from the proposal, with updated jump-off values. The global market shock component was also adjusted.",
+      "why_now": "Final scenarios set the parameters for how much capital large banks must hold. Banks are now running models against these scenarios, which will determine capital return capacity (buybacks, dividends) announced later in 2026.",
+      "market_relevance": "Stress test results directly determine bank capital buffers and shareholder return programs. If the severely adverse scenario is harsh (especially on CRE losses), banks with large commercial real estate exposures may face higher capital requirements, limiting buybacks.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.federalreserve.gov/publications/2026-stress-test-scenarios.htm"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "2026 Fed stress test severely adverse scenario CRE loss assumptions",
+          "large bank capital return buyback capacity CCAR 2026 JPMorgan Goldman Sachs",
+          "regional bank stress test CRE concentration risk 2026",
+          "global market shock component trading book losses large banks 2026"
+        ],
+        "real_estate": [
+          "Fed stress test 2026 commercial real estate loss severity assumptions",
+          "bank CRE lending pullback stress test capital requirements 2026",
+          "office and retail loan loss assumptions Fed severely adverse scenario 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "upcoming-pmi-jolts-data-week",
+      "title": "Key Data Week Ahead: March PMIs, JOLTS, and China Manufacturing Data",
+      "summary": "Markets face March PMI readings for the U.S. and China, plus the February JOLTS report. These will provide the first hard signals on how the Middle East conflict and elevated oil prices are affecting business sentiment and labor demand.",
+      "why_now": "With oil above $100 and spreads widening, these data releases will either confirm or challenge the stagflation narrative. A weak PMI combined with still-tight labor data would reinforce the case for extended Fed pause.",
+      "market_relevance": "PMI readings below 50 would signal manufacturing contraction and accelerate the growth scare. JOLTS data showing declining openings would suggest labor market cooling, potentially offsetting inflation concerns and shifting the Fed calculus. China PMI affects global commodity demand and supply chain pricing.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.nuveen.com/en-us/insights/fixed-income/fixed-income-weekly-commentary"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "US manufacturing PMI March 2026 consensus estimate oil impact",
+          "China Caixin PMI March 2026 stimulus impact manufacturing",
+          "JOLTS job openings February 2026 labor market cooling sectors",
+          "ISM services PMI March 2026 business sentiment energy costs"
+        ],
+        "real_estate": [
+          "construction sector PMI employment housing starts correlation March 2026",
+          "labor market cooling JOLTS impact on household formation housing demand 2026",
+          "China manufacturing PMI impact on US lumber and building material costs 2026"
+        ]
+      }
+    }
+  ]
+}

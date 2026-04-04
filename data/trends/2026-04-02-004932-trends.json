@@ -1,0 +1,163 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "publish_date": "2026-04-01",
+    "publish_display_date": "April 1, 2026",
+    "target_date": "2026-03-31",
+    "display_date": "March 31, 2026",
+    "window_summary": "2026-03-31 00:00 EDT to 2026-03-31 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "evt_001",
+      "title": "Fed holds rates steady amid stagflationary crosscurrents; dot plot signals at most one cut in 2026",
+      "summary": "The March 2026 FOMC meeting left the federal funds rate unchanged. The dot plot now clusters around one cut at most for the remainder of 2026, aligning market-implied probabilities with the Fed's own guidance. This reflects persistent above-target inflation (Core PCE at 3.1%) colliding with a weakening labor market (February NFP showed a loss of 92,000 jobs vs. expected +55,000 gain; unemployment rose to 4.4%).",
+      "why_now": "The March FOMC statement and updated dot plot were released around March 19-20, 2026. Market participants are repricing rate expectations in the final days of March, affecting Q2 positioning across asset classes.",
+      "market_relevance": "Higher-for-longer rates compress equity multiples (especially growth/tech), increase corporate borrowing costs, and keep mortgage rates elevated. The stagflationary mix\u2014rising unemployment plus sticky inflation\u2014is particularly negative for consumer discretionary and housing. Banks face margin pressure from a flat/inverted curve while credit risk rises with unemployment.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://am.jpmorgan.com/us/en/asset-management/liq/insights/portfolio-insights/fixed-income/fixed-income-perspectives/fomc-statement-march-2026/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "impact of prolonged high interest rates on S&P 500 earnings estimates Q2 2026",
+          "regional bank credit losses rising unemployment 2026",
+          "consumer discretionary sector performance stagflation environment March 2026",
+          "high-yield corporate bond spreads widening March 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate forecast after March 2026 FOMC hold",
+          "US housing affordability index trend with 4.4% unemployment and elevated rates 2026",
+          "commercial real estate refinancing wall 2026 higher-for-longer rates",
+          "multifamily housing demand shift as homeownership affordability declines 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "evt_002",
+      "title": "February NFP shows unexpected loss of 92,000 jobs; unemployment rises to 4.4%",
+      "summary": "The February 2026 nonfarm payrolls report was sharply negative, with the economy losing 92,000 jobs against expectations of a 55,000 gain\u2014a miss of roughly 147,000 jobs. Unemployment ticked up to 4.4%. This is the first significant labor market deterioration signal and may mark a turning point in the economic cycle.",
+      "why_now": "The data was released in early March and is being digested by markets through end-of-month and end-of-quarter rebalancing. It feeds directly into the Fed's decision framework and corporate earnings guidance for Q1 2026.",
+      "market_relevance": "Rising unemployment reduces consumer spending power, increases loan delinquencies (auto, credit card, mortgage), and signals potential recession risk. Defensive sectors (utilities, healthcare, staples) typically outperform. Staffing companies and cyclical industrials face direct revenue headwinds. For real estate, rising unemployment historically leads to increased mortgage delinquencies and softening rents.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "sectors most exposed to rising US unemployment 2026 consumer spending slowdown",
+          "US staffing company earnings outlook after negative NFP February 2026",
+          "auto loan and credit card delinquency rates rising unemployment Q1 2026",
+          "defensive equity sector rotation March 2026 recession signal"
+        ],
+        "real_estate": [
+          "mortgage delinquency rate forecast rising unemployment 4.4% 2026",
+          "rental vacancy rates in markets with concentrated job losses 2026",
+          "housing starts and builder confidence index after negative jobs report 2026",
+          "impact of rising unemployment on home prices Sun Belt markets 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "evt_003",
+      "title": "War in Iran driving energy price spike and inflation uncertainty",
+      "summary": "A Middle East conflict involving Iran is underway, creating a significant supply-side shock to energy markets. The TreasurySpring analysis notes the war will increase inflation but the magnitude and duration remain highly uncertain. This compounds already-persistent inflation (Core PCE at 3.1%) and complicates the Fed's ability to cut rates even as the labor market weakens.",
+      "why_now": "The conflict appears to have escalated in late February/early March 2026. Energy price effects are feeding through to inflation expectations and are a central factor in the Fed's March decision to hold rates. End-of-quarter positioning reflects geopolitical risk premium.",
+      "market_relevance": "Energy stocks (E&P, oilfield services) benefit directly from higher crude prices. Airlines, chemicals, transportation, and consumer-facing companies face margin compression from higher input costs. Defense stocks likely benefit from increased military spending. The inflation impulse from energy keeps the Fed constrained, extending the higher-for-longer rate regime. For real estate, higher energy costs raise operating expenses for commercial properties and reduce consumer purchasing power for housing.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "oil and gas E&P company earnings revisions Iran war crude price spike 2026",
+          "airline and transportation sector margin impact from elevated energy prices 2026",
+          "defense contractor stock performance Middle East conflict escalation 2026",
+          "inflation expectations breakeven rates after Iran conflict March 2026"
+        ],
+        "real_estate": [
+          "commercial real estate operating costs energy price spike 2026",
+          "construction material and energy cost impact on new housing supply 2026",
+          "Houston Texas real estate market oil price boom 2026",
+          "consumer affordability squeeze higher energy and housing costs 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "evt_004",
+      "title": "Core PCE inflation persistent at 3.1%, tariff effects still feeding through",
+      "summary": "Core PCE rose for a second consecutive month to 3.1% in January 2026, well above the Fed's 2% target. Importantly, the full effects of tariffs have not yet been fully transmitted into consumer prices, suggesting further upside risk to inflation even before accounting for the Iran conflict's energy price impact.",
+      "why_now": "The January PCE data and Fed minutes highlighting tariff pass-through concerns were released in February, but the March FOMC meeting crystallized the policy implications. Markets are now pricing in the compounding of tariff-driven goods inflation plus energy-driven cost pressures.",
+      "market_relevance": "Persistent above-target inflation erodes real earnings growth, pressures TIPS breakevens wider, and keeps the Fed from easing. Import-dependent retailers and manufacturers face continued margin pressure from tariffs. Consumer staples companies with pricing power may outperform. Bond markets face duration risk if inflation expectations de-anchor further.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "US retail sector tariff cost pass-through consumer price sensitivity 2026",
+          "TIPS breakeven inflation rate trend March 2026",
+          "companies with strongest pricing power in persistent inflation environment 2026",
+          "import-dependent manufacturer earnings guidance tariff impact Q1 2026"
+        ],
+        "real_estate": [
+          "real estate cap rate adjustment persistent inflation above 3% 2026",
+          "rent growth vs wage growth gap with 3.1% core PCE 2026",
+          "construction cost inflation tariffs and materials prices 2026",
+          "REIT performance in persistent inflation environment historical comparison"
+        ]
+      }
+    },
+    {
+      "event_id": "evt_005",
+      "title": "Fed Chair Powell succession uncertainty: Powell staying amid DOJ investigation; Warsh nomination stalled",
+      "summary": "Fed Chair Jay Powell is pledging to remain in his position until a DOJ investigation concludes or is dismissed. Senator Thom Tillis is blocking the advancement of Kevin Warsh's nomination as Powell's successor. Warsh, historically hawkish, has recently adopted a more dovish stance aligned with the President's preference for rate cuts. The leadership uncertainty adds a layer of policy unpredictability.",
+      "why_now": "This political dynamic is playing out in real time around the March FOMC meeting. The unresolved succession creates uncertainty about the Fed's reaction function going forward, particularly whether a Warsh-led Fed would cut rates more aggressively despite inflation.",
+      "market_relevance": "Fed leadership uncertainty increases volatility risk premiums across all asset classes. If Warsh eventually takes over and cuts rates despite inflation, it could weaken the dollar and boost nominal asset prices (equities, real estate) while potentially de-anchoring inflation expectations. Conversely, Powell staying maintains the current cautious approach. Financial markets must price in a wider distribution of policy outcomes.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Kevin Warsh Fed chair nomination status Senate confirmation March 2026",
+          "market volatility VIX Fed leadership uncertainty 2026",
+          "historical equity market reaction to Fed chair transitions",
+          "dollar index DXY impact of potential dovish Fed pivot under Warsh"
+        ],
+        "real_estate": [
+          "mortgage rate forecast under dovish vs hawkish Fed chair scenario 2026",
+          "real estate investor sentiment Fed policy uncertainty 2026",
+          "impact of potential Fed rate cuts on housing demand second half 2026",
+          "commercial real estate cap rate sensitivity to Fed leadership change"
+        ]
+      }
+    },
+    {
+      "event_id": "evt_006",
+      "title": "Federal Reserve publishes 2026 stress test scenarios for large banks",
+      "summary": "The Federal Reserve released the final 2026 supervisory stress test scenarios, using December 31, 2025 balance sheet data. The stress test evaluates large bank resilience under hypothetical severe recession conditions, estimating losses, revenues, expenses, and capital adequacy. Results will determine capital buffer requirements and dividend/buyback capacity for the largest US banks.",
+      "why_now": "The final scenarios were published on February 4, 2026, and banks are now in the process of running their internal models. Results typically come in June, but the scenario parameters\u2014released in this window\u2014set expectations for how much capital banks must hold, directly affecting capital return plans.",
+      "market_relevance": "Stress test outcomes determine whether large banks can increase dividends and share buybacks. In the current environment of rising unemployment and geopolitical risk, the severely adverse scenario may be particularly punitive, potentially requiring higher capital buffers. This constrains bank stock total return and affects lending capacity. For real estate, tighter bank capital requirements could reduce mortgage and CRE lending availability.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.federalreserve.gov/publications/2026-stress-test-scenarios.htm"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "2026 Fed stress test severely adverse scenario parameters unemployment rate assumptions",
+          "large bank capital return plans dividends buybacks after 2026 DFAST results",
+          "bank stock valuations stress test capital buffer requirements 2026",
+          "CRE loan loss assumptions in 2026 Fed stress test scenarios"
+        ],
+        "real_estate": [
+          "bank CRE lending standards tightening after 2026 stress test",
+          "commercial real estate loan availability large bank capital constraints 2026",
+          "mortgage credit availability impact of higher bank capital requirements 2026",
+          "CMBS issuance trends as banks reduce CRE exposure stress test 2026"
+        ]
+      }
+    }
+  ]
+}

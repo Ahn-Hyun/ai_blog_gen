@@ -1,0 +1,192 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "publish_date": "2026-03-30",
+    "publish_display_date": "March 30, 2026",
+    "target_date": "2026-03-29",
+    "display_date": "March 29, 2026",
+    "window_summary": "2026-03-29 00:00 EDT to 2026-03-29 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "iran-war-oil-supply-disruption",
+      "title": "War in Iran disrupts Strait of Hormuz shipping; crude oil surges past $100/barrel",
+      "summary": "An active military conflict with Iran has caused approximately 1,000 ships to become stuck near the Strait of Hormuz. Crude oil briefly neared $120/barrel overnight before settling above $100. G7 countries are discussing a coordinated release of strategic oil reserves. The conflict is described as likely to continue until Iran surrenders unconditionally, suggesting a prolonged disruption.",
+      "why_now": "The conflict broke out in early March 2026 and is actively escalating. Oil price pass-through to inflation, consumer spending, and corporate margins is beginning in real-time. G7 reserve release discussions signal governments view this as a sustained supply shock, not a transient spike.",
+      "market_relevance": "Energy price spikes directly compress margins for transportation, airlines, chemicals, and consumer discretionary sectors while boosting energy producers and defense contractors. Renewed inflation fears are repricing rate-cut expectations, pushing yields higher and pressuring equity valuations. Stagflation risk (weak jobs + rising prices) is the worst-case scenario for risk assets.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.greystone.com/insights/us-treasuries-market-commentary-march/",
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "energy sector earnings revisions Q1 2026 oil price windfall",
+          "airline and transportation companies fuel cost hedging exposure March 2026",
+          "defense contractor stock performance Iran war 2026",
+          "consumer discretionary earnings risk from gasoline price surge 2026",
+          "G7 strategic petroleum reserve release impact on oil equities"
+        ],
+        "real_estate": [
+          "impact of oil price shock on inflation expectations and mortgage rate forecasts 2026",
+          "commercial real estate operating costs energy price surge 2026",
+          "Houston Texas and Gulf Coast real estate market oil boom employment effects",
+          "consumer affordability housing market gasoline prices disposable income squeeze 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "february-nfp-negative-92k",
+      "title": "February nonfarm payrolls print at -92,000, first significant job losses in years",
+      "summary": "The US economy unexpectedly lost 92,000 jobs in February versus an expected gain of 55,000. The unemployment rate rose to 4.4%. The 3-month average is now just +6,000 jobs/month. While one-off factors (severe weather, California nurses' strike, January normalization) partially explain the miss, the print raises questions about whether the labor market is deteriorating more than surface indicators suggest.",
+      "why_now": "This is the first deeply negative payroll print in the current cycle. Combined with the Iran war's inflationary impulse, it creates a stagflation narrative that markets are actively pricing. The data was released March 6 and is still being digested alongside the FOMC's March 17-18 decision.",
+      "market_relevance": "A weakening labor market reduces consumer spending power, threatening revenue for consumer-facing companies. However, the simultaneous inflation surge from oil prevents the Fed from cutting rates to support growth. This 'policy trap' is negative for equities broadly and creates uncertainty across rate-sensitive sectors.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.greystone.com/insights/us-treasuries-market-commentary-march/",
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "sectors most exposed to consumer spending slowdown stagflation 2026",
+          "staffing and temp agency stocks hiring freeze indicators March 2026",
+          "retail sector same-store sales trends weakening labor market 2026",
+          "recession probability models updated after February 2026 payrolls"
+        ],
+        "real_estate": [
+          "rising unemployment rate impact on mortgage delinquency rates 2026",
+          "housing demand slowdown job losses February 2026 homebuyer sentiment",
+          "multifamily rental market vacancy rates labor market weakening 2026",
+          "first-time homebuyer affordability unemployment rate 4.4% 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "fed-holds-rates-one-cut-repricing",
+      "title": "Fed holds at 3.50-3.75%; market reprices to at most one cut in 2026, delayed to September",
+      "summary": "The FOMC held rates steady at 3.50-3.75% at its March meeting. Market-implied probabilities now show at most one 25bp cut by year-end, with the first cut pushed out to mid-September from earlier expectations of June/July. Two-year yields rose 12-16bps in the week, reflecting scaled-back easing expectations. Core PCE at 3.1% and the Iran war's inflationary impact make further cuts unlikely near-term.",
+      "why_now": "The March FOMC meeting (March 17-18) just occurred and the dot plot concentration reflects heightened uncertainty. The shift from pricing two cuts to one cut represents a meaningful tightening of financial conditions expectations.",
+      "market_relevance": "Higher-for-longer rates pressure growth stocks, leveraged companies, and rate-sensitive sectors. The 10-year yield at 4.16% (up 14bps in a week) directly affects mortgage rates, corporate borrowing costs, and equity discount rates. The delayed rate cut timeline extends the period of restrictive policy.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://www.greystone.com/insights/us-treasuries-market-commentary-march/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "growth vs value stock rotation higher for longer rates 2026",
+          "high-yield corporate bond spreads widening March 2026 refinancing risk",
+          "bank sector net interest margin outlook Fed hold 2026",
+          "leveraged buyout and private equity deal flow impact higher rates 2026"
+        ],
+        "real_estate": [
+          "30-year mortgage rate forecast after March 2026 FOMC hold",
+          "commercial real estate refinancing wall 2026 higher for longer rates",
+          "REIT stock performance rate-sensitive sectors March 2026",
+          "housing starts and permits trend delayed rate cuts 2026",
+          "multifamily cap rate expansion 10-year Treasury yield above 4% 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "powell-warsh-fed-leadership-uncertainty",
+      "title": "Fed leadership crisis: Powell pledges to stay amid DOJ investigation; Warsh nomination stalled",
+      "summary": "Fed Chair Jay Powell is pledging to remain in his position until a DOJ investigation concludes or is dismissed. Senator Thom Tillis is blocking the advancement of Kevin Warsh's nomination as Powell's successor. Warsh has historically been hawkish but has recently shifted toward a more dovish stance aligned with the President's preference for rate cuts. The outcome creates significant policy uncertainty.",
+      "why_now": "This is an active, unresolved political confrontation over Fed leadership happening concurrently with a war and stagflation risk. The uncertainty about who will lead the Fed affects forward guidance credibility and market expectations for the rate path.",
+      "market_relevance": "Fed leadership transitions historically create volatility in rates markets. If Warsh eventually takes over and cuts rates more aggressively (as the President desires), it could weaken the dollar and boost inflation expectations further. Conversely, Powell staying maintains current policy continuity. The uncertainty itself is a volatility premium.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "Kevin Warsh Fed Chair nomination Senate confirmation timeline 2026",
+          "market volatility index VIX Fed leadership uncertainty historical precedent",
+          "dollar index DXY impact Fed chair transition dovish pivot expectations",
+          "financial sector stocks Fed policy uncertainty premium 2026"
+        ],
+        "real_estate": [
+          "Fed leadership change impact on long-term mortgage rate expectations",
+          "dovish Fed chair scenario housing market stimulus effect 2026",
+          "real estate investor sentiment Fed policy uncertainty survey 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "core-pce-sticky-above-3-percent",
+      "title": "Core PCE inflation rises to 3.1% for second consecutive monthly increase, well above 2% target",
+      "summary": "Core PCE rose to 3.1% in January, marking a second consecutive monthly increase. This was occurring even before the Iran war's impact on energy prices. Tariff effects have also not fully passed through to consumer prices yet, suggesting further upside inflation risk independent of the geopolitical shock.",
+      "why_now": "The persistence of inflation above 3% despite over a year of restrictive policy suggests structural stickiness. The layering of tariff pass-through and energy price shocks on top of already-elevated core inflation creates a compounding problem that constrains Fed flexibility.",
+      "market_relevance": "Persistent inflation erodes real wages and consumer purchasing power, threatening consumer spending. It also prevents the Fed from easing to support a weakening labor market, creating the stagflation bind. TIPS breakevens and inflation-linked assets become more relevant. Companies with pricing power outperform those that cannot pass through costs.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://treasuryspring.com/insights/fed-decision-treasury-impact-summary-march-2026",
+        "https://www.greystone.com/insights/us-treasuries-market-commentary-march/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "companies with strong pricing power inflation beneficiaries 2026",
+          "TIPS breakeven inflation rate trend March 2026",
+          "tariff pass-through consumer goods companies margin compression 2026",
+          "consumer staples vs discretionary performance stagflation environment"
+        ],
+        "real_estate": [
+          "real estate as inflation hedge performance core PCE above 3% 2026",
+          "rent growth vs wage growth affordability gap inflation 2026",
+          "construction material cost inflation new housing supply 2026",
+          "inflation-adjusted home price trends 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "strait-of-hormuz-shipping-blockage",
+      "title": "~1,000 ships stuck near Strait of Hormuz; supply chain disruption risk beyond oil",
+      "summary": "Approximately 1,000 ships remain stuck near the Strait of Hormuz due to the Iran conflict. While one Greek oil tanker successfully transited, the broader blockage affects not just crude oil but all seaborne trade through one of the world's most critical chokepoints. This risks broader supply chain disruptions beyond energy.",
+      "why_now": "The shipping blockage is an active, ongoing event with daily developments. The longer it persists, the more it affects non-oil goods including LNG, petrochemicals, and containerized cargo transiting the region.",
+      "market_relevance": "Supply chain disruptions beyond oil could affect petrochemical feedstocks, LNG supplies to Asia and Europe, and manufactured goods. Shipping and logistics companies face both higher costs and potential revenue from rerouting. Insurance costs for maritime transit in the region will spike.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.greystone.com/insights/us-treasuries-market-commentary-march/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "shipping and tanker company stocks Strait of Hormuz disruption 2026",
+          "marine insurance and war risk premium increases March 2026",
+          "LNG supply disruption European and Asian utility stocks 2026",
+          "petrochemical feedstock shortage chemical sector earnings impact 2026",
+          "supply chain disruption beneficiaries nearshoring stocks 2026"
+        ],
+        "real_estate": [
+          "LNG and natural gas price spike impact on commercial building operating costs 2026",
+          "port city real estate economic impact shipping disruption 2026",
+          "industrial warehouse demand supply chain rerouting 2026"
+        ]
+      }
+    },
+    {
+      "event_id": "treasury-yield-curve-stagflation-signal",
+      "title": "10-year Treasury yield whipsaws in 29bp range; yield curve signals stagflation pricing",
+      "summary": "The 10-year Treasury traded in a 29bp range (3.92%-4.21%) in a single week, initially rallying on flight-to-quality then selling off on inflation fears. The 2-year yield rose 16bps. Notably, the weak jobs report caused only a brief 5bp dip in 10-year yields before reversing higher, indicating the market is prioritizing the 'flation' in 'stagflation' over the 'stag' component.",
+      "why_now": "The market's revealed preference\u2014selling bonds even on weak economic data\u2014is a significant behavioral signal. It suggests that inflation expectations are becoming unanchored from the Fed's 2% target, which has profound implications for asset pricing across all markets.",
+      "market_relevance": "If the bond market is pricing sustained inflation over recession risk, it implies higher discount rates for all long-duration assets. This is particularly damaging for growth equities, long-duration bonds, and leveraged real estate. The volatility itself increases hedging costs and risk premiums.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.greystone.com/insights/us-treasuries-market-commentary-march/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "MOVE index Treasury volatility impact on equity risk premium 2026",
+          "long-duration equity sensitivity to 10-year yield above 4% 2026",
+          "bond fund outflows March 2026 reallocation to short duration",
+          "stagflation portfolio positioning commodity stocks vs bonds 2026"
+        ],
+        "real_estate": [
+          "mortgage rate volatility impact on home purchase application volume March 2026",
+          "commercial real estate debt market pricing Treasury volatility 2026",
+          "CMBS spread widening 10-year Treasury volatility March 2026",
+          "real estate cap rate adjustment lag Treasury yield spike 2026"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "pipeline": "daily-impact",
+  "window": {
+    "target_date": "2026-03-31",
+    "display_date": "March 31, 2026",
+    "window_summary": "2026-03-31 00:00 EDT to 2026-03-31 23:59 EDT"
+  },
+  "events": [
+    {
+      "event_id": "fed_2026_stress_test_scenarios",
+      "title": "Federal Reserve Finalizes 2026 Supervisory Stress Test Scenarios",
+      "summary": "The Federal Reserve released the final review of comments and parameters for the 2026 bank stress tests. The scenarios include a baseline of moderate growth and a 'Severely Adverse Scenario' that models significant shocks to unemployment, commercial real estate (CRE) prices, residential house prices, equity prices, and global markets.",
+      "why_now": "The Fed published the final scenario review document detailing the exact macroeconomic variables and shocks (including CRE and housing drawdowns) that large banks must use to model their capital adequacy for 2026.",
+      "market_relevance": "The severity of the modeled shocks to CRE and residential housing directly dictates the capital buffers large banks must hold. Stricter capital requirements against real estate portfolios will likely force banks to tighten lending standards, reducing credit availability for developers and homebuyers. Additionally, the results will determine the capacity of major banks to execute share buybacks and issue dividends later in the year.",
+      "priority": "high",
+      "evidence_urls": [
+        "https://www.federalreserve.gov/supervisionreg/files/2026-scenario-review-of-comments.pdf"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "large cap bank dividend payout projections 2026",
+          "regional bank stock performance CRE exposure",
+          "financial sector share buyback forecasts stress tests"
+        ],
+        "real_estate": [
+          "commercial real estate lending standards tightening 2026",
+          "CRE debt maturity refinancing shortfall",
+          "residential mortgage origination volume bank capital requirements"
+        ]
+      }
+    },
+    {
+      "event_id": "sf_fed_inflation_expectations_communication",
+      "title": "SF Fed Highlights Impact of FOMC Communications on Long-Term Inflation Expectations",
+      "summary": "A San Francisco Fed Economic Letter published on March 31, 2026, provides new market-based evidence that high-frequency monetary policy surprises around FOMC statements and press conferences significantly alter market-based inflation expectations, particularly at longer horizons.",
+      "why_now": "The SF Fed released this research on March 31, 2026, utilizing the U.S. Monetary Policy Event-Study Database to quantify how hawkish or dovish surprises immediately reprice forward inflation curves.",
+      "market_relevance": "This confirms that the market heavily discounts forward inflation and terminal rates based on the nuances of FOMC press conferences. A heightened sensitivity of long-end yields to Fed rhetoric means increased volatility for long-duration assets, including growth stocks and 30-year mortgage rates, immediately following Fed meetings.",
+      "priority": "medium",
+      "evidence_urls": [
+        "https://www.frbsf.org/research-and-insights/publications/economic-letter/2026/03/fed-communications-and-inflation-expectations/"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "growth stock valuations long-term interest rate sensitivity",
+          "equity risk premium FOMC volatility",
+          "interest rate swap spreads corporate borrowing costs"
+        ],
+        "real_estate": [
+          "10-year Treasury yield mortgage rate spread volatility",
+          "MBS (Mortgage-Backed Securities) demand inflation expectations",
+          "homebuilder stocks reaction to long-end yield curve shifts"
+        ]
+      }
+    },
+    {
+      "event_id": "treasury_bulletin_march_2026",
+      "title": "U.S. Treasury Releases March 2026 Bulletin on Federal Debt and Fiscal Operations",
+      "summary": "The Department of the Treasury released its March 2026 quarterly bulletin, detailing federal fiscal operations, debt held by the public, foreign currency positions, and ownership of federal securities for the first quarter of 2026.",
+      "why_now": "The Treasury formally issued its scheduled quarterly comprehensive statistical report on U.S. government financial operations and debt issuance for March 2026.",
+      "market_relevance": "Data on the maturity distribution of marketable interest-bearing public debt and foreign ownership shifts provides insight into the supply-demand balance of U.S. Treasuries. Heavy Treasury issuance or waning foreign demand can crowd out private investment, pushing up the risk-free rate, which compresses equity valuation multiples and raises the baseline cost of debt for real estate financing.",
+      "priority": "low",
+      "evidence_urls": [
+        "https://fiscaldata.treasury.gov/static-data/published-reports/treasury_bulletin/Treasury_Bulletin_2026_03.pdf"
+      ],
+      "follow_up_queries": {
+        "stocks": [
+          "corporate bond issuance crowding out Treasury supply",
+          "foreign capital flows U.S. equities vs Treasuries",
+          "S&P 500 earnings yield vs 10-year Treasury yield"
+        ],
+        "real_estate": [
+          "REIT cost of capital government debt supply",
+          "commercial real estate cap rates vs risk-free rate",
+          "housing affordability index Treasury yield trends"
+        ]
+      }
+    }
+  ]
+}
