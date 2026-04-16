@@ -5,6 +5,7 @@ import base64
 import binascii
 import colorsys
 import http.client
+import ipaddress
 import json
 import logging
 import math
@@ -784,7 +785,48 @@ def _normalize_affected_lanes(value) -> list[str]:
         if key in MARKET_ANALYSIS_LANES and key not in seen:
             normalized.append(key)
             seen.add(key)
-    return normalized or list(MARKET_ANALYSIS_LANES)
+    return normalized
+
+
+def _is_safe_public_url(url: str | None) -> bool:
+    if not _is_valid_url(url):
+        return False
+    parsed = urlparse(str(url))
+    if parsed.scheme not in {"http", "https"}:
+        return False
+    hostname = (parsed.hostname or "").strip().lower()
+    if not hostname:
+        return False
+    if hostname in {"localhost", "127.0.0.1", "::1"}:
+        return False
+    try:
+        ip = ipaddress.ip_address(hostname)
+    except ValueError:
+        return True
+    return not (
+        ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_multicast
+        or ip.is_reserved
+        or ip.is_unspecified
+    )
+
+
+def _filter_allowed_source_urls(values, *, allowed_urls: set[str]) -> list[str]:
+    normalized_allowed = {_normalize_url_for_dedupe(url) for url in allowed_urls if _is_safe_public_url(url)}
+    filtered: list[str] = []
+    seen: set[str] = set()
+    for value in _ensure_list_of_strings(values):
+        url = str(value).strip()
+        if not _is_safe_public_url(url):
+            continue
+        normalized = _normalize_url_for_dedupe(url)
+        if normalized not in normalized_allowed or normalized in seen:
+            continue
+        filtered.append(url)
+        seen.add(normalized)
+    return filtered
 
 
 def _uses_market_impact_template(pipeline: str | None) -> bool:
@@ -916,10 +958,10 @@ def _extract_urls(item: dict) -> list[str]:
     source_urls = item.get("source_urls") or []
     if isinstance(source_urls, list):
         for value in source_urls:
-            if _is_valid_url(value) and str(value).startswith("http"):
+            if _is_safe_public_url(value):
                 urls.append(str(value))
     explore_link = item.get("explore_link")
-    if _is_valid_url(explore_link) and explore_link.startswith("http"):
+    if _is_safe_public_url(explore_link):
         urls.append(explore_link)
 
     articles = item.get("news_articles") or []
@@ -927,13 +969,13 @@ def _extract_urls(item: dict) -> list[str]:
         for article in articles:
             if isinstance(article, dict):
                 link = article.get("url")
-                if _is_valid_url(link) and link.startswith("http"):
+                if _is_safe_public_url(link):
                     urls.append(link)
 
     metadata = item.get("metadata")
     if isinstance(metadata, dict):
         for value in metadata.values():
-            if _is_valid_url(value) and value.startswith("http"):
+            if _is_safe_public_url(value):
                 urls.append(value)
 
     return list(dict.fromkeys(urls))
@@ -944,7 +986,7 @@ def _extract_image_urls(item: dict) -> list[str]:
     image = item.get("image")
     if isinstance(image, dict):
         image_url = image.get("url")
-        if _is_valid_url(image_url) and image_url.startswith("http"):
+        if _is_safe_public_url(image_url):
             urls.append(image_url)
 
     articles = item.get("news_articles") or []
@@ -952,7 +994,7 @@ def _extract_image_urls(item: dict) -> list[str]:
         for article in articles:
             if isinstance(article, dict):
                 image_url = article.get("image")
-                if _is_valid_url(image_url) and image_url.startswith("http"):
+                if _is_safe_public_url(image_url):
                     urls.append(image_url)
     return list(dict.fromkeys(urls))
 
@@ -1735,7 +1777,7 @@ def _search_news_rss(
         title = item.findtext("title") or ""
         source = item.findtext("source") or ""
         pub_date = _parse_pub_date(item.findtext("pubDate"))
-        if not _is_valid_url(link):
+        if not _is_safe_public_url(link):
             continue
         results.append(
             {
@@ -1812,7 +1854,7 @@ def _search_web_tavily(
         if not isinstance(item, dict):
             continue
         url = str(item.get("url") or "").strip()
-        if not _is_valid_url(url):
+        if not _is_safe_public_url(url):
             continue
         title = str(item.get("title") or "").strip()
         snippet = str(item.get("content") or item.get("snippet") or "").strip()
@@ -1965,7 +2007,7 @@ def _extract_web_content_tavily(
         if not isinstance(item, dict):
             continue
         url = str(item.get("url") or "").strip()
-        if not _is_valid_url(url):
+        if not _is_safe_public_url(url):
             continue
         title = str(item.get("title") or "").strip()
         content = str(item.get("content") or item.get("raw_content") or "").strip()
@@ -2067,7 +2109,7 @@ def _normalize_url_for_dedupe(url: str) -> str:
 def _candidate_sources_from_topic(topic: dict) -> list[dict]:
     candidates: list[dict] = []
     explore_link = topic.get("explore_link")
-    if _is_valid_url(explore_link):
+    if _is_safe_public_url(explore_link):
         candidates.append(
             {
                 "url": explore_link,
@@ -2083,7 +2125,7 @@ def _candidate_sources_from_topic(topic: dict) -> list[dict]:
             if not isinstance(article, dict):
                 continue
             url = article.get("url")
-            if not _is_valid_url(url):
+            if not _is_safe_public_url(url):
                 continue
             candidates.append(
                 {
@@ -2098,7 +2140,7 @@ def _candidate_sources_from_topic(topic: dict) -> list[dict]:
     metadata = topic.get("metadata")
     if isinstance(metadata, dict):
         for value in metadata.values():
-            if _is_valid_url(value):
+            if _is_safe_public_url(value):
                 url = str(value).strip()
                 candidates.append(
                     {
@@ -2117,7 +2159,7 @@ def _dedupe_candidates(candidates: list[dict]) -> list[dict]:
     unique: list[dict] = []
     for candidate in candidates:
         url = candidate.get("url")
-        if not _is_valid_url(url):
+        if not _is_safe_public_url(url):
             continue
         normalized = _normalize_url_for_dedupe(url)
         if normalized in seen:
@@ -2143,7 +2185,7 @@ def _fetch_sources_from_candidates(
     candidate_by_url: dict[str, dict] = {}
     for candidate in candidates:
         url = candidate.get("url")
-        if not _is_valid_url(url):
+        if not _is_safe_public_url(url):
             continue
         normalized = _normalize_url_for_dedupe(str(url))
         candidate_by_url[normalized] = candidate
@@ -2559,7 +2601,12 @@ Rules:
     return _compose_prompt(system, user)
 
 
-def _build_weekly_major_events_prompt(*, window_label: str, topics_per_lane: int) -> tuple[str, str]:
+def _build_weekly_major_events_prompt(
+    *,
+    window_label: str,
+    topics_per_lane: int,
+    raw_sources_json: str,
+) -> tuple[str, str]:
     instructions = """
 You are a US macro and markets editor.
 Identify the most important recent events that could materially affect US stocks or US real estate.
@@ -2575,6 +2622,9 @@ Tasks:
 2) Identify up to {topics_per_lane} high-signal US real-estate topic(s).
 3) For each topic, provide a concrete angle and follow-up research queries.
 
+Raw sources (you must use only these):
+{raw_sources_json}
+
 Output JSON:
 {{
   "topics": [
@@ -2586,6 +2636,7 @@ Output JSON:
       "why_now": "...",
       "focus_points": ["..."],
       "queries": ["..."],
+      "source_urls": ["..."],
       "risk": "low|medium|high"
     }}
   ]
@@ -2593,11 +2644,13 @@ Output JSON:
 
 Rules:
 - Focus on recent events within or directly relevant to the time window.
+- Use only the provided raw sources. Do not rely on unstated background knowledge.
 - Each topic must be specific enough to research and turn into an evidence-first article.
 - Prefer events with second-order impact on valuations, rates, credit, housing demand, supply, regulation, or sentiment.
 - Avoid celebrity, rumor, and low-signal topics.
 - Use lane=stocks or lane=real_estate only.
 - Return no more than {topics_per_lane} topic(s) per lane.
+- source_urls must come from the provided raw sources only.
 """.strip()
     return instructions, input_text
 
@@ -4421,7 +4474,13 @@ def _select_daily_lane_topic(
         data = None
     if not isinstance(data, dict):
         return None
-    evidence_urls = _ensure_list_of_strings(data.get("source_urls"))
+    allowed_urls = {
+        url
+        for event in events
+        for url in _ensure_list_of_strings(event.get("evidence_urls"))
+        if _is_safe_public_url(url)
+    }
+    evidence_urls = _filter_allowed_source_urls(data.get("source_urls"), allowed_urls=allowed_urls)
     event_lookup = {
         str(event.get("title") or "").strip().lower(): event
         for event in events
@@ -4434,8 +4493,17 @@ def _select_daily_lane_topic(
             *queries,
             *matched_event.get("follow_up_queries", {}).get(lane, []),
         ])
-        if not evidence_urls:
-            evidence_urls = _ensure_list_of_strings(matched_event.get("evidence_urls"))
+        fallback_urls = _filter_allowed_source_urls(
+            matched_event.get("evidence_urls"),
+            allowed_urls=allowed_urls,
+        )
+        if evidence_urls:
+            evidence_urls = _filter_allowed_source_urls(
+                [*evidence_urls, *fallback_urls],
+                allowed_urls=allowed_urls,
+            )
+        else:
+            evidence_urls = fallback_urls
     keyword = str(data.get("keyword") or data.get("title") or "").strip()
     if not keyword:
         return None
@@ -5314,11 +5382,22 @@ def _build_daily_impact_discovery_queries(window_labels: dict[str, str]) -> list
     return list(dict.fromkeys(query for query in queries if query))
 
 
+def _build_weekly_major_events_discovery_queries(window_labels: dict[str, str]) -> list[str]:
+    date_range = window_labels.get("display_range") or window_labels.get("window_start") or ""
+    queries: list[str] = []
+    for topic in DAILY_IMPACT_DISCOVERY_TOPICS:
+        queries.append(f"{date_range} {topic} United States stocks outlook")
+        queries.append(f"{date_range} {topic} United States real estate outlook")
+        queries.append(f"{date_range} {topic} macro impact on markets and housing")
+    return list(dict.fromkeys(query for query in queries if query))
+
+
 def _normalize_weekly_major_topics(
     raw_topics: list[dict],
     *,
     week_labels: dict[str, str],
     per_lane_limit: int,
+    allowed_urls: set[str],
 ) -> list[dict]:
     normalized: list[dict] = []
     lane_counts = {lane: 0 for lane in MARKET_ANALYSIS_LANES}
@@ -5341,6 +5420,7 @@ def _normalize_weekly_major_topics(
         why_now = str(item.get("why_now") or "").strip()
         focus_points = _ensure_list_of_strings(item.get("focus_points"))
         queries = _normalize_search_queries(item.get("queries"))
+        source_urls = _filter_allowed_source_urls(item.get("source_urls"), allowed_urls=allowed_urls)
         risk = str(item.get("risk") or "medium").strip() or "medium"
         for lane in lanes:
             if lane_counts.get(lane, 0) >= per_lane_limit:
@@ -5358,7 +5438,7 @@ def _normalize_weekly_major_topics(
                     "why_now": why_now,
                     "focus_points": focus_points,
                     "queries": queries,
-                    "source_urls": [],
+                    "source_urls": source_urls,
                     "risk": risk,
                     "analysis_lane": lane,
                     "category_label": DAILY_IMPACT_CATEGORY_LABELS.get(lane, lane),
@@ -5533,9 +5613,31 @@ def run_weekly_major_events(
     if week_labels["week_key"] in completed_runs:
         logging.info("Weekly major-events pipeline already completed for %s", week_labels["week_key"])
         return
+    config = replace(
+        config,
+        content_language="English",
+        content_tone="analytical, evidence-driven, plainspoken",
+        youtube_search_enabled=False,
+    )
+    discovery_queries = _build_weekly_major_events_discovery_queries(week_labels)
+    discovery_sources = _gather_raw_sources_for_queries(
+        config,
+        queries=discovery_queries,
+        region="US",
+        language=config.content_language,
+        window_start=window_start,
+        window_end=window_end,
+        max_sources=max(config.max_evidence_sources * 3, 12),
+        web_limit=max(config.search_web_max_results * 3, 12),
+        rss_limit=max(config.search_rss_max_results * 3, 12),
+    )
+    if not discovery_sources:
+        logging.warning("Weekly major-events pipeline found no discovery sources for %s", week_labels["display_range"])
+        return
     prompt_instructions, prompt_input = _build_weekly_major_events_prompt(
         window_label=week_labels["display_range"],
         topics_per_lane=config.weekly_major_events_per_lane,
+        raw_sources_json=json.dumps(discovery_sources, ensure_ascii=True),
     )
     weekly_writer = OpenAIResponsesClient(
         config.openai_api_key,
@@ -5555,6 +5657,11 @@ def run_weekly_major_events(
         data.get("topics") if isinstance(data, dict) and isinstance(data.get("topics"), list) else [],
         week_labels=week_labels,
         per_lane_limit=config.weekly_major_events_per_lane,
+        allowed_urls={
+            str(source.get("url") or "").strip()
+            for source in discovery_sources
+            if _is_safe_public_url(str(source.get("url") or "").strip())
+        },
     )
     if not topics:
         logging.warning("Weekly major-events pipeline produced no publishable topics.")
@@ -5563,6 +5670,8 @@ def run_weekly_major_events(
         {
             "pipeline": PIPELINE_WEEKLY_MAJOR_EVENTS,
             "window": week_labels,
+            "discovery_queries": discovery_queries,
+            "discovery_sources": discovery_sources,
             "topics": topics,
         },
         content_timezone=config.content_timezone,
