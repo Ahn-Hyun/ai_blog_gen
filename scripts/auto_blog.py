@@ -35,7 +35,6 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT_DIR / "src"
 sys.path.append(str(SRC_DIR))
 
-from collectors.trendspyg_collector import collect_trending_searches  # noqa: E402
 from config.settings import (  # noqa: E402
     DEFAULT_CSV_HOURS,
     DEFAULT_CSV_SORT_BY,
@@ -59,7 +58,7 @@ DEFAULT_SCRAPE_TIMEOUT = 12
 DEFAULT_SCRAPE_DELAY_SEC = 1.0
 DEFAULT_SCRAPE_MAX_RETRIES = 2
 DEFAULT_SCRAPE_BACKOFF_SEC = 5.0
-DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-6"
+DEFAULT_ANTHROPIC_MODEL = "gemini-3.1-pro"
 DEFAULT_ANTHROPIC_MODEL_CONTENT = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_ANTHROPIC_MODEL_META = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_ANTHROPIC_TEMPERATURE = 0.6
@@ -176,10 +175,8 @@ GOOGLE_NEWS_LANGUAGE_MAP = {
     "US": "en",
     "JP": "ja",
 }
-PIPELINE_RECENT = "recent"
-PIPELINE_HIGH_INTENT = "high-intent"
 PIPELINE_DAILY_IMPACT = "daily-impact"
-PIPELINE_CHOICES = (PIPELINE_RECENT, PIPELINE_HIGH_INTENT, PIPELINE_DAILY_IMPACT)
+PIPELINE_CHOICES = (PIPELINE_DAILY_IMPACT,)
 DAILY_IMPACT_DISCOVERY_TOPICS = (
     "federal reserve policy inflation labor market unemployment treasury yields",
     "housing market mortgage rates home sales homebuilder inventory affordability",
@@ -198,255 +195,6 @@ DAILY_IMPACT_TAG_HINTS = {
     "stocks": ["market-impact", "stocks", "macro"],
     "real_estate": ["market-impact", "real-estate", "housing"],
 }
-HIGH_INTENT_FIXED_TREND_SOURCE = "rss"
-HIGH_INTENT_FIXED_TREND_METHOD = "realtime_trending_searches"
-HIGH_INTENT_FIXED_TREND_LIMIT = 20
-HIGH_INTENT_FIXED_MIN_MATCHES = 1
-HIGH_INTENT_FIXED_MAX_TOPIC_RANK = 20
-HIGH_INTENT_FIXED_CATEGORIES = (
-    "real_estate",
-    "stocks",
-)
-TRENDSPYG_CATEGORIES = {
-    "all",
-    "autos",
-    "beauty",
-    "business",
-    "climate",
-    "entertainment",
-    "food",
-    "games",
-    "health",
-    "hobbies",
-    "jobs",
-    "law",
-    "other",
-    "pets",
-    "politics",
-    "science",
-    "shopping",
-    "sports",
-    "technology",
-    "travel",
-}
-HIGH_INTENT_CATEGORY_ALIASES = {
-    "b2b": "business",
-    "b2b_saas": "business",
-    "business_industrial": "business",
-    "business_and_industrial": "business",
-    "saas": "business",
-    "enterprise": "business",
-    "finance": "business",
-    "finance_insurance": "business",
-    "insurance": "business",
-    "banking": "business",
-    "career": "jobs",
-    "education": "jobs",
-    "career_education": "jobs",
-    "jobs_education": "jobs",
-    "jobs_and_education": "jobs",
-    "jobs": "jobs",
-    "tech": "technology",
-    "technology": "technology",
-    "computers_electronics": "technology",
-    "internet_telecom": "technology",
-    "software": "technology",
-    "developer_tools": "technology",
-    "productivity_software": "technology",
-}
-DEFAULT_HIGH_INTENT_CATEGORY_HINTS = (
-    "b2b_saas",
-    "finance_insurance",
-    "career_education",
-    "tech",
-)
-HIGH_INTENT_RSS_CATEGORY_KEYWORDS: dict[str, tuple[str, ...]] = {
-    "real_estate": (
-        "real estate",
-        "real-estate",
-        "realestate",
-        "housing market",
-        "housing",
-        "home price",
-        "home prices",
-        "home sales",
-        "homebuyer",
-        "mortgage",
-        "mortgage rate",
-        "property",
-        "properties",
-        "apartment",
-        "apartments",
-        "condo",
-        "condos",
-        "rental",
-        "rent",
-        "lease",
-        "landlord",
-        "realtor",
-        "residential",
-        "commercial real estate",
-        "cre",
-    ),
-    "stocks": (
-        "stock",
-        "stocks",
-        "stock market",
-        "share price",
-        "shares",
-        "equity",
-        "equities",
-        "market cap",
-        "ipo",
-        "etf",
-        "earnings",
-        "dividend",
-        "nasdaq",
-        "nyse",
-        "dow",
-        "s&p",
-        "s&p 500",
-        "index",
-        "trading",
-        "trader",
-    ),
-    "finance": (
-        "finance",
-        "financial",
-        "personal finance",
-        "wealth",
-        "asset",
-        "assets",
-        "asset allocation",
-        "portfolio",
-        "investment",
-        "investing",
-        "savings",
-        "saving",
-        "deposit",
-        "interest rate",
-        "rate hike",
-        "bond",
-        "bonds",
-        "fund",
-        "funds",
-        "pension",
-        "retirement",
-        "insurance",
-        "tax",
-        "tax planning",
-        "재테크",
-        "제테크",
-        "자산관리",
-        "투자",
-        "저축",
-        "예금",
-        "적금",
-        "금리",
-        "채권",
-        "펀드",
-        "연금",
-        "보험",
-        "절세",
-        "세테크",
-    ),
-    "entertainment": (
-        "entertainment",
-        "celebrity",
-        "celeb",
-        "actor",
-        "actress",
-        "singer",
-        "music",
-        "album",
-        "concert",
-        "movie",
-        "film",
-        "tv",
-        "series",
-        "drama",
-        "k-pop",
-        "kpop",
-        "idol",
-        "연예",
-        "연예인",
-        "배우",
-        "가수",
-        "드라마",
-        "영화",
-        "예능",
-        "콘서트",
-        "음악",
-    ),
-    "side_hustle": (
-        "side hustle",
-        "side-hustle",
-        "sidehustle",
-        "side job",
-        "second job",
-        "part-time",
-        "part time",
-        "gig",
-        "freelance",
-        "freelancer",
-        "extra income",
-        "online business",
-        "affiliate",
-        "dropshipping",
-        "부업",
-        "부수입",
-        "n잡",
-        "투잡",
-        "알바",
-        "프리랜서",
-    ),
-    "tech": (
-        "tech",
-        "technology",
-        "software",
-        "hardware",
-        "app",
-        "apps",
-        "cloud",
-        "saas",
-        "startup",
-        "cybersecurity",
-        "security",
-        "data",
-        "ai",
-        "artificial intelligence",
-        "machine learning",
-        "ml",
-        "llm",
-        "semiconductor",
-        "chip",
-        "developer",
-        "programming",
-        "tech stack",
-        "테크",
-        "기술",
-        "인공지능",
-        "소프트웨어",
-        "하드웨어",
-        "클라우드",
-        "보안",
-        "스타트업",
-        "반도체",
-    ),
-}
-HIGH_INTENT_TEMPLATE_REQUIREMENTS = """
-Template requirements (fixed order):
-1) Add a "TL;DR" section after the intro (3-5 bullet points max).
-2) Add a "Comparison table" section using a Markdown table.
-   Columns: Option, Best for, Pros, Cons, Pricing/Cost (use "unknown" if not supported).
-3) Add a "Pros and cons" section with two bullet lists.
-4) Add a "FAQ" section (2-4 Q/A).
-
-Rules:
-- Use only facts supported by the provided sources and citations.
-- Reuse existing citations inside the table or bullets when possible.
-- If evidence is thin, label details as "unknown" or "varies" and avoid numbers.
-""".strip()
 DAILY_IMPACT_TEMPLATE_REQUIREMENTS = """
 Template requirements (fixed order):
 1) Open with a concise thesis that explains why the prior day's event matters for the target market.
@@ -669,20 +417,20 @@ def _build_config() -> AutomationConfig:
         gemini_api_key = google_api_key
     if not google_api_key and gemini_api_key:
         google_api_key = gemini_api_key
-    anthropic_api_key = env.get("ANTHROPIC_API_KEY", "").strip()
-    anthropic_model = env.get("ANTHROPIC_MODEL", DEFAULT_ANTHROPIC_MODEL)
-    anthropic_model_content = env.get("ANTHROPIC_MODEL_CONTENT", anthropic_model)
-    anthropic_model_meta = env.get("ANTHROPIC_MODEL_META", anthropic_model)
+    anthropic_api_key = gemini_api_key
+    anthropic_model = env.get("GEMINI_MODEL", DEFAULT_ANTHROPIC_MODEL)
+    anthropic_model_content = env.get("GEMINI_MODEL_CONTENT", anthropic_model)
+    anthropic_model_meta = env.get("GEMINI_MODEL_META", anthropic_model)
     anthropic_temperature = _parse_float(
-        env.get("ANTHROPIC_TEMPERATURE"),
+        env.get("GEMINI_TEMPERATURE"),
         DEFAULT_ANTHROPIC_TEMPERATURE,
     )
     anthropic_max_tokens = _parse_int(
-        env.get("ANTHROPIC_MAX_TOKENS"),
+        env.get("GEMINI_MAX_TOKENS"),
         DEFAULT_ANTHROPIC_MAX_TOKENS,
     )
     anthropic_timeout_sec = _parse_int(
-        env.get("ANTHROPIC_TIMEOUT_SEC"),
+        env.get("GEMINI_TIMEOUT_SEC"),
         DEFAULT_ANTHROPIC_TIMEOUT_SEC,
     )
     if anthropic_timeout_sec <= 0:
@@ -876,79 +624,6 @@ def _build_config() -> AutomationConfig:
     )
 
 
-def _build_high_intent_settings(config: AutomationConfig) -> dict[str, object]:
-    env = _resolve_env()
-    regions = _parse_list(env.get("HIGH_INTENT_REGIONS"), ["US"])
-    trend_source = env.get("HIGH_INTENT_TREND_SOURCE", "rss").strip().lower() or "rss"
-    trend_method = env.get("HIGH_INTENT_TREND_METHOD", DEFAULT_TREND_METHOD).strip() or DEFAULT_TREND_METHOD
-    trend_window_hours = _parse_int(env.get("HIGH_INTENT_TREND_WINDOW_HOURS"), 24)
-    csv_sort_by = env.get("HIGH_INTENT_CSV_SORT_BY", DEFAULT_CSV_SORT_BY)
-    trend_limit = _parse_int(env.get("HIGH_INTENT_TREND_LIMIT"), DEFAULT_LIMIT)
-    trend_sleep_sec = _parse_float(env.get("HIGH_INTENT_TREND_SLEEP_SEC"), 1.0)
-    max_topic_rank = _parse_int(env.get("HIGH_INTENT_MAX_TOPIC_RANK"), 5)
-    csv_active_only = _parse_bool(env.get("HIGH_INTENT_CSV_ACTIVE_ONLY"), False)
-    csv_download_dir = env.get("HIGH_INTENT_CSV_DOWNLOAD_DIR", "").strip()
-    csv_max_retries = _parse_int(env.get("HIGH_INTENT_CSV_MAX_RETRIES"), 2)
-    csv_retry_delay_sec = _parse_float(env.get("HIGH_INTENT_CSV_RETRY_DELAY_SEC"), 2.0)
-    allow_rss_fallback = _parse_bool(env.get("HIGH_INTENT_ALLOW_RSS_FALLBACK"), True)
-    rss_min_matches = _parse_int(env.get("HIGH_INTENT_RSS_MIN_MATCHES"), 1)
-    raw_categories = _parse_list(
-        env.get("HIGH_INTENT_TREND_CATEGORIES"),
-        DEFAULT_HIGH_INTENT_CATEGORY_HINTS,
-    )
-    return {
-        "regions": regions,
-        "trend_source": trend_source,
-        "trend_method": trend_method,
-        "trend_window_hours": trend_window_hours,
-        "csv_sort_by": csv_sort_by,
-        "trend_limit": trend_limit,
-        "trend_sleep_sec": trend_sleep_sec,
-        "max_topic_rank": max_topic_rank,
-        "raw_categories": raw_categories,
-        "csv_active_only": csv_active_only,
-        "csv_download_dir": csv_download_dir,
-        "csv_max_retries": csv_max_retries,
-        "csv_retry_delay_sec": csv_retry_delay_sec,
-        "allow_rss_fallback": allow_rss_fallback,
-        "rss_min_matches": rss_min_matches,
-    }
-
-
-def _normalize_high_intent_categories(raw_categories: Iterable[str]) -> list[str]:
-    normalized: list[str] = []
-    seen: set[str] = set()
-    for raw in raw_categories:
-        key = str(raw).strip().lower()
-        if not key:
-            continue
-        key = key.replace("/", "_").replace("-", "_").replace(" ", "_")
-        mapped = HIGH_INTENT_CATEGORY_ALIASES.get(key, key)
-        if mapped in TRENDSPYG_CATEGORIES and mapped != "all" and mapped not in seen:
-            normalized.append(mapped)
-            seen.add(mapped)
-    return normalized
-
-
-def _build_high_intent_filter_text(topic: dict) -> str:
-    chunks: list[str] = []
-    keyword = str(topic.get("keyword") or "").strip()
-    if keyword:
-        chunks.append(keyword)
-    articles = topic.get("news_articles") or []
-    if isinstance(articles, list):
-        for item in articles:
-            if not isinstance(item, dict):
-                continue
-            headline = str(item.get("headline") or "").strip()
-            source = str(item.get("source") or "").strip()
-            if headline:
-                chunks.append(headline)
-            if source:
-                chunks.append(source)
-    return " ".join(chunks).lower()
-
-
 def _keyword_matches(text: str, keyword: str) -> bool:
     key = keyword.strip().lower()
     if not key:
@@ -956,41 +631,6 @@ def _keyword_matches(text: str, keyword: str) -> bool:
     if len(key) <= 3 and key.isascii() and key.isalnum():
         return re.search(rf"\b{re.escape(key)}\b", text) is not None
     return key in text
-
-
-def _filter_high_intent_rss_items(
-    items: list[dict],
-    categories: list[str],
-    *,
-    min_matches: int,
-) -> list[dict]:
-    if not items:
-        return []
-    min_matches = max(1, int(min_matches))
-    allowed = [c for c in categories if c in HIGH_INTENT_RSS_CATEGORY_KEYWORDS]
-    if not allowed:
-        return []
-    filtered: list[dict] = []
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        text = _build_high_intent_filter_text(item)
-        if not text:
-            continue
-        matched: list[str] = []
-        for category in allowed:
-            keywords = HIGH_INTENT_RSS_CATEGORY_KEYWORDS.get(category, ())
-            hits = sum(1 for kw in keywords if kw and _keyword_matches(text, kw))
-            if hits >= min_matches:
-                matched.append(category)
-        if matched:
-            metadata = item.get("metadata") or {}
-            metadata = dict(metadata) if isinstance(metadata, dict) else {}
-            metadata["high_intent_categories"] = matched
-            metadata["high_intent_filter"] = "rss_keywords"
-            item["metadata"] = metadata
-            filtered.append(item)
-    return filtered
 
 
 def _normalize_keyword(keyword: str) -> str:
@@ -1485,36 +1125,6 @@ def _build_evidence_summary(evidence: dict, keyword: str) -> str:
     return " ".join(lines)
 
 
-def _select_topics_by_region(
-    payload: dict,
-    regions: list[str],
-    max_per_region: int,
-) -> list[dict]:
-    items = payload.get("items", [])
-    region_items: dict[str, list[dict]] = {region: [] for region in regions}
-    for item in items:
-        region = item.get("region")
-        if region in region_items:
-            region_items[region].append(item)
-
-    selected: list[dict] = []
-    for region in regions:
-        region_list = sorted(region_items.get(region, []), key=lambda x: x.get("rank", 999))
-        seen: set[str] = set()
-        for item in region_list:
-            keyword = item.get("keyword")
-            if not keyword:
-                continue
-            normalized = _normalize_keyword(str(keyword))
-            if normalized in seen:
-                continue
-            seen.add(normalized)
-            selected.append(item)
-            if len(seen) >= max_per_region:
-                break
-    return selected
-
-
 def _load_state() -> dict:
     state_path = _resolve_state_path()
     return read_json(state_path, default={"topics": [], "slugs": []}) or {"topics": [], "slugs": []}
@@ -1530,17 +1140,14 @@ class ClaudeClient:
         self.api_key = api_key
         self.model = model
         self.timeout_sec = max(1, timeout_sec)
-        self.base_url = "https://api.anthropic.com/v1/messages"
+        self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
 
     def _post(self, payload: dict) -> dict:
         request = Request(
-            self.base_url,
+            f"{self.base_url}?{urlencode({'key': self.api_key})}",
             data=json.dumps(payload).encode("utf-8"),
             headers={
                 "Content-Type": "application/json",
-                "x-api-key": self.api_key,
-                "anthropic-api-key": self.api_key,
-                "anthropic-version": "2023-06-01",
             },
             method="POST",
         )
@@ -1549,27 +1156,44 @@ class ClaudeClient:
 
     @staticmethod
     def _extract_text(data: dict) -> str:
-        blocks = data.get("content", [])
-        if not isinstance(blocks, list):
-            raise RuntimeError("Claude returned no content blocks.")
-        text_parts = [
-            block.get("text", "")
-            for block in blocks
-            if isinstance(block, dict) and block.get("type") == "text"
-        ]
+        candidates = data.get("candidates", [])
+        if not isinstance(candidates, list):
+            raise RuntimeError("Gemini returned no candidates.")
+        text_parts: list[str] = []
+        for candidate in candidates:
+            if not isinstance(candidate, dict):
+                continue
+            content = candidate.get("content")
+            if not isinstance(content, dict):
+                continue
+            parts = content.get("parts", [])
+            if not isinstance(parts, list):
+                continue
+            for part in parts:
+                if not isinstance(part, dict):
+                    continue
+                text = part.get("text")
+                if text:
+                    text_parts.append(str(text))
         text = "\n".join(part for part in text_parts if part).strip()
         if not text:
-            raise RuntimeError("Claude returned no text.")
+            raise RuntimeError("Gemini returned no text.")
         return text
 
     def generate(self, prompt: str, *, temperature: float, max_tokens: int) -> str:
         if not self.api_key:
-            raise RuntimeError("ANTHROPIC_API_KEY is not set.")
+            raise RuntimeError("GEMINI_API_KEY is not set.")
         payload = {
-            "model": self.model,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-            "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": prompt}],
+                }
+            ],
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": max_tokens,
+            },
         }
         data = self._post(payload)
         return self._extract_text(data)
@@ -1584,29 +1208,28 @@ class ClaudeClient:
         max_tokens: int,
     ) -> str:
         if not self.api_key:
-            raise RuntimeError("ANTHROPIC_API_KEY is not set.")
+            raise RuntimeError("GEMINI_API_KEY is not set.")
         if not image_bytes:
             raise RuntimeError("Image bytes are empty.")
         payload = {
-            "model": self.model,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-            "messages": [
+            "contents": [
                 {
                     "role": "user",
-                    "content": [
+                    "parts": [
                         {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": mime_type,
+                            "inlineData": {
+                                "mimeType": mime_type,
                                 "data": base64.b64encode(image_bytes).decode("utf-8"),
-                            },
+                            }
                         },
-                        {"type": "text", "text": prompt},
+                        {"text": prompt},
                     ],
                 }
             ],
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": max_tokens,
+            },
         }
         data = self._post(payload)
         return self._extract_text(data)
@@ -2516,9 +2139,7 @@ def _build_content_prompt(
     )
 
     template_block = ""
-    if template_mode == PIPELINE_HIGH_INTENT:
-        template_block = f"\n\n{HIGH_INTENT_TEMPLATE_REQUIREMENTS}"
-    elif template_mode == PIPELINE_DAILY_IMPACT:
+    if template_mode == PIPELINE_DAILY_IMPACT:
         template_block = f"\n\n{DAILY_IMPACT_TEMPLATE_REQUIREMENTS}"
     angle_block = f"Angle: {angle}\n" if angle else ""
 
@@ -2894,14 +2515,7 @@ Use section headings that are specific, concrete, and SEO-aware.
 Anchor sections in evidence and reader intent (what they came to learn).
 """.strip()
     template_block = ""
-    if template_mode == PIPELINE_HIGH_INTENT:
-        template_block = """
-Template requirements:
-- Include at least one section focused on comparisons or alternatives.
-- Include at least one section focused on pricing/cost or decision criteria.
-- Ensure headings fit high-intent readers looking for choices or fixes.
-""".strip()
-    elif template_mode == PIPELINE_DAILY_IMPACT:
+    if template_mode == PIPELINE_DAILY_IMPACT:
         template_block = DAILY_IMPACT_TEMPLATE_REQUIREMENTS
     user = f"""
 Topic: {keyword}
@@ -3073,9 +2687,7 @@ Do not include hyperlinks, raw URLs, or Markdown link syntax in the body.
 Maintain a consistent voice and avoid redundancy across sections.
 """.strip()
     template_block = ""
-    if template_mode == PIPELINE_HIGH_INTENT:
-        template_block = f"\n{HIGH_INTENT_TEMPLATE_REQUIREMENTS}"
-    elif template_mode == PIPELINE_DAILY_IMPACT:
+    if template_mode == PIPELINE_DAILY_IMPACT:
         template_block = f"\n{DAILY_IMPACT_TEMPLATE_REQUIREMENTS}"
     user = f"""
 Inputs:
@@ -4181,66 +3793,6 @@ def _build_fallback_body(
     return _ensure_images_in_body(body, image_urls, alt_text)
 
 
-def _rank_topics_with_llm(
-    config: AutomationConfig,
-    writer: ClaudeClient,
-    topics: list[dict],
-) -> list[dict]:
-    if not topics:
-        return []
-    trend_items = []
-    for topic in topics:
-        trend_items.append(
-            {
-                "keyword": topic.get("keyword"),
-                "region": topic.get("region"),
-                "rank": topic.get("rank"),
-                "traffic": topic.get("traffic"),
-                "published_at": topic.get("published_at"),
-                "explore_link": topic.get("explore_link"),
-                "news_articles": topic.get("news_articles"),
-                "metadata": topic.get("metadata"),
-            }
-        )
-    prompt = _build_topic_ranker_prompt(
-        json.dumps(trend_items, ensure_ascii=True),
-    )
-    try:
-        response = writer.generate(
-            prompt,
-            temperature=config.anthropic_temperature,
-            max_tokens=config.anthropic_max_tokens,
-        )
-        data = _extract_json_block(response)
-    except Exception as exc:
-        logging.warning("Topic ranker failed: %s", exc)
-        return topics
-    if not isinstance(data, dict):
-        return topics
-    selected = data.get("selected")
-    if not isinstance(selected, list) or not selected:
-        return topics
-    topic_map = {_normalize_keyword(str(t.get("keyword") or "")): t for t in topics}
-    ranked: list[dict] = []
-    for item in selected:
-        if not isinstance(item, dict):
-            continue
-        keyword = str(item.get("keyword") or "").strip()
-        if not keyword:
-            continue
-        normalized = _normalize_keyword(keyword)
-        topic = topic_map.get(normalized)
-        if not topic:
-            continue
-        topic = dict(topic)
-        topic["angle"] = str(item.get("angle") or "").strip()
-        topic["why_now"] = str(item.get("why_now") or "").strip()
-        topic["risk"] = str(item.get("risk") or "").strip()
-        topic["research_needs"] = _ensure_list_of_strings(item.get("research_needs"))
-        ranked.append(topic)
-    return ranked or topics
-
-
 def _plan_research(
     config: AutomationConfig,
     writer: ClaudeClient,
@@ -4767,24 +4319,7 @@ def _build_outline(
             "evidence_refs": [],
         },
     ]
-    if template_mode == PIPELINE_HIGH_INTENT:
-        fallback_sections.insert(
-            2,
-            {
-                "heading": f"{keyword} alternatives and comparisons",
-                "goal": "Compare options and highlight key differences for buyers.",
-                "evidence_refs": [],
-            },
-        )
-        fallback_sections.insert(
-            3,
-            {
-                "heading": f"{keyword} pricing and decision criteria",
-                "goal": "Summarize cost signals and how to evaluate choices.",
-                "evidence_refs": [],
-            },
-        )
-    elif template_mode == PIPELINE_DAILY_IMPACT:
+    if template_mode == PIPELINE_DAILY_IMPACT:
         fallback_sections = [
             {
                 "heading": f"Why the prior day matters for {keyword}",
@@ -5172,7 +4707,7 @@ def _generate_article_multi_agent(
     keyword = str(topic.get("keyword") or "").strip()
     if not keyword:
         return None
-    template_mode = pipeline if pipeline in {PIPELINE_HIGH_INTENT, PIPELINE_DAILY_IMPACT} else None
+    template_mode = pipeline if pipeline == PIPELINE_DAILY_IMPACT else None
     default_angle = f"latest developments and impact for {keyword}"
     if template_mode == PIPELINE_DAILY_IMPACT:
         lane = str(topic.get("analysis_lane") or "").strip() or "market"
@@ -5319,7 +4854,7 @@ def _generate_post_for_topic(
     hero_alt_hint = ""
     reference_urls = list(urls)
 
-    template_mode = pipeline if pipeline in {PIPELINE_HIGH_INTENT, PIPELINE_DAILY_IMPACT} else None
+    template_mode = pipeline if pipeline == PIPELINE_DAILY_IMPACT else None
     inline_image_prompts: list[str] = []
     chart_specs: list[dict] = []
     if config.use_multi_agent:
@@ -5555,72 +5090,6 @@ def _save_trends_snapshot(payload: dict, *, content_timezone: ZoneInfo) -> None:
     write_json(path, payload)
 
 
-def _collect_trends_payload(
-    *,
-    regions: list[str],
-    trend_source: str,
-    trend_method: str,
-    trend_limit: int,
-    trend_sleep_sec: float,
-    trend_window_hours: int,
-    csv_sort_by: str,
-    categories: list[str] | None,
-    csv_active_only: bool = False,
-    csv_download_dir: str | None = None,
-    csv_max_retries: int = 1,
-    csv_retry_delay_sec: float = 1.0,
-    include_images: bool,
-    include_articles: bool,
-    max_articles_per_trend: int,
-    cache: bool,
-    allow_rss_fallback: bool = True,
-) -> dict:
-    source_mode = trend_source.strip().lower()
-    try:
-        payload = collect_trending_searches(
-            regions,
-            limit=trend_limit,
-            sleep_sec=trend_sleep_sec,
-            method=trend_method,
-            source=source_mode,
-            window_hours=trend_window_hours,
-            csv_sort_by=csv_sort_by,
-            categories=categories,
-            csv_active_only=csv_active_only,
-            csv_download_dir=csv_download_dir,
-            csv_max_retries=csv_max_retries,
-            csv_retry_delay_sec=csv_retry_delay_sec,
-            include_images=include_images,
-            include_articles=include_articles,
-            max_articles_per_trend=max_articles_per_trend,
-            cache=cache,
-        )
-    except RuntimeError as exc:
-        if source_mode == "csv" and allow_rss_fallback:
-            logging.warning("CSV source failed; falling back to RSS. Error: %s", exc)
-            payload = collect_trending_searches(
-                regions,
-                limit=trend_limit,
-                sleep_sec=trend_sleep_sec,
-                method=trend_method,
-                source="rss",
-                window_hours=trend_window_hours,
-                csv_sort_by=csv_sort_by,
-                categories=None,
-                csv_active_only=False,
-                csv_download_dir=None,
-                csv_max_retries=1,
-                csv_retry_delay_sec=0.0,
-                include_images=include_images,
-                include_articles=include_articles,
-                max_articles_per_trend=max_articles_per_trend,
-                cache=cache,
-            )
-        else:
-            raise
-    return payload
-
-
 def _build_daily_impact_discovery_queries(window_labels: dict[str, str]) -> list[str]:
     display_date = window_labels.get("display_date") or window_labels.get("target_date") or ""
     queries: list[str] = []
@@ -5736,7 +5205,6 @@ def run_daily_impact(
     _process_topics(
         config,
         topics=topics,
-        ranker_enabled=False,
         pipeline=PIPELINE_DAILY_IMPACT,
     )
     state = _load_state()
@@ -5750,7 +5218,6 @@ def _process_topics(
     config: AutomationConfig,
     *,
     topics: list[dict],
-    ranker_enabled: bool = True,
     pipeline: str | None = None,
 ) -> None:
     if not topics:
@@ -5771,8 +5238,6 @@ def _process_topics(
         config.anthropic_model_meta,
         config.anthropic_timeout_sec,
     )
-    if ranker_enabled and config.use_multi_agent:
-        topics = _rank_topics_with_llm(config, writer, topics)
     for topic in topics:
         keyword = topic.get("keyword")
         if not keyword:
@@ -5806,95 +5271,6 @@ def _process_topics(
     _save_state(state)
 
 
-def run_once(config: AutomationConfig) -> None:
-    payload = _collect_trends_payload(
-        regions=config.regions,
-        trend_limit=config.trend_limit,
-        trend_sleep_sec=config.trend_sleep_sec,
-        trend_method=config.trend_method,
-        trend_source=config.trend_source,
-        trend_window_hours=config.trend_window_hours,
-        csv_sort_by=config.csv_sort_by,
-        categories=None,
-        csv_active_only=False,
-        csv_download_dir=None,
-        csv_max_retries=1,
-        csv_retry_delay_sec=0.0,
-        include_images=config.rss_include_images,
-        include_articles=config.rss_include_articles,
-        max_articles_per_trend=config.rss_max_articles_per_trend,
-        cache=config.rss_cache,
-    )
-    payload["pipeline"] = PIPELINE_RECENT
-    _save_trends_snapshot(payload, content_timezone=config.content_timezone)
-
-    topics = _select_topics_by_region(payload, config.regions, config.max_topic_rank)
-    _process_topics(config, topics=topics, pipeline=PIPELINE_RECENT)
-
-
-def run_high_intent(config: AutomationConfig) -> None:
-    settings = _build_high_intent_settings(config)
-    regions = settings["regions"]
-    if not isinstance(regions, list) or not regions:
-        regions = config.regions
-    if not isinstance(regions, list) or not regions:
-        logging.warning("High-intent regions are empty; skipping pipeline.")
-        return
-    categories = list(HIGH_INTENT_FIXED_CATEGORIES)
-    if not categories:
-        logging.warning("High-intent fixed categories are empty; skipping pipeline.")
-        return
-    logging.info("High-intent fixed category filters: %s", categories)
-    logging.info(
-        "High-intent fixed trend config (source=%s, method=%s, limit=%s)",
-        HIGH_INTENT_FIXED_TREND_SOURCE,
-        HIGH_INTENT_FIXED_TREND_METHOD,
-        HIGH_INTENT_FIXED_TREND_LIMIT,
-    )
-    payload = _collect_trends_payload(
-        regions=regions,
-        trend_limit=HIGH_INTENT_FIXED_TREND_LIMIT,
-        trend_sleep_sec=float(settings["trend_sleep_sec"]),
-        trend_method=HIGH_INTENT_FIXED_TREND_METHOD,
-        trend_source=HIGH_INTENT_FIXED_TREND_SOURCE,
-        trend_window_hours=int(settings["trend_window_hours"]),
-        csv_sort_by=str(settings["csv_sort_by"]),
-        categories=None,
-        csv_active_only=False,
-        csv_download_dir=None,
-        csv_max_retries=1,
-        csv_retry_delay_sec=0.0,
-        include_images=config.rss_include_images,
-        include_articles=config.rss_include_articles,
-        max_articles_per_trend=config.rss_max_articles_per_trend,
-        cache=config.rss_cache,
-        allow_rss_fallback=False,
-    )
-    payload["pipeline"] = PIPELINE_HIGH_INTENT
-    payload["rss_filter_categories"] = categories
-    payload["rss_filter_min_matches"] = HIGH_INTENT_FIXED_MIN_MATCHES
-    items = payload.get("items", [])
-    if isinstance(items, list):
-        filtered = _filter_high_intent_rss_items(
-            items,
-            categories,
-            min_matches=HIGH_INTENT_FIXED_MIN_MATCHES,
-        )
-        payload["items"] = filtered
-    _save_trends_snapshot(payload, content_timezone=config.content_timezone)
-    topics = _select_topics_by_region(
-        payload,
-        regions,
-        HIGH_INTENT_FIXED_MAX_TOPIC_RANK,
-    )
-    _process_topics(
-        config,
-        topics=topics,
-        ranker_enabled=False,
-        pipeline=PIPELINE_HIGH_INTENT,
-    )
-
-
 def run_pipeline(
     config: AutomationConfig,
     *,
@@ -5902,13 +5278,9 @@ def run_pipeline(
     publish_date: date | None = None,
     force: bool = False,
 ) -> None:
-    if pipeline == PIPELINE_DAILY_IMPACT:
-        run_daily_impact(config, publish_date=publish_date, force=force)
-        return
-    if pipeline == PIPELINE_HIGH_INTENT:
-        run_high_intent(config)
-        return
-    run_once(config)
+    if pipeline != PIPELINE_DAILY_IMPACT:
+        raise ValueError(f"Unsupported pipeline: {pipeline}")
+    run_daily_impact(config, publish_date=publish_date, force=force)
 
 
 def _configure_logging(level: str) -> None:
@@ -5930,9 +5302,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--once", action="store_true", help="Run only once")
     parser.add_argument(
         "--pipeline",
-        default=PIPELINE_RECENT,
+        default=PIPELINE_DAILY_IMPACT,
         choices=PIPELINE_CHOICES,
-        help="Pipeline mode (recent or high-intent)",
+        help="Pipeline mode",
     )
     parser.add_argument(
         "--log-level",
