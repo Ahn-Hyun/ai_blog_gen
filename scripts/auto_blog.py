@@ -195,6 +195,7 @@ DAILY_IMPACT_TAG_HINTS = {
     "stocks": ["market-impact", "stocks", "macro"],
     "real_estate": ["market-impact", "real-estate", "housing"],
 }
+MARKET_ANALYSIS_LANES = ("stocks", "real_estate")
 DAILY_IMPACT_TEMPLATE_REQUIREMENTS = """
 Template requirements (fixed order):
 1) Open with a concise thesis that explains why the prior day's event matters for the target market.
@@ -710,6 +711,28 @@ def _ensure_list_of_strings(value) -> list[str]:
         if text:
             items.append(text)
     return items
+
+
+def _normalize_affected_lanes(value) -> list[str]:
+    normalized: list[str] = []
+    seen: set[str] = set()
+    raw_items = _ensure_list_of_strings(value)
+    for item in raw_items:
+        key = str(item).strip().lower().replace("-", "_").replace(" ", "_")
+        if key in {"both", "all", "stocks_and_real_estate", "stock_and_real_estate"}:
+            for lane in MARKET_ANALYSIS_LANES:
+                if lane not in seen:
+                    normalized.append(lane)
+                    seen.add(lane)
+            continue
+        if key == "real_estate" or key == "realestate":
+            key = "real_estate"
+        elif key in {"stock", "stocks"}:
+            key = "stocks"
+        if key in MARKET_ANALYSIS_LANES and key not in seen:
+            normalized.append(key)
+            seen.add(key)
+    return normalized or list(MARKET_ANALYSIS_LANES)
 
 
 def _normalize_search_queries(value, *, limit: int = 8, max_length: int = 180) -> list[str]:
@@ -2362,6 +2385,7 @@ Output JSON:
       "summary": "...",
       "why_now": "...",
       "market_relevance": "...",
+      "affected_lanes": ["stocks", "real_estate"],
       "evidence_urls": ["..."],
       "priority": "high|medium|low",
       "follow_up_queries": {{
@@ -2375,6 +2399,8 @@ Output JSON:
 Rules:
 - Use only the provided sources.
 - Keep only 4-8 events with meaningful market relevance.
+- affected_lanes must show whether the event is likely to affect US stocks, US real estate, or both.
+- Use both lanes when the event has a meaningful transmission path into both markets.
 - Follow-up queries must search for second-order effects, not repeat the same headline.
 - Stocks queries should focus on sectors, earnings, capital flows, regulation, rates, costs, or sentiment.
 - Real-estate queries should focus on mortgage rates, affordability, housing demand, supply, refinancing, commercial real estate, or regional spillovers.
@@ -4200,6 +4226,7 @@ def _discover_daily_market_events(
                 "why_now": str(event.get("why_now") or "").strip(),
                 "market_relevance": str(event.get("market_relevance") or "").strip(),
                 "priority": str(event.get("priority") or "medium").strip() or "medium",
+                "affected_lanes": _normalize_affected_lanes(event.get("affected_lanes")),
                 "evidence_urls": _ensure_list_of_strings(event.get("evidence_urls")),
                 "follow_up_queries": {
                     "stocks": _ensure_list_of_strings(follow_up.get("stocks")),
@@ -5174,12 +5201,16 @@ def run_daily_impact(
     }
     _save_trends_snapshot(payload, content_timezone=config.content_timezone)
     topics: list[dict] = []
-    for lane in ("stocks", "real_estate"):
+    for lane in MARKET_ANALYSIS_LANES:
+        lane_events = [event for event in events if lane in _normalize_affected_lanes(event.get("affected_lanes"))]
+        if not lane_events:
+            logging.info("Daily impact classification produced no %s topic candidates.", lane)
+            continue
         selected = _select_daily_lane_topic(
             config,
             writer,
             lane=lane,
-            events=events,
+            events=lane_events,
             window_label=window_labels["window_summary"],
         )
         if not selected:
