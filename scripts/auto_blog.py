@@ -31,6 +31,11 @@ from urllib.parse import quote, urlencode, urlparse
 from urllib.request import Request, urlopen
 from xml.etree import ElementTree as ET
 
+try:
+    from openai import OpenAI
+except ImportError:  # pragma: no cover - dependency may be absent in local dev until installed
+    OpenAI = None
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT_DIR / "src"
 sys.path.append(str(SRC_DIR))
@@ -92,6 +97,10 @@ DEFAULT_YOUTUBE_MAX_PER_QUERY = 2
 DEFAULT_GOOGLE_IMAGE_ENABLED = True
 DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-3-pro-image-preview"
 DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO = "16:9"
+DEFAULT_OPENAI_WEEKLY_MODEL = "gpt-5.4-pro"
+DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY = 0
+DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_HOUR = 9
+DEFAULT_WEEKLY_MAJOR_EVENTS_PER_LANE = 1
 DEFAULT_GRADIENT_WIDTH = 1600
 DEFAULT_GRADIENT_HEIGHT = 900
 DEFAULT_GRADIENT_JPEG_QUALITY = 90
@@ -176,7 +185,8 @@ GOOGLE_NEWS_LANGUAGE_MAP = {
     "JP": "ja",
 }
 PIPELINE_DAILY_IMPACT = "daily-impact"
-PIPELINE_CHOICES = (PIPELINE_DAILY_IMPACT,)
+PIPELINE_WEEKLY_MAJOR_EVENTS = "weekly-major-events"
+PIPELINE_CHOICES = (PIPELINE_DAILY_IMPACT, PIPELINE_WEEKLY_MAJOR_EVENTS)
 DAILY_IMPACT_DISCOVERY_TOPICS = (
     "federal reserve policy inflation labor market unemployment treasury yields",
     "housing market mortgage rates home sales homebuilder inventory affordability",
@@ -210,6 +220,21 @@ Rules:
 - Distinguish verified facts from inference or uncertainty.
 - Emphasize second-order effects, timing, and who is affected.
 - Keep the analysis grounded in the prior day's evidence and explicitly note when evidence is thin.
+""".strip()
+WEEKLY_MAJOR_EVENTS_TEMPLATE_REQUIREMENTS = """
+Template requirements (fixed order):
+1) Open with a concise thesis that explains why the recent week's event matters for the target market.
+2) Include one section that maps the transmission chain from event -> mechanism -> market effect.
+3) Include one section focused on the highest-signal evidence or data points from the recent week.
+4) Include one scenario section covering base case, upside, and downside with clear uncertainty.
+5) End with a "What to watch next" section listing concrete indicators or triggers.
+
+Rules:
+- Use visual variety at section breaks: combine concise Markdown tables with chart-friendly numeric context and image-friendly explanatory moments. Markdown tables should be used selectively because the pipeline may inject charts/images.
+- Do not rewrite the news chronologically.
+- Distinguish verified facts from inference or uncertainty.
+- Emphasize second-order effects, timing, and who is affected.
+- Keep the analysis grounded in the recent week's evidence and explicitly note when evidence is thin.
 """.strip()
 
 
@@ -266,6 +291,8 @@ class AutomationConfig:
     rss_max_articles_per_trend: int
     rss_cache: bool
     gemini_api_key: str
+    openai_api_key: str
+    openai_weekly_model: str
     anthropic_api_key: str
     anthropic_model: str
     anthropic_model_content: str
@@ -317,6 +344,9 @@ class AutomationConfig:
     google_image_enabled: bool
     google_image_model: str
     google_image_aspect_ratio: str
+    weekly_major_events_run_weekday: int
+    weekly_major_events_run_hour: int
+    weekly_major_events_per_lane: int
 
 
 def _parse_bool(value: str | None, default: bool = False) -> bool:
@@ -414,6 +444,7 @@ def _build_config() -> AutomationConfig:
 
     gemini_api_key = env.get("GEMINI_API_KEY", "").strip()
     google_api_key = env.get("GOOGLE_API_KEY", "").strip()
+    openai_api_key = env.get("OPENAI_API_KEY", "").strip()
     if not gemini_api_key and google_api_key:
         gemini_api_key = google_api_key
     if not google_api_key and gemini_api_key:
@@ -537,6 +568,22 @@ def _build_config() -> AutomationConfig:
         "GOOGLE_IMAGE_ASPECT_RATIO",
         DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO,
     ).strip()
+    openai_weekly_model = env.get("OPENAI_WEEKLY_MODEL", DEFAULT_OPENAI_WEEKLY_MODEL).strip()
+    weekly_major_events_run_weekday = _parse_int(
+        env.get("WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY"),
+        DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY,
+    )
+    weekly_major_events_run_hour = _parse_int(
+        env.get("WEEKLY_MAJOR_EVENTS_RUN_HOUR"),
+        DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_HOUR,
+    )
+    weekly_major_events_per_lane = max(
+        1,
+        _parse_int(
+            env.get("WEEKLY_MAJOR_EVENTS_PER_LANE"),
+            DEFAULT_WEEKLY_MAJOR_EVENTS_PER_LANE,
+        ),
+    )
     fallback_category = env.get("FALLBACK_CATEGORY", DEFAULT_FALLBACK_CATEGORY)
     fallback_tags = _parse_list(env.get("FALLBACK_TAGS"), DEFAULT_FALLBACK_TAGS)
     if not fallback_tags:
@@ -571,6 +618,8 @@ def _build_config() -> AutomationConfig:
         rss_max_articles_per_trend=rss_max_articles,
         rss_cache=rss_cache,
         gemini_api_key=gemini_api_key,
+        openai_api_key=openai_api_key,
+        openai_weekly_model=openai_weekly_model or DEFAULT_OPENAI_WEEKLY_MODEL,
         anthropic_api_key=anthropic_api_key,
         anthropic_model=anthropic_model,
         anthropic_model_content=anthropic_model_content,
@@ -622,6 +671,9 @@ def _build_config() -> AutomationConfig:
         google_image_enabled=google_image_enabled,
         google_image_model=google_image_model or DEFAULT_GOOGLE_IMAGE_MODEL,
         google_image_aspect_ratio=google_image_aspect_ratio or DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO,
+        weekly_major_events_run_weekday=weekly_major_events_run_weekday,
+        weekly_major_events_run_hour=weekly_major_events_run_hour,
+        weekly_major_events_per_lane=weekly_major_events_per_lane,
     )
 
 
@@ -733,6 +785,16 @@ def _normalize_affected_lanes(value) -> list[str]:
             normalized.append(key)
             seen.add(key)
     return normalized or list(MARKET_ANALYSIS_LANES)
+
+
+def _uses_market_impact_template(pipeline: str | None) -> bool:
+    return pipeline in {PIPELINE_DAILY_IMPACT, PIPELINE_WEEKLY_MAJOR_EVENTS}
+
+
+def _market_impact_template_requirements(pipeline: str | None) -> str:
+    if pipeline == PIPELINE_WEEKLY_MAJOR_EVENTS:
+        return WEEKLY_MAJOR_EVENTS_TEMPLATE_REQUIREMENTS
+    return DAILY_IMPACT_TEMPLATE_REQUIREMENTS
 
 
 def _normalize_search_queries(value, *, limit: int = 8, max_length: int = 180) -> list[str]:
@@ -1258,6 +1320,30 @@ class ClaudeClient:
         return self._extract_text(data)
 
 
+class OpenAIResponsesClient:
+    def __init__(self, api_key: str, model: str, timeout_sec: int) -> None:
+        self.api_key = api_key
+        self.model = model
+        self.timeout_sec = max(1, timeout_sec)
+
+    def generate(self, *, instructions: str, input_text: str) -> str:
+        if not self.api_key:
+            raise RuntimeError("OPENAI_API_KEY is not set.")
+        if OpenAI is None:
+            raise RuntimeError("openai package is not installed.")
+        client = OpenAI(api_key=self.api_key, timeout=self.timeout_sec)
+        response = client.responses.create(
+            model=self.model,
+            instructions=instructions,
+            input=input_text,
+        )
+        output_text = getattr(response, "output_text", "")
+        text = str(output_text or "").strip()
+        if not text:
+            raise RuntimeError("OpenAI returned no text.")
+        return text
+
+
 def _extract_json_block(text: str) -> dict | None:
     start = text.find("{")
     end = text.rfind("}")
@@ -1568,6 +1654,34 @@ def _build_window_labels(start: datetime, end: datetime, *, publish_date: date) 
         "publish_display_date": publish_date.strftime("%B %-d, %Y"),
         "target_date": start.strftime("%Y-%m-%d"),
         "display_date": start.strftime("%B %-d, %Y"),
+        "window_summary": (
+            f"{start.strftime('%Y-%m-%d %H:%M %Z')} to {end.strftime('%Y-%m-%d %H:%M %Z')}"
+        ),
+    }
+
+
+def _previous_week_window(
+    content_timezone: ZoneInfo,
+    *,
+    publish_date: date | None = None,
+) -> tuple[datetime, datetime]:
+    base_date = publish_date or datetime.now(content_timezone).date()
+    end_date = base_date - timedelta(days=1)
+    start_date = end_date - timedelta(days=6)
+    start = datetime(start_date.year, start_date.month, start_date.day, tzinfo=content_timezone)
+    end = datetime(end_date.year, end_date.month, end_date.day, tzinfo=content_timezone)
+    end = end + timedelta(days=1) - timedelta(microseconds=1)
+    return start, end
+
+
+def _build_weekly_window_labels(start: datetime, end: datetime, *, publish_date: date) -> dict[str, str]:
+    return {
+        "publish_date": publish_date.strftime("%Y-%m-%d"),
+        "publish_display_date": publish_date.strftime("%B %-d, %Y"),
+        "window_start": start.strftime("%Y-%m-%d"),
+        "window_end": end.strftime("%Y-%m-%d"),
+        "week_key": f"{start.strftime('%Y-%m-%d')}_{end.strftime('%Y-%m-%d')}",
+        "display_range": f"{start.strftime('%B %-d, %Y')} through {end.strftime('%B %-d, %Y')}",
         "window_summary": (
             f"{start.strftime('%Y-%m-%d %H:%M %Z')} to {end.strftime('%Y-%m-%d %H:%M %Z')}"
         ),
@@ -2162,8 +2276,8 @@ def _build_content_prompt(
     )
 
     template_block = ""
-    if template_mode == PIPELINE_DAILY_IMPACT:
-        template_block = f"\n\n{DAILY_IMPACT_TEMPLATE_REQUIREMENTS}"
+    if _uses_market_impact_template(template_mode):
+        template_block = f"\n\n{_market_impact_template_requirements(template_mode)}"
     angle_block = f"Angle: {angle}\n" if angle else ""
 
     return f"""
@@ -2441,8 +2555,51 @@ Rules:
 - queries must extend the original event into actionable follow-up research.
 - focus_points should be 3-5 concise analytical questions or subtopics.
 - Avoid generic titles like "latest updates" or "what happened".
-""".strip()
+    """.strip()
     return _compose_prompt(system, user)
+
+
+def _build_weekly_major_events_prompt(*, window_label: str, topics_per_lane: int) -> tuple[str, str]:
+    instructions = """
+You are a US macro and markets editor.
+Identify the most important recent events that could materially affect US stocks or US real estate.
+Your job is topic discovery only. Do not write the article.
+Prefer events with clear economic or market transmission mechanisms.
+Return strict JSON only.
+""".strip()
+    input_text = f"""
+Time window: {window_label}
+
+Tasks:
+1) Identify up to {topics_per_lane} high-signal US stocks topic(s).
+2) Identify up to {topics_per_lane} high-signal US real-estate topic(s).
+3) For each topic, provide a concrete angle and follow-up research queries.
+
+Output JSON:
+{{
+  "topics": [
+    {{
+      "lane": "stocks|real_estate",
+      "keyword": "...",
+      "title": "...",
+      "angle": "...",
+      "why_now": "...",
+      "focus_points": ["..."],
+      "queries": ["..."],
+      "risk": "low|medium|high"
+    }}
+  ]
+}}
+
+Rules:
+- Focus on recent events within or directly relevant to the time window.
+- Each topic must be specific enough to research and turn into an evidence-first article.
+- Prefer events with second-order impact on valuations, rates, credit, housing demand, supply, regulation, or sentiment.
+- Avoid celebrity, rumor, and low-signal topics.
+- Use lane=stocks or lane=real_estate only.
+- Return no more than {topics_per_lane} topic(s) per lane.
+""".strip()
+    return instructions, input_text
 
 
 def _build_web_research_prompt(
@@ -2541,8 +2698,8 @@ Use section headings that are specific, concrete, and SEO-aware.
 Anchor sections in evidence and reader intent (what they came to learn).
 """.strip()
     template_block = ""
-    if template_mode == PIPELINE_DAILY_IMPACT:
-        template_block = DAILY_IMPACT_TEMPLATE_REQUIREMENTS
+    if _uses_market_impact_template(template_mode):
+        template_block = _market_impact_template_requirements(template_mode)
     user = f"""
 Topic: {keyword}
 Angle: {angle}
@@ -2713,8 +2870,8 @@ Do not include hyperlinks, raw URLs, or Markdown link syntax in the body.
 Maintain a consistent voice and avoid redundancy across sections.
 """.strip()
     template_block = ""
-    if template_mode == PIPELINE_DAILY_IMPACT:
-        template_block = f"\n{DAILY_IMPACT_TEMPLATE_REQUIREMENTS}"
+    if _uses_market_impact_template(template_mode):
+        template_block = f"\n{_market_impact_template_requirements(template_mode)}"
     user = f"""
 Inputs:
 sections: {json.dumps(section_mdx_list, ensure_ascii=True)}
@@ -4374,6 +4531,34 @@ def _build_outline(
                 "evidence_refs": [],
             },
         ]
+    elif template_mode == PIPELINE_WEEKLY_MAJOR_EVENTS:
+        fallback_sections = [
+            {
+                "heading": f"Why this week matters for {keyword}",
+                "goal": "State the thesis, the event, and why this matters over the coming weeks.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"How the event flows into {keyword}",
+                "goal": "Map the transmission mechanism from event to market effect.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"The strongest evidence behind the {keyword} view",
+                "goal": "Highlight the most important data points, claims, and caveats.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"Scenarios and risk signals for {keyword}",
+                "goal": "Lay out base, upside, downside, and uncertainty.",
+                "evidence_refs": [],
+            },
+            {
+                "heading": f"What to watch next for {keyword}",
+                "goal": "List concrete signals, releases, or thresholds to monitor next.",
+                "evidence_refs": [],
+            },
+        ]
     return {"title_direction": "", "sections": fallback_sections, "faq": []}
 
 
@@ -4734,11 +4919,14 @@ def _generate_article_multi_agent(
     keyword = str(topic.get("keyword") or "").strip()
     if not keyword:
         return None
-    template_mode = pipeline if pipeline == PIPELINE_DAILY_IMPACT else None
+    template_mode = pipeline if _uses_market_impact_template(pipeline) else None
     default_angle = f"latest developments and impact for {keyword}"
     if template_mode == PIPELINE_DAILY_IMPACT:
         lane = str(topic.get("analysis_lane") or "").strip() or "market"
         default_angle = f"how prior-day developments could affect {lane.replace('_', ' ')} through second-order impacts"
+    elif template_mode == PIPELINE_WEEKLY_MAJOR_EVENTS:
+        lane = str(topic.get("analysis_lane") or "").strip() or "market"
+        default_angle = f"how recent major developments could affect {lane.replace('_', ' ')} over the coming weeks"
     angle = str(topic.get("angle") or "").strip() or default_angle
     provided_plan = topic.get("research_plan") if isinstance(topic.get("research_plan"), dict) else {}
     planned = _plan_research(
@@ -4881,7 +5069,7 @@ def _generate_post_for_topic(
     hero_alt_hint = ""
     reference_urls = list(urls)
 
-    template_mode = pipeline if pipeline == PIPELINE_DAILY_IMPACT else None
+    template_mode = pipeline if _uses_market_impact_template(pipeline) else None
     inline_image_prompts: list[str] = []
     chart_specs: list[dict] = []
     if config.use_multi_agent:
@@ -4992,7 +5180,7 @@ def _generate_post_for_topic(
             "Trend summary of the topic.",
         )
 
-    if template_mode == PIPELINE_DAILY_IMPACT:
+    if _uses_market_impact_template(template_mode):
         chart_specs = _plan_inline_charts(
             config,
             writer,
@@ -5085,7 +5273,7 @@ def _generate_post_for_topic(
         if _ensure_ascii_text(prompt, "")
     ]
 
-    if template_mode == PIPELINE_DAILY_IMPACT and not inline_image_prompts:
+    if _uses_market_impact_template(template_mode) and not inline_image_prompts:
         base_angle = _ensure_ascii_text(str(topic.get("angle") or "").strip(), "")
         inline_image_prompts = [
             _ensure_ascii_text(
@@ -5126,6 +5314,68 @@ def _build_daily_impact_discovery_queries(window_labels: dict[str, str]) -> list
     return list(dict.fromkeys(query for query in queries if query))
 
 
+def _normalize_weekly_major_topics(
+    raw_topics: list[dict],
+    *,
+    week_labels: dict[str, str],
+    per_lane_limit: int,
+) -> list[dict]:
+    normalized: list[dict] = []
+    lane_counts = {lane: 0 for lane in MARKET_ANALYSIS_LANES}
+    seen: set[tuple[str, str]] = set()
+    for item in raw_topics:
+        if not isinstance(item, dict):
+            continue
+        raw_lane = str(item.get("lane") or item.get("analysis_lane") or "").strip().lower()
+        if raw_lane in {"stocks", "stock"}:
+            lanes = ["stocks"]
+        elif raw_lane in {"real_estate", "real-estate", "realestate"}:
+            lanes = ["real_estate"]
+        else:
+            continue
+        keyword = str(item.get("keyword") or item.get("title") or "").strip()
+        if not keyword:
+            continue
+        title = str(item.get("title") or keyword).strip() or keyword
+        angle = str(item.get("angle") or "").strip()
+        why_now = str(item.get("why_now") or "").strip()
+        focus_points = _ensure_list_of_strings(item.get("focus_points"))
+        queries = _normalize_search_queries(item.get("queries"))
+        risk = str(item.get("risk") or "medium").strip() or "medium"
+        for lane in lanes:
+            if lane_counts.get(lane, 0) >= per_lane_limit:
+                continue
+            topic_key = (lane, _normalize_keyword(keyword))
+            if topic_key in seen:
+                continue
+            seen.add(topic_key)
+            lane_counts[lane] = lane_counts.get(lane, 0) + 1
+            normalized.append(
+                {
+                    "keyword": keyword,
+                    "title": title,
+                    "angle": angle,
+                    "why_now": why_now,
+                    "focus_points": focus_points,
+                    "queries": queries,
+                    "source_urls": [],
+                    "risk": risk,
+                    "analysis_lane": lane,
+                    "category_label": DAILY_IMPACT_CATEGORY_LABELS.get(lane, lane),
+                    "region": "US",
+                    "research_plan": {
+                        "queries": queries,
+                        "priority_sources": [],
+                        "must_verify": focus_points,
+                    },
+                    "pipeline_window_label": week_labels["window_summary"],
+                    "pipeline_date": week_labels["week_key"],
+                    "publish_date": week_labels["publish_date"],
+                }
+            )
+    return normalized
+
+
 def _should_run_daily_impact_now(config: AutomationConfig) -> bool:
     env = _resolve_env()
     if not _parse_bool(env.get("ENFORCE_LOCAL_RUN_HOUR"), False):
@@ -5133,6 +5383,17 @@ def _should_run_daily_impact_now(config: AutomationConfig) -> bool:
     target_hour = _parse_int(env.get("DAILY_IMPACT_RUN_HOUR"), 8)
     now_local = datetime.now(config.content_timezone)
     return now_local.hour == target_hour
+
+
+def _should_run_weekly_major_events_now(config: AutomationConfig) -> bool:
+    env = _resolve_env()
+    if not _parse_bool(env.get("ENFORCE_LOCAL_RUN_HOUR"), False):
+        return True
+    now_local = datetime.now(config.content_timezone)
+    return (
+        now_local.weekday() == config.weekly_major_events_run_weekday
+        and now_local.hour == config.weekly_major_events_run_hour
+    )
 
 
 def run_daily_impact(
@@ -5245,6 +5506,79 @@ def run_daily_impact(
     _save_state(state)
 
 
+def run_weekly_major_events(
+    config: AutomationConfig,
+    *,
+    publish_date: date | None = None,
+    force: bool = False,
+) -> None:
+    if not config.openai_api_key:
+        logging.warning("Weekly major-events pipeline skipped because OPENAI_API_KEY is missing.")
+        return
+    if not force and not _should_run_weekly_major_events_now(config):
+        logging.info("Weekly major-events pipeline skipped due to local schedule guard.")
+        return
+    resolved_publish_date = publish_date or datetime.now(config.content_timezone).date()
+    window_start, window_end = _previous_week_window(
+        config.content_timezone,
+        publish_date=resolved_publish_date,
+    )
+    week_labels = _build_weekly_window_labels(
+        window_start,
+        window_end,
+        publish_date=resolved_publish_date,
+    )
+    state = _load_state()
+    completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
+    if week_labels["week_key"] in completed_runs:
+        logging.info("Weekly major-events pipeline already completed for %s", week_labels["week_key"])
+        return
+    prompt_instructions, prompt_input = _build_weekly_major_events_prompt(
+        window_label=week_labels["display_range"],
+        topics_per_lane=config.weekly_major_events_per_lane,
+    )
+    weekly_writer = OpenAIResponsesClient(
+        config.openai_api_key,
+        config.openai_weekly_model,
+        min(config.anthropic_timeout_sec, 120),
+    )
+    try:
+        response = weekly_writer.generate(
+            instructions=prompt_instructions,
+            input_text=prompt_input,
+        )
+        data = _extract_json_block(response)
+    except Exception as exc:
+        logging.warning("Weekly major-events discovery failed: %s", exc)
+        return
+    topics = _normalize_weekly_major_topics(
+        data.get("topics") if isinstance(data, dict) and isinstance(data.get("topics"), list) else [],
+        week_labels=week_labels,
+        per_lane_limit=config.weekly_major_events_per_lane,
+    )
+    if not topics:
+        logging.warning("Weekly major-events pipeline produced no publishable topics.")
+        return
+    _save_trends_snapshot(
+        {
+            "pipeline": PIPELINE_WEEKLY_MAJOR_EVENTS,
+            "window": week_labels,
+            "topics": topics,
+        },
+        content_timezone=config.content_timezone,
+    )
+    _process_topics(
+        config,
+        topics=topics,
+        pipeline=PIPELINE_WEEKLY_MAJOR_EVENTS,
+    )
+    state = _load_state()
+    completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
+    completed_runs.add(week_labels["week_key"])
+    state["weekly_major_runs"] = sorted(completed_runs)
+    _save_state(state)
+
+
 def _process_topics(
     config: AutomationConfig,
     *,
@@ -5274,8 +5608,13 @@ def _process_topics(
         if not keyword:
             continue
         normalized = _normalize_keyword(str(keyword))
-        if pipeline == PIPELINE_DAILY_IMPACT:
-            publish_key = str(topic.get("publish_date") or topic.get("pipeline_date") or "").strip()
+        if pipeline in {PIPELINE_DAILY_IMPACT, PIPELINE_WEEKLY_MAJOR_EVENTS}:
+            publish_key = str(
+                topic.get("publish_date")
+                or topic.get("pipeline_date")
+                or topic.get("pipeline_key")
+                or ""
+            ).strip()
             topic_key = f"{publish_key}:{topic.get('region', '')}:{normalized}"
         else:
             topic_key = f"{topic.get('region', '')}:{normalized}"
@@ -5309,9 +5648,13 @@ def run_pipeline(
     publish_date: date | None = None,
     force: bool = False,
 ) -> None:
-    if pipeline != PIPELINE_DAILY_IMPACT:
-        raise ValueError(f"Unsupported pipeline: {pipeline}")
-    run_daily_impact(config, publish_date=publish_date, force=force)
+    if pipeline == PIPELINE_DAILY_IMPACT:
+        run_daily_impact(config, publish_date=publish_date, force=force)
+        return
+    if pipeline == PIPELINE_WEEKLY_MAJOR_EVENTS:
+        run_weekly_major_events(config, publish_date=publish_date, force=force)
+        return
+    raise ValueError(f"Unsupported pipeline: {pipeline}")
 
 
 def _configure_logging(level: str) -> None:
@@ -5346,7 +5689,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--publish-date",
         default="",
-        help="Publication date for daily-impact runs (YYYY-MM-DD)",
+        help="Publication date anchor for scheduled runs (YYYY-MM-DD)",
     )
     parser.add_argument(
         "--backfill-days",
