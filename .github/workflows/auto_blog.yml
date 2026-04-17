@@ -66,6 +66,7 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           POST_INTERVAL_HOURS: ${{ vars.POST_INTERVAL_HOURS }}
+          TREND_REGIONS: ${{ vars.TREND_REGIONS || 'US' }}
           WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY: ${{ vars.WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY || '0' }}
           WEEKLY_MAJOR_EVENTS_RUN_HOUR: ${{ vars.WEEKLY_MAJOR_EVENTS_RUN_HOUR || '9' }}
           WEEKLY_MAJOR_EVENTS_PER_LANE: ${{ vars.WEEKLY_MAJOR_EVENTS_PER_LANE || '1' }}
@@ -107,6 +108,7 @@ jobs:
           SCRAPE_BACKOFF_SEC: ${{ vars.SCRAPE_BACKOFF_SEC }}
           FINAL_REVIEW_ENABLED: ${{ vars.FINAL_REVIEW_ENABLED }}
           FINAL_REVIEW_REVISIONS: ${{ vars.FINAL_REVIEW_REVISIONS }}
+          CONTENT_TIMEZONE: ${{ vars.CONTENT_TIMEZONE || 'America/New_York' }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             export ENFORCE_LOCAL_RUN_HOUR=1

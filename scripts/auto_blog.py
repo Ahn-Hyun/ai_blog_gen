@@ -72,7 +72,7 @@ DEFAULT_ANTHROPIC_MAX_TOKENS = 60000
 DEFAULT_ANTHROPIC_TIMEOUT_SEC = 900
 DEFAULT_BLOG_DOMAIN = "blog.ship-write.com"
 DEFAULT_CONTENT_LANGUAGE = "English"
-DEFAULT_CONTENT_TONE = "neutral, informative"
+DEFAULT_CONTENT_TONE = "neutral, informative, US-market-focused"
 DEFAULT_CONTENT_TIMEZONE = "America/New_York"
 DEFAULT_USE_MULTI_AGENT = True
 DEFAULT_SEARCH_RSS_ENABLED = True
@@ -2323,7 +2323,7 @@ def _build_content_prompt(
     angle_block = f"Angle: {angle}\n" if angle else ""
 
     return f"""
-Role: Columnist and investigative writer.
+Role: US markets columnist and investigative writer.
 Write in {language} only. ASCII characters only.
 
 Primary keyword: {keyword}
@@ -2350,6 +2350,7 @@ SEO requirements:
 Editorial requirements:
 - Write a full topic column, not a summary or bullet digest.
 - Provide depth: background, recent trigger, evidence/data, stakeholder impact, and forward-looking analysis.
+- Write for US readers and interpret policy, regulation, housing, and market context in United States terms.
 - Do NOT use the headings "Overview", "Key Points", or "Implications".
 - Use 4-7 meaningful section headings tailored to the story.
 - Include an opening paragraph with a clear angle, and a closing paragraph with a takeaway.
@@ -2467,6 +2468,7 @@ Rules:
 - Include at least one query for statistics or datasets
 - Include at least one query for reputable local/regional coverage (if relevant)
 - Include one query aimed at verification or debunking if claims are contentious
+- If Region is US, make the queries explicitly about the United States or the US market unless the angle itself requires narrower wording.
 - Avoid vague or clickbait wording
 - Output JSON only with the keys below
 
@@ -2508,6 +2510,7 @@ Tasks:
 Rules:
 - Avoid the failed domains list when possible
 - Prefer official statements, regulators, or primary sources
+- If Region is US, make the replacement queries explicitly about the United States or the US market unless the angle itself requires narrower wording.
 - Output JSON only with the keys below
 
 Output JSON:
@@ -2522,9 +2525,9 @@ Output JSON:
 def _build_daily_event_map_prompt(*, window_label: str, raw_sources_json: str) -> str:
     system = """
 You are a market-aware news analyst.
-Review prior-day source material and extract only events that could plausibly move stocks or real estate.
+Review prior-day source material and extract only events that could plausibly move US stocks or US real estate.
 You must think in causal chains, not headlines.
-For each event, identify likely transmission mechanisms and propose follow-up searches for stocks and real estate separately.
+For each event, identify likely transmission mechanisms and propose follow-up searches for US stocks and US real estate separately.
 """.strip()
     user = f"""
 Time window: {window_label}
@@ -2568,7 +2571,7 @@ Rules:
 def _build_daily_lane_selector_prompt(*, lane: str, window_label: str, events_json: str) -> str:
     lane_label = "stocks" if lane == "stocks" else "real estate"
     system = f"""
-You are selecting the single best {lane_label} analysis topic for a daily market briefing.
+You are selecting the single best US {lane_label} analysis topic for a daily market briefing.
 Choose the event with the clearest evidence, strongest transmission mechanism, and best potential for an original analysis article.
 Prefer topics where the market consequence is more important than the headline itself.
 """.strip()
@@ -2593,7 +2596,7 @@ Output JSON:
 
 Rules:
 - Pick exactly one event.
-- The angle must explain the mechanism and likely impact on {lane_label}.
+- The angle must explain the mechanism and likely impact on US {lane_label}.
 - queries must extend the original event into actionable follow-up research.
 - focus_points should be 3-5 concise analytical questions or subtopics.
 - Avoid generic titles like "latest updates" or "what happened".
@@ -2612,6 +2615,7 @@ You are a US macro and markets editor.
 Identify the most important recent events that could materially affect US stocks or US real estate.
 Your job is topic discovery only. Do not write the article.
 Prefer events with clear economic or market transmission mechanisms.
+Frame every topic for a US audience and US market context.
 Return strict JSON only.
 """.strip()
     input_text = f"""
