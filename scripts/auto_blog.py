@@ -86,6 +86,7 @@ DEFAULT_MDX_RENDER_GUARD_ENABLED = True
 DEFAULT_MDX_RENDER_GUARD_REVISIONS = 1
 DEFAULT_MDX_RENDER_AUTO_FIX = True
 DEFAULT_SEARCH_WEB_ENABLED = True
+DEFAULT_GEMINI_GROUNDED_DAILY_DISCOVERY = True
 DEFAULT_SEARCH_WEB_MAX_RESULTS = 5
 DEFAULT_SEARCH_WEB_MAX_PER_QUERY = 3
 DEFAULT_SEARCH_WEB_DEPTH = "basic"
@@ -309,6 +310,7 @@ class AutomationConfig:
     google_api_key: str
     youtube_api_key: str
     tavily_api_key: str
+    gemini_grounded_daily_discovery: bool
     fallback_category: str
     fallback_tags: list[str]
     post_draft: bool
@@ -480,6 +482,10 @@ def _build_config() -> AutomationConfig:
     use_multi_agent = _parse_bool(env.get("USE_MULTI_AGENT"), DEFAULT_USE_MULTI_AGENT)
     youtube_api_key = env.get("YOUTUBE_API_KEY", "").strip() or google_api_key
     tavily_api_key = env.get("TAVILY_API_KEY", "").strip()
+    gemini_grounded_daily_discovery = _parse_bool(
+        env.get("GEMINI_GROUNDED_DAILY_DISCOVERY"),
+        DEFAULT_GEMINI_GROUNDED_DAILY_DISCOVERY,
+    )
     search_web_enabled = _parse_bool(
         env.get("SEARCH_WEB_ENABLED"),
         DEFAULT_SEARCH_WEB_ENABLED,
@@ -636,6 +642,7 @@ def _build_config() -> AutomationConfig:
         google_api_key=google_api_key,
         youtube_api_key=youtube_api_key,
         tavily_api_key=tavily_api_key,
+        gemini_grounded_daily_discovery=gemini_grounded_daily_discovery,
         fallback_category=fallback_category,
         fallback_tags=fallback_tags,
         post_draft=post_draft,
@@ -827,6 +834,29 @@ def _filter_allowed_source_urls(values, *, allowed_urls: set[str]) -> list[str]:
         filtered.append(url)
         seen.add(normalized)
     return filtered
+
+
+def _domain_matches_rule(hostname: str, rule: str) -> bool:
+    normalized_host = hostname.strip().lower().lstrip(".")
+    normalized_rule = rule.strip().lower().lstrip(".")
+    if not normalized_host or not normalized_rule:
+        return False
+    return normalized_host == normalized_rule or normalized_host.endswith(f".{normalized_rule}")
+
+
+def _is_allowed_search_domain(url: str | None, config: AutomationConfig) -> bool:
+    if not _is_safe_public_url(url):
+        return False
+    hostname = (urlparse(str(url)).hostname or "").strip().lower()
+    if not hostname:
+        return False
+    if config.search_web_include_domains:
+        if not any(_domain_matches_rule(hostname, rule) for rule in config.search_web_include_domains):
+            return False
+    if config.search_web_exclude_domains:
+        if any(_domain_matches_rule(hostname, rule) for rule in config.search_web_exclude_domains):
+            return False
+    return True
 
 
 def _uses_market_impact_template(pipeline: str | None) -> bool:
@@ -1324,6 +1354,31 @@ class ClaudeClient:
         }
         data = self._post(payload)
         return self._extract_text(data)
+
+    def generate_with_google_search(
+        self,
+        prompt: str,
+        *,
+        temperature: float,
+        max_tokens: int,
+    ) -> tuple[str, dict]:
+        if not self.api_key:
+            raise RuntimeError("GEMINI_API_KEY is not set.")
+        payload = {
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": prompt}],
+                }
+            ],
+            "tools": [{"google_search": {}}],
+            "generationConfig": {
+                "temperature": temperature,
+                "maxOutputTokens": max_tokens,
+            },
+        }
+        data = self._post(payload)
+        return self._extract_text(data), data
 
     def generate_with_image(
         self,
@@ -3488,7 +3543,7 @@ def _fallback_daily_impact_chart_spec(
             f"Heuristic macro signal emphasis chart for {keyword}",
             "Heuristic macro signal emphasis chart",
         ),
-        "caption": "Pipeline fallback chart based on topic emphasis in the article text.",
+        "caption": f"Key macro signal emphasis for {keyword}, based on article topic analysis.",
     }
 
 
@@ -3568,6 +3623,28 @@ def _render_chart_svg(spec: dict) -> str:
 
     svg_lines.append("</svg>")
     return "\n".join(svg_lines)
+
+
+_IMAGE_STYLE_DIRECTIVE_MARKERS = (
+    "no text", "no logo", "no face", "clean white", "clean background",
+    "white background", "corporate style", "corporate blue", "color palette",
+    "high quality", "depth of field", "isometric", "minimalist ",
+    "3d illustration", "clean corporate", "modern office setting", "gradient background",
+)
+
+
+def _extract_alt_from_image_prompt(prompt: str) -> str:
+    clean = prompt.strip()
+    lower = clean.lower()
+    cutoff = len(clean)
+    for marker in _IMAGE_STYLE_DIRECTIVE_MARKERS:
+        idx = lower.find(marker)
+        if 0 < idx < cutoff:
+            cutoff = idx
+    clean = re.sub(r"\s+illustration\s*$", "", clean[:cutoff].strip(" .,;:"), flags=re.IGNORECASE).strip(" .,;:")
+    if len(clean) > 125:
+        clean = clean[:122].rsplit(" ", 1)[0].rstrip(" .,;:") + "..."
+    return clean or "Related illustration"
 
 
 def _build_visual_markdown_block(*, alt_text: str, path: str, caption: str) -> str:
@@ -3881,7 +3958,7 @@ def _materialize_inline_visuals(
                 continue
             visual_blocks.append(
                 _build_visual_markdown_block(
-                    alt_text=_ensure_ascii_text(f"{safe_prompt} illustration", "Related illustration"),
+                    alt_text=_ensure_ascii_text(_extract_alt_from_image_prompt(safe_prompt), "Related illustration"),
                     path=f"{base_url}/inline-{idx}.jpg",
                     caption="Generated supporting visual",
                 )
@@ -5386,6 +5463,177 @@ def _build_daily_impact_discovery_queries(window_labels: dict[str, str]) -> list
     return list(dict.fromkeys(query for query in queries if query))
 
 
+def _build_gemini_grounded_daily_discovery_prompt(*, window_label: str, queries: list[str]) -> str:
+    system = """
+You are a US macro and market events editor using Google Search grounding.
+Search the web for prior-day developments that could plausibly move US stocks or US real estate.
+Do not write the article. Your job is to surface the best discovery coverage for the next stage.
+Focus on recency, market transmission mechanisms, and source quality.
+""".strip()
+    query_block = "\n".join(f"- {query}" for query in queries if query.strip())
+    user = f"""
+Time window: {window_label}
+
+Priority discovery queries:
+{query_block or '- none'}
+
+Instructions:
+- Use Google Search grounding to identify the most relevant prior-day US market developments.
+- Prioritize authoritative reporting, official statements, and high-signal market coverage.
+- Cover both US stocks and US real estate when relevant.
+- Keep the answer concise. The system will use your grounded citations/URLs as discovery candidates.
+""".strip()
+    return _compose_prompt(system, user)
+
+
+def _extract_gemini_grounded_candidates(response_data: dict) -> list[dict]:
+    candidates: list[dict] = []
+    seen: set[str] = set()
+    raw_candidates = response_data.get("candidates")
+    if not isinstance(raw_candidates, list):
+        return []
+    for candidate in raw_candidates:
+        if not isinstance(candidate, dict):
+            continue
+        metadata = candidate.get("groundingMetadata") or candidate.get("grounding_metadata")
+        if not isinstance(metadata, dict):
+            continue
+        chunks = metadata.get("groundingChunks") or metadata.get("grounding_chunks") or []
+        if not isinstance(chunks, list):
+            continue
+        for chunk in chunks:
+            if not isinstance(chunk, dict):
+                continue
+            web = chunk.get("web") if isinstance(chunk.get("web"), dict) else {}
+            url = str(web.get("uri") or web.get("url") or "").strip()
+            if not _is_safe_public_url(url):
+                continue
+            normalized = _normalize_url_for_dedupe(url)
+            if normalized in seen:
+                continue
+            seen.add(normalized)
+            title = str(web.get("title") or chunk.get("title") or "").strip() or "Untitled"
+            candidates.append(
+                {
+                    "url": url,
+                    "title": title,
+                    "publisher": urlparse(url).netloc,
+                    "published_at": None,
+                    "origin": "gemini_google_search",
+                    "snippet": "",
+                }
+            )
+    return candidates
+
+
+def _validate_grounded_candidates_against_daily_window(
+    grounded_candidates: list[dict],
+    *,
+    config: AutomationConfig,
+    queries: list[str],
+    region: str,
+    language: str,
+    window_start: datetime,
+    window_end: datetime,
+    web_limit: int,
+    rss_limit: int,
+) -> list[dict]:
+    if not grounded_candidates:
+        return []
+    validated_candidates = _collect_candidates_for_queries(
+        config,
+        queries=queries,
+        region=region,
+        language=language,
+        window_start=window_start,
+        window_end=window_end,
+        web_limit=web_limit,
+        rss_limit=rss_limit,
+    )
+    if not validated_candidates:
+        return []
+    candidate_lookup = {
+        _normalize_url_for_dedupe(str(candidate.get("url") or "")): candidate
+        for candidate in validated_candidates
+        if _is_safe_public_url(candidate.get("url"))
+    }
+    merged: list[dict] = []
+    for grounded in grounded_candidates:
+        if not _is_allowed_search_domain(grounded.get("url"), config):
+            continue
+        normalized = _normalize_url_for_dedupe(str(grounded.get("url") or ""))
+        validated = candidate_lookup.get(normalized)
+        if not validated:
+            continue
+        merged.append(
+            {
+                **validated,
+                "origin": "gemini_google_search",
+            }
+        )
+    return merged
+
+
+def _gather_grounded_daily_discovery_sources(
+    config: AutomationConfig,
+    writer: ClaudeClient,
+    *,
+    queries: list[str],
+    region: str,
+    language: str,
+    window_start: datetime,
+    window_end: datetime,
+    window_label: str,
+    max_sources: int | None = None,
+    min_sources: int = 1,
+    web_limit: int | None = None,
+    rss_limit: int | None = None,
+) -> list[dict]:
+    if not config.gemini_grounded_daily_discovery:
+        return []
+    if not config.gemini_api_key:
+        logging.info("Gemini grounded daily discovery skipped because GEMINI_API_KEY is missing.")
+        return []
+    prompt = _build_gemini_grounded_daily_discovery_prompt(
+        window_label=window_label,
+        queries=queries,
+    )
+    try:
+        _, response_data = writer.generate_with_google_search(
+            prompt,
+            temperature=min(config.anthropic_temperature, 0.3),
+            max_tokens=config.anthropic_max_tokens,
+        )
+    except Exception as exc:
+        logging.warning("Gemini grounded daily discovery failed: %s", exc)
+        return []
+    candidates = _extract_gemini_grounded_candidates(response_data)
+    if not candidates:
+        logging.warning("Gemini grounded daily discovery returned no usable citation URLs.")
+        return []
+    candidates = _validate_grounded_candidates_against_daily_window(
+        candidates,
+        config=config,
+        queries=queries,
+        region=region,
+        language=language,
+        window_start=window_start,
+        window_end=window_end,
+        web_limit=web_limit or max(config.search_web_max_results * 2, 8),
+        rss_limit=rss_limit or max(config.search_rss_max_results * 2, 8),
+    )
+    if not candidates:
+        logging.warning(
+            "Gemini grounded daily discovery returned no candidates that passed daily window/domain validation."
+        )
+        return []
+    sources = _fetch_sources_from_candidates(candidates, config, max_sources=max_sources)
+    if len(sources) < max(1, min_sources):
+        logging.warning("Gemini grounded daily discovery citations could not be hydrated into sources.")
+        return []
+    return sources
+
+
 def _build_weekly_major_events_discovery_queries(window_labels: dict[str, str]) -> list[str]:
     date_range = window_labels.get("display_range") or window_labels.get("window_start") or ""
     queries: list[str] = []
@@ -5516,17 +5764,35 @@ def run_daily_impact(
         config.anthropic_timeout_sec,
     )
     discovery_queries = _build_daily_impact_discovery_queries(window_labels)
-    discovery_sources = _gather_raw_sources_for_queries(
+    discovery_max_sources = max(config.max_evidence_sources * 2, 8)
+    discovery_sources = _gather_grounded_daily_discovery_sources(
         config,
+        writer,
         queries=discovery_queries,
         region="US",
         language=config.content_language,
         window_start=window_start,
         window_end=window_end,
-        max_sources=max(config.max_evidence_sources * 2, 8),
+        window_label=window_labels["window_summary"],
+        max_sources=discovery_max_sources,
+        min_sources=min(3, discovery_max_sources),
         web_limit=max(config.search_web_max_results * 2, 8),
         rss_limit=max(config.search_rss_max_results * 2, 8),
     )
+    if discovery_sources:
+        logging.info("Daily impact using Gemini-grounded discovery sources: %s", len(discovery_sources))
+    else:
+        discovery_sources = _gather_raw_sources_for_queries(
+            config,
+            queries=discovery_queries,
+            region="US",
+            language=config.content_language,
+            window_start=window_start,
+            window_end=window_end,
+            max_sources=discovery_max_sources,
+            web_limit=max(config.search_web_max_results * 2, 8),
+            rss_limit=max(config.search_rss_max_results * 2, 8),
+        )
     if not discovery_sources:
         logging.warning("Daily impact pipeline found no discovery sources for %s", window_labels["display_date"])
         return
@@ -5596,8 +5862,10 @@ def run_weekly_major_events(
     publish_date: date | None = None,
     force: bool = False,
 ) -> None:
-    if not config.openai_api_key:
-        logging.warning("Weekly major-events pipeline skipped because OPENAI_API_KEY is missing.")
+    if not config.openai_api_key and not config.anthropic_api_key:
+        logging.warning(
+            "Weekly major-events pipeline skipped because neither OPENAI_API_KEY nor GEMINI_API_KEY is set."
+        )
         return
     if not force and not _should_run_weekly_major_events_now(config):
         logging.info("Weekly major-events pipeline skipped due to local schedule guard.")
@@ -5643,20 +5911,38 @@ def run_weekly_major_events(
         topics_per_lane=config.weekly_major_events_per_lane,
         raw_sources_json=json.dumps(discovery_sources, ensure_ascii=True),
     )
-    weekly_writer = OpenAIResponsesClient(
-        config.openai_api_key,
-        config.openai_weekly_model,
-        min(config.anthropic_timeout_sec, 120),
-    )
-    try:
-        response = weekly_writer.generate(
-            instructions=prompt_instructions,
-            input_text=prompt_input,
+    if config.openai_api_key:
+        weekly_writer = OpenAIResponsesClient(
+            config.openai_api_key,
+            config.openai_weekly_model,
+            min(config.anthropic_timeout_sec, 120),
         )
-        data = _extract_json_block(response)
-    except Exception as exc:
-        logging.warning("Weekly major-events discovery failed: %s", exc)
-        return
+        try:
+            response = weekly_writer.generate(
+                instructions=prompt_instructions,
+                input_text=prompt_input,
+            )
+            data = _extract_json_block(response)
+        except Exception as exc:
+            logging.warning("Weekly major-events discovery failed: %s", exc)
+            return
+    else:
+        logging.info("Weekly major-events discovery falling back to Gemini (no OPENAI_API_KEY).")
+        gemini_writer = ClaudeClient(
+            config.anthropic_api_key,
+            config.anthropic_model_content,
+            config.anthropic_timeout_sec,
+        )
+        try:
+            response = gemini_writer.generate(
+                _compose_prompt(prompt_instructions, prompt_input),
+                temperature=config.anthropic_temperature,
+                max_tokens=config.anthropic_max_tokens,
+            )
+            data = _extract_json_block(response)
+        except Exception as exc:
+            logging.warning("Weekly major-events Gemini discovery failed: %s", exc)
+            return
     topics = _normalize_weekly_major_topics(
         data.get("topics") if isinstance(data, dict) and isinstance(data.get("topics"), list) else [],
         week_labels=week_labels,
