@@ -2978,11 +2978,12 @@ def _build_section_writer_prompt(
     language: str,
 ) -> str:
     system = """
-You are a section writer for a single part of the article.
-Write with precision and evidence. Do not invent facts.
-Ground factual statements in the provided evidence and sources.
-Mention source names as plain text only; do not include hyperlinks, URLs, or Markdown links in the body.
-If evidence is thin, be cautious and state uncertainty explicitly.
+You are a senior financial analyst and section writer for a single part of the article.
+Write with analytical depth: use the evidence as your foundation, then reason beyond it.
+Do not merely summarize sources — interpret what the data means, identify second-order effects,
+and state what the evidence implies for US investors or market participants.
+Do not invent facts. If evidence is thin, be cautious and state uncertainty explicitly.
+When citing a source, use an inline Markdown link: [Source Name](URL).
 """.strip()
     user = f"""
 Section title: {section_heading}
@@ -2993,14 +2994,14 @@ Language: {language}
 
 Writing rules:
 - 4-7 paragraphs, 4-6 sentences each
-- Mention source names as plain text only (for example, "According to Nuveen")
+- Cite sources with inline Markdown links: [Source Name](URL) — do not use bare URLs
 - Do not make unsupported claims
 - Avoid hype or sensational wording
 - Do not add a heading; the assembler will add it
-- Prefer clear cause -> evidence -> implication flow
+- Prefer clear cause -> evidence -> implication flow; add your own analytical interpretation of what the implication means
 - If a key claim lacks evidence, mark it as uncertain rather than assert it
 - Keep terminology consistent with sources (avoid re-labeling entities)
-- Add specific context, data, or verification details where available
+- Add original analytical context beyond what sources state: what does this data reveal about the broader market trend?
 
 Output (MDX):
 {{section_mdx}}
@@ -3019,9 +3020,10 @@ def _build_assembler_prompt(
     system = """
 You are the editor in chief.
 Assemble sections into a coherent article with smooth transitions.
-Add an intro, conclusion, and FAQ without adding new facts.
-Preserve source attributions as plain text names only and do not invent sources.
-Do not include hyperlinks, raw URLs, or Markdown link syntax in the body.
+Add an intro, conclusion, and FAQ. You may add editorial interpretation and synthesized
+conclusions that logically follow from the evidence — do not add unsourced factual claims,
+but analytical synthesis that builds on what the sections establish is encouraged.
+Preserve inline Markdown citation links from sections. Do not invent sources.
 Maintain a consistent voice and avoid redundancy across sections.
 """.strip()
     template_block = ""
@@ -3037,12 +3039,13 @@ primary_keyword: {keyword}
 Requirements:
 - Include the primary keyword in the first paragraph and conclusion
 - Keep paragraphs short and readable
-- Do not add new claims or sources
+- Do not add unsourced factual claims; editorial synthesis from existing evidence is encouraged
 - Intro should set scope and "why now" context using existing evidence
-- Conclusion should summarize evidence and note remaining uncertainties
+- Conclusion should synthesize the key analytical takeaway — not just summarize, but state what the evidence means for the reader
 - FAQ answers must be concise and evidence-based
-- Mention source names as plain text only; do not include hyperlinks, URLs, or Markdown link syntax in the body. All URLs belong in frontmatter only.
+- Preserve inline Markdown citation links [Source Name](URL) from sections — do not strip them
 - Target 5000-6000 words total
+- Add a disclaimer paragraph at the very end of the article body (before the FAQ), using this exact text: "**Disclaimer:** This analysis is for informational purposes only and does not constitute investment, financial, real estate, or legal advice. Always consult a licensed financial advisor before making investment decisions."
 {template_block}
 
 Output (MDX):
@@ -3063,13 +3066,16 @@ Input:
 {full_mdx}
 
 Checklist:
-- Factual claims are supported by source attribution in plain text (no hyperlinks)
+- Factual claims are supported by inline Markdown citations [Source Name](URL)
+- Article provides original analytical interpretation beyond restating sources (not a pure news summary)
+- Opening paragraph contains a clear thesis statement explaining why this topic matters now
 - Primary keyword appears in title, first paragraph, and conclusion
+- Financial disclaimer paragraph is present in the article body
 - Sections are specific and non generic
 - Paragraphs are not overly long
-- Tone is neutral and informative
+- Tone is neutral and informative — analytical, not sensational
 - No unsupported statistics, dates, or direct quotes
-- No sensational or speculative language
+- No sensational or speculative language presented as fact
 - No repeated or redundant paragraphs
 - FAQ answers are concise and evidence-based
 
@@ -3077,7 +3083,7 @@ Output JSON:
 {{
   "status": "pass|revise",
   "issues": [
-    {{"type": "missing_citation|factual_risk|seo|structure|style", "detail": "...", "fix_hint": "..."}}
+    {{"type": "missing_citation|originality|thesis|disclaimer|factual_risk|seo|structure|style", "detail": "...", "fix_hint": "..."}}
   ]
 }}
 """.strip()
@@ -3094,7 +3100,7 @@ def _build_final_review_prompt(
     system = """
 You are a meticulous MDX editor and QA reviewer.
 Check sentence structure, grammar, and scraping artifacts.
-Never add new facts or sources. Keep source names as plain text only and remove hyperlinks/URLs from the body.
+Never add new facts or sources. Preserve inline Markdown citation links [Source Name](URL) — do not remove them.
 """.strip()
     hints_block = json.dumps(hints, ensure_ascii=True)
     user = f"""
@@ -3110,7 +3116,8 @@ Suspicious snippets (if any):
 Review focus:
 - Sentences are grammatical and complete
 - No UI/ads/navigation remnants or garbage text
-- No hyperlinks or URLs in body text
+- Inline Markdown citation links [Source Name](URL) are preserved and correctly formatted
+- Bare raw URLs (not wrapped in Markdown link syntax) are removed or converted to Markdown links
 - Markdown structure remains valid
 
 Decision:
@@ -3152,7 +3159,7 @@ Suspicious snippets (if any):
 Review focus:
 - Void HTML elements must be self-closing (e.g., <br />, <img />).
 - Fix malformed tags or stray angle brackets in plain text (e.g., "< 5%" → "\< 5%").
-- Bare curly braces in prose MUST be escaped: { → \{ and } → \} (e.g., "{n+1}" → "\{n+1\}", "{$1B}" → "\{$1B\}"). Do NOT escape braces inside code fences or JSX components.
+- Bare curly braces in prose MUST be escaped: {{ → \{{ and }} → \}} (e.g., "{{n+1}}" → "\{{n+1\}}", "{{$1B}}" → "\{{$1B\}}"). Do NOT escape braces inside code fences or JSX components.
 - Preserve tables, headings, and source attributions as plain text names only.
 
 Decision:
@@ -3174,6 +3181,135 @@ Rules:
 - Use valid JSON and escape newlines as \\n.
 """.strip()
     return _compose_prompt(system, user)
+
+
+def _build_mdx_repair_prompt(*, mdx_content: str, errors: list[str]) -> str:
+    errors_text = "\n".join(f"- {e}" for e in errors)
+    system = """
+You are an MDX content repair specialist for an Astro static blog.
+Fix only what the error messages specify. Do not change any article content, analysis, inline citation links, or the disclaimer.
+Output the complete corrected MDX file including frontmatter. Do not truncate or summarize.
+""".strip()
+    user = f"""
+The following MDX file failed post-generation validation with these errors:
+
+Errors:
+{errors_text}
+
+MDX file:
+{mdx_content}
+
+Output the complete corrected MDX file (raw content starting with ---).
+No code fences, no explanations — just the fixed file content.
+""".strip()
+    return _compose_prompt(system, user)
+
+
+def _validate_and_repair_posts(
+    config: "AutomationConfig",
+    writer: "ClaudeClient",
+    *,
+    post_paths: list[Path],
+    max_rounds: int = 2,
+) -> bool:
+    if not post_paths:
+        return True
+
+    astro_root = config.astro_root
+
+    def _run_quality_gate() -> dict[str, list[str]]:
+        result = subprocess.run(
+            ["npm", "run", "quality:gate", "--silent"],
+            cwd=astro_root,
+            capture_output=True,
+            text=True,
+        )
+        errors: dict[str, list[str]] = {}
+        if result.returncode == 0:
+            return errors
+        for line in (result.stdout + result.stderr).splitlines():
+            m = re.match(r"\[FAIL\]\s+(.+?)\s+-\s+(.+)", line.strip())
+            if m:
+                fname, reason = m.group(1).strip(), m.group(2).strip()
+                errors.setdefault(fname, []).append(f"quality:gate: {reason}")
+        return errors
+
+    def _run_astro_build() -> dict[str, list[str]]:
+        result = subprocess.run(
+            ["npm", "run", "build"],
+            cwd=astro_root,
+            capture_output=True,
+            text=True,
+        )
+        errors: dict[str, list[str]] = {}
+        if result.returncode == 0:
+            return errors
+        output = result.stdout + result.stderr
+        for line in output.splitlines():
+            for post_path in post_paths:
+                if post_path.name in line or post_path.stem in line:
+                    errors.setdefault(post_path.name, []).append(f"astro build: {line.strip()}")
+        if result.returncode != 0 and not errors:
+            summary = " | ".join(
+                ln.strip() for ln in output.splitlines() if ln.strip() and "warn" not in ln.lower()
+            )[:400]
+            for post_path in post_paths:
+                errors.setdefault(post_path.name, []).append(f"astro build (general): {summary}")
+        return errors
+
+    for round_num in range(max_rounds + 1):
+        qg_errors = _run_quality_gate()
+        build_errors = _run_astro_build()
+
+        all_errors: dict[str, list[str]] = {}
+        for fname, msgs in {**qg_errors, **build_errors}.items():
+            all_errors.setdefault(fname, []).extend(msgs)
+
+        if not all_errors:
+            logging.info("Post validation passed (round %d).", round_num)
+            return True
+
+        if round_num >= max_rounds:
+            logging.warning(
+                "Post validation failed after %d repair round(s). Persistent errors: %s",
+                max_rounds,
+                all_errors,
+            )
+            return False
+
+        logging.info(
+            "Post validation round %d: %d file(s) need repair — %s",
+            round_num,
+            len(all_errors),
+            list(all_errors.keys()),
+        )
+
+        for filename, errors in all_errors.items():
+            target_path: Path | None = next(
+                (p for p in post_paths if p.name == filename), None
+            )
+            if target_path is None or not target_path.exists():
+                logging.warning("Repair target not found: %s", filename)
+                continue
+
+            mdx_content = target_path.read_text(encoding="utf-8")
+            repair_prompt = _build_mdx_repair_prompt(mdx_content=mdx_content, errors=errors)
+            try:
+                repaired = writer.generate(
+                    repair_prompt,
+                    temperature=0.2,
+                    max_tokens=config.anthropic_max_tokens,
+                )
+                repaired = repaired.strip()
+                if repaired:
+                    target_path.write_text(repaired + "\n", encoding="utf-8")
+                    logging.info(
+                        "Repaired post: %s (round %d)", filename, round_num + 1
+                    )
+            except Exception as exc:
+                logging.warning("LLM repair failed for %s: %s", filename, exc)
+
+    return False
 
 
 def _build_revision_prompt(*, full_mdx: str, issues_json: str, keyword: str) -> str:
@@ -4043,6 +4179,7 @@ def _build_frontmatter(
         f'description: "{safe_desc}"\n'
         f"pubDate: {date_str}\n"
         f"updatedDate: {date_str}\n"
+        f'author: "Shipwrite Editorial Team"\n'
         f"category: [{category_list}]\n"
         f"tags: [{tag_list}]\n"
         f"{references_yaml}\n"
@@ -6066,6 +6203,7 @@ def _process_topics(
         config.anthropic_model_meta,
         config.anthropic_timeout_sec,
     )
+    generated_paths: list[Path] = []
     for topic in topics:
         keyword = topic.get("keyword")
         if not keyword:
@@ -6097,11 +6235,16 @@ def _process_topics(
             state["topics"] = sorted(used)
             state["slugs"] = sorted(slugs)
             _save_state(state)
+            generated_paths.append(post_path)
             logging.info("Post created: %s", post_path)
 
     state["topics"] = sorted(used)
     state["slugs"] = sorted(slugs)
     _save_state(state)
+
+    if generated_paths:
+        logging.info("Running post-generation validation on %d post(s).", len(generated_paths))
+        _validate_and_repair_posts(config, writer, post_paths=generated_paths)
 
 
 def run_pipeline(

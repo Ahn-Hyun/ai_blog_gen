@@ -40,8 +40,17 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Install Astro dependencies
+        run: npm ci
+        working-directory: ai_blog_v1_astro
 
       - name: Resolve pipeline
         id: pipeline
@@ -121,6 +130,12 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ] && [ "${NEW_MDX}" -eq 0 ]; then
             echo "WARNING: Pipeline ran but generated 0 new MDX files. Check logs for errors."
           fi
+
+      - name: Validate Astro build
+        run: |
+          cd ai_blog_v1_astro
+          npm run quality:gate
+          npm run build
 
       - name: Commit and push to Astro repo
         run: |
