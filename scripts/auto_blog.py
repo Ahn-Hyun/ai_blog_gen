@@ -64,13 +64,13 @@ DEFAULT_SCRAPE_TIMEOUT = 12
 DEFAULT_SCRAPE_DELAY_SEC = 1.0
 DEFAULT_SCRAPE_MAX_RETRIES = 2
 DEFAULT_SCRAPE_BACKOFF_SEC = 5.0
-DEFAULT_ANTHROPIC_MODEL = "gemini-3.1-pro"
+DEFAULT_ANTHROPIC_MODEL = "gemini-3.1-pro-preview"
 DEFAULT_ANTHROPIC_MODEL_CONTENT = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_ANTHROPIC_MODEL_META = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_ANTHROPIC_TEMPERATURE = 0.6
 DEFAULT_ANTHROPIC_MAX_TOKENS = 60000
 DEFAULT_ANTHROPIC_TIMEOUT_SEC = 900
-DEFAULT_BLOG_DOMAIN = "blog.ship-write.com"
+DEFAULT_BLOG_DOMAIN = "ship-write.com"
 DEFAULT_CONTENT_LANGUAGE = "English"
 DEFAULT_CONTENT_TONE = "neutral, informative, US-market-focused"
 DEFAULT_CONTENT_TIMEZONE = "America/New_York"
@@ -79,7 +79,7 @@ DEFAULT_SEARCH_RSS_ENABLED = True
 DEFAULT_SEARCH_RSS_MAX_RESULTS = 4
 DEFAULT_SEARCH_RSS_MAX_PER_QUERY = 3
 DEFAULT_MAX_EVIDENCE_SOURCES = 4
-DEFAULT_QUALITY_GATE_REVISIONS = 0
+DEFAULT_QUALITY_GATE_REVISIONS = 1
 DEFAULT_FINAL_REVIEW_ENABLED = True
 DEFAULT_FINAL_REVIEW_REVISIONS = 2
 DEFAULT_MDX_RENDER_GUARD_ENABLED = True
@@ -97,9 +97,9 @@ DEFAULT_YOUTUBE_SEARCH_ENABLED = True
 DEFAULT_YOUTUBE_MAX_RESULTS = 4
 DEFAULT_YOUTUBE_MAX_PER_QUERY = 2
 DEFAULT_GOOGLE_IMAGE_ENABLED = True
-DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-3-pro-image-preview"
+DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-3.1-flash-image-preview"
 DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO = "16:9"
-DEFAULT_OPENAI_WEEKLY_MODEL = "gpt-5.4-pro"
+DEFAULT_OPENAI_WEEKLY_MODEL = "gpt-5.4-2026-03-05"
 DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY = 0
 DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_HOUR = 9
 DEFAULT_WEEKLY_MAJOR_EVENTS_PER_LANE = 1
@@ -150,7 +150,8 @@ MDX_UNCLOSED_VOID_TAG_PATTERN = re.compile(
     rf"<(?P<tag>{MDX_VOID_TAGS_PATTERN})\b(?![^>]*\/\s*>)[^>]*>",
     re.IGNORECASE,
 )
-MDX_STRAY_ANGLE_PATTERN = re.compile(r"<(?=\s|=|\d|-)")
+MDX_STRAY_ANGLE_PATTERN = re.compile(r"<(?=\s|=|\d|-|[A-Za-z][A-Za-z0-9]*[^>/\s])")
+MDX_BARE_BRACE_PATTERN = re.compile(r"(?<!\\)\{(?!\{)|(?<!\\)\}(?!\})")
 CONTENT_JSON_SCHEMA = (
     "Required JSON keys: summary (2-3 sentences), key_points (array of 3-5 strings), "
     "body_markdown (string, MDX-friendly, ~1500-2200 words), "
@@ -160,7 +161,7 @@ FRONTMATTER_ZOD_SCHEMA = """
 z.object({
   title: z.string().min(5).max(90),
   description: z.string().min(30).max(160),
-  category: z.array(z.string()).min(1).max(2),
+  category: z.array(z.enum(["stocks", "real-estate"])).length(1),
   tags: z.array(z.string()).min(1).max(3),
   hero_alt: z.string().min(3).max(120),
   image_prompt: z.string().min(5).max(160),
@@ -722,15 +723,18 @@ def _ensure_ascii_body(body: str, fallback: str) -> str:
     return sanitized
 
 
+_ALLOWED_CATEGORIES: frozenset[str] = frozenset({"stocks", "real-estate"})
+
+
 def _normalize_category_list(value, fallback: list[str]) -> list[str]:
     if not isinstance(value, list):
         return fallback
     cleaned: list[str] = []
     for item in value:
-        text = _force_ascii(str(item)).strip()
-        if text and len(text) <= 40:
+        text = _force_ascii(str(item)).strip().lower()
+        if text in _ALLOWED_CATEGORIES:
             cleaned.append(text)
-    return cleaned[:2] if cleaned else fallback
+    return cleaned[:1] if cleaned else fallback
 
 
 def _normalize_tag_list(value, fallback: list[str]) -> list[str]:
@@ -1192,7 +1196,10 @@ def _collect_mdx_render_hints(body: str) -> list[str]:
             continue
         if in_fence or not stripped:
             continue
-        if MDX_UNCLOSED_VOID_TAG_PATTERN.search(stripped) or MDX_STRAY_ANGLE_PATTERN.search(stripped):
+        has_void_issue = MDX_UNCLOSED_VOID_TAG_PATTERN.search(stripped)
+        has_angle_issue = MDX_STRAY_ANGLE_PATTERN.search(stripped)
+        has_brace_issue = MDX_BARE_BRACE_PATTERN.search(stripped)
+        if has_void_issue or has_angle_issue or has_brace_issue:
             hints.append(_truncate_plain(stripped, 240))
             if len(hints) >= MDX_RENDER_MAX_HINTS:
                 break
@@ -1284,7 +1291,9 @@ def _build_evidence_summary(evidence: dict, keyword: str) -> str:
 
 def _load_state() -> dict:
     state_path = _resolve_state_path()
-    return read_json(state_path, default={"topics": [], "slugs": []}) or {"topics": [], "slugs": []}
+    logging.debug("State path resolved to: %s (exists=%s)", state_path, Path(state_path).exists())
+    result = read_json(state_path, default={"topics": [], "slugs": []})
+    return result or {"topics": [], "slugs": []}
 
 
 def _save_state(state: dict) -> None:
@@ -1300,16 +1309,39 @@ class ClaudeClient:
         self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
 
     def _post(self, payload: dict) -> dict:
-        request = Request(
-            f"{self.base_url}?{urlencode({'key': self.api_key})}",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "Content-Type": "application/json",
-            },
-            method="POST",
-        )
-        with urlopen(request, timeout=self.timeout_sec) as response:
-            return json.loads(response.read().decode("utf-8"))
+        _backoff_base = 5.0
+        _max_retries = 3
+        for attempt in range(_max_retries):
+            request = Request(
+                f"{self.base_url}?{urlencode({'key': self.api_key})}",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            try:
+                with urlopen(request, timeout=self.timeout_sec) as response:
+                    return json.loads(response.read().decode("utf-8"))
+            except HTTPError as exc:
+                if exc.code == 429 and attempt < _max_retries - 1:
+                    wait = _backoff_base * (2 ** attempt)
+                    logging.warning(
+                        "Gemini API rate-limited (429). Retrying in %.0fs (attempt %d/%d).",
+                        wait, attempt + 1, _max_retries,
+                    )
+                    time.sleep(wait)
+                    continue
+                raise
+            except (URLError, OSError) as exc:
+                if attempt < _max_retries - 1:
+                    wait = _backoff_base * (2 ** attempt)
+                    logging.warning(
+                        "Gemini API network error: %s. Retrying in %.0fs (attempt %d/%d).",
+                        exc, wait, attempt + 1, _max_retries,
+                    )
+                    time.sleep(wait)
+                    continue
+                raise
+        raise RuntimeError("Gemini API unreachable after %d attempts." % _max_retries)
 
     @staticmethod
     def _extract_text(data: dict) -> str:
@@ -1442,13 +1474,24 @@ class OpenAIResponsesClient:
 
 
 def _extract_json_block(text: str) -> dict | None:
-    start = text.find("{")
-    end = text.rfind("}")
+    stripped = text.strip()
+    fence_match = re.search(r"```(?:json)?\s*\n(.*?)\n```", stripped, re.DOTALL)
+    if fence_match:
+        candidate = fence_match.group(1).strip()
+        try:
+            result = json.loads(candidate)
+            if isinstance(result, dict):
+                return result
+        except json.JSONDecodeError:
+            pass
+    start = stripped.find("{")
+    end = stripped.rfind("}")
     if start == -1 or end == -1 or end <= start:
         return None
-    snippet = text[start : end + 1]
+    snippet = stripped[start : end + 1]
     try:
-        return json.loads(snippet)
+        result = json.loads(snippet)
+        return result if isinstance(result, dict) else None
     except json.JSONDecodeError:
         return None
 
@@ -3108,7 +3151,8 @@ Suspicious snippets (if any):
 
 Review focus:
 - Void HTML elements must be self-closing (e.g., <br />, <img />).
-- Fix malformed tags or stray angle brackets in plain text.
+- Fix malformed tags or stray angle brackets in plain text (e.g., "< 5%" → "\< 5%").
+- Bare curly braces in prose MUST be escaped: { → \{ and } → \} (e.g., "{n+1}" → "\{n+1\}", "{$1B}" → "\{$1B\}"). Do NOT escape braces inside code fences or JSX components.
 - Preserve tables, headings, and source attributions as plain text names only.
 
 Decision:
@@ -3188,7 +3232,7 @@ Image prompt hint (use or improve): {image_prompt_hint}
 Rules:
 - title length 50-65 characters
 - description length 140-160 characters
-- 1-2 categories, 1-3 tags
+- exactly 1 category (must be one of: "stocks", "real-estate"), 1-3 tags
 - hero_alt must be concrete and descriptive
 - English only unless language specifies otherwise
 - Include the primary keyword naturally in title and description
@@ -4029,6 +4073,7 @@ def _write_post(
     inline_image_prompts: list[str] | None,
     slug_hint: str,
     date_str: str | None = None,
+    force_draft: bool = False,
 ) -> Path:
     date_str = date_str or datetime.now(config.content_timezone).strftime("%Y-%m-%d")
     slug = _slugify(slug_hint) or f"topic-{int(time.time())}"
@@ -4047,7 +4092,7 @@ def _write_post(
         category=category,
         tags=tags,
         reference_urls=unique_refs,
-        draft=config.post_draft,
+        draft=True if force_draft else config.post_draft,
         hero_alt=hero_alt or title,
         domain=config.blog_domain,
     )
@@ -4861,11 +4906,14 @@ def _write_sections(
             )
             section_body = response.strip()
         except Exception as exc:
-            logging.warning("Section writer failed (%s): %s", heading, exc)
-            return None
+            logging.warning("Section writer failed (%s): %s — skipping section.", heading, exc)
+            continue
         if not section_body:
-            return None
+            logging.warning("Section writer returned empty body for '%s' — skipping section.", heading)
+            continue
         section_mdx_list.append(section_body)
+    if not section_mdx_list:
+        return None
     return section_mdx_list
 
 
@@ -5295,7 +5343,11 @@ def _generate_post_for_topic(
                 keyword,
             )
 
-    if not body:
+    _used_fallback_body = not body
+    if _used_fallback_body:
+        logging.warning(
+            "All LLM content stages failed for '%s'. Publishing as draft using fallback body.", keyword
+        )
         body = fallback_body
 
     if image_infos:
@@ -5369,7 +5421,7 @@ def _generate_post_for_topic(
         logging.warning("Frontmatter LLM failed for %s: %s", keyword, exc)
         meta_data = None
 
-    fallback_category = _ensure_ascii_text(config.fallback_category, "trend")
+    fallback_category = _ensure_ascii_text(config.fallback_category, "stocks")
     fallback_tags = [
         _ensure_ascii_text(tag, "topic") for tag in config.fallback_tags if tag
     ] or ["topic"]
@@ -5445,6 +5497,7 @@ def _generate_post_for_topic(
         inline_image_prompts=inline_image_prompts,
         slug_hint=title,
         date_str=str(topic.get("publish_date") or "").strip() or None,
+        force_draft=_used_fallback_body,
     )
 
 
@@ -5712,9 +5765,10 @@ def _should_run_daily_impact_now(config: AutomationConfig) -> bool:
     env = _resolve_env()
     if not _parse_bool(env.get("ENFORCE_LOCAL_RUN_HOUR"), False):
         return True
-    target_hour = _parse_int(env.get("DAILY_IMPACT_RUN_HOUR"), 8)
+    raw = env.get("DAILY_IMPACT_RUN_HOUR", "8")
+    allowed_hours = {_parse_int(h.strip(), 8) for h in raw.split(",")}
     now_local = datetime.now(config.content_timezone)
-    return now_local.hour == target_hour
+    return now_local.hour in allowed_hours
 
 
 def _should_run_weekly_major_events_now(config: AutomationConfig) -> bool:
@@ -5844,16 +5898,18 @@ def run_daily_impact(
     if not topics:
         logging.warning("Daily impact pipeline produced no publishable topics.")
         return
-    _process_topics(
-        config,
-        topics=topics,
-        pipeline=PIPELINE_DAILY_IMPACT,
-    )
-    state = _load_state()
-    completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
-    completed_runs.add(window_labels["target_date"])
-    state["daily_impact_runs"] = sorted(completed_runs)
-    _save_state(state)
+    try:
+        _process_topics(
+            config,
+            topics=topics,
+            pipeline=PIPELINE_DAILY_IMPACT,
+        )
+    finally:
+        state = _load_state()
+        completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
+        completed_runs.add(window_labels["target_date"])
+        state["daily_impact_runs"] = sorted(completed_runs)
+        _save_state(state)
 
 
 def run_weekly_major_events(
@@ -5911,6 +5967,7 @@ def run_weekly_major_events(
         topics_per_lane=config.weekly_major_events_per_lane,
         raw_sources_json=json.dumps(discovery_sources, ensure_ascii=True),
     )
+    data: dict | None = None
     if config.openai_api_key:
         weekly_writer = OpenAIResponsesClient(
             config.openai_api_key,
@@ -5924,10 +5981,12 @@ def run_weekly_major_events(
             )
             data = _extract_json_block(response)
         except Exception as exc:
-            logging.warning("Weekly major-events discovery failed: %s", exc)
-            return
-    else:
-        logging.info("Weekly major-events discovery falling back to Gemini (no OPENAI_API_KEY).")
+            logging.warning(
+                "Weekly major-events OpenAI discovery failed (%s). Falling back to Gemini.", exc
+            )
+            data = None
+    if data is None and config.anthropic_api_key:
+        logging.info("Weekly major-events discovery using Gemini.")
         gemini_writer = ClaudeClient(
             config.anthropic_api_key,
             config.anthropic_model_content,
@@ -5942,7 +6001,10 @@ def run_weekly_major_events(
             data = _extract_json_block(response)
         except Exception as exc:
             logging.warning("Weekly major-events Gemini discovery failed: %s", exc)
-            return
+            data = None
+    if data is None:
+        logging.warning("Weekly major-events discovery failed: no usable response from any model.")
+        return
     topics = _normalize_weekly_major_topics(
         data.get("topics") if isinstance(data, dict) and isinstance(data.get("topics"), list) else [],
         week_labels=week_labels,
@@ -5966,16 +6028,18 @@ def run_weekly_major_events(
         },
         content_timezone=config.content_timezone,
     )
-    _process_topics(
-        config,
-        topics=topics,
-        pipeline=PIPELINE_WEEKLY_MAJOR_EVENTS,
-    )
-    state = _load_state()
-    completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
-    completed_runs.add(week_labels["week_key"])
-    state["weekly_major_runs"] = sorted(completed_runs)
-    _save_state(state)
+    try:
+        _process_topics(
+            config,
+            topics=topics,
+            pipeline=PIPELINE_WEEKLY_MAJOR_EVENTS,
+        )
+    finally:
+        state = _load_state()
+        completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
+        completed_runs.add(week_labels["week_key"])
+        state["weekly_major_runs"] = sorted(completed_runs)
+        _save_state(state)
 
 
 def _process_topics(

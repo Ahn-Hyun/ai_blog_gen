@@ -71,13 +71,14 @@ jobs:
           WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY: ${{ vars.WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY || '0' }}
           WEEKLY_MAJOR_EVENTS_RUN_HOUR: ${{ vars.WEEKLY_MAJOR_EVENTS_RUN_HOUR || '9' }}
           WEEKLY_MAJOR_EVENTS_PER_LANE: ${{ vars.WEEKLY_MAJOR_EVENTS_PER_LANE || '1' }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
-          GEMINI_MODEL_CONTENT: ${{ vars.GEMINI_MODEL_CONTENT }}
-          GEMINI_MODEL_META: ${{ vars.GEMINI_MODEL_META }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.1-pro-preview' }}
+          GEMINI_MODEL_CONTENT: ${{ vars.GEMINI_MODEL_CONTENT || 'gemini-3.1-pro-preview' }}
+          GEMINI_MODEL_META: ${{ vars.GEMINI_MODEL_META || 'gemini-3.1-pro-preview' }}
           GEMINI_TEMPERATURE: ${{ vars.GEMINI_TEMPERATURE }}
           GEMINI_MAX_TOKENS: ${{ vars.GEMINI_MAX_TOKENS }}
           GEMINI_TIMEOUT_SEC: ${{ vars.GEMINI_TIMEOUT_SEC }}
-          OPENAI_WEEKLY_MODEL: ${{ vars.OPENAI_WEEKLY_MODEL || 'gpt-5.4-pro' }}
+          OPENAI_WEEKLY_MODEL: ${{ vars.OPENAI_WEEKLY_MODEL || 'gpt-5.4-2026-03-05' }}
+          GOOGLE_IMAGE_MODEL: ${{ vars.GOOGLE_IMAGE_MODEL || 'gemini-3.1-flash-image-preview' }}
           SEARCH_WEB_ENABLED: ${{ vars.SEARCH_WEB_ENABLED }}
           SEARCH_WEB_MAX_RESULTS: ${{ vars.SEARCH_WEB_MAX_RESULTS }}
           SEARCH_WEB_MAX_PER_QUERY: ${{ vars.SEARCH_WEB_MAX_PER_QUERY }}
@@ -89,20 +90,19 @@ jobs:
           YOUTUBE_MAX_RESULTS: ${{ vars.YOUTUBE_MAX_RESULTS }}
           YOUTUBE_MAX_PER_QUERY: ${{ vars.YOUTUBE_MAX_PER_QUERY }}
           GOOGLE_IMAGE_ENABLED: ${{ vars.GOOGLE_IMAGE_ENABLED }}
-          GOOGLE_IMAGE_MODEL: ${{ vars.GOOGLE_IMAGE_MODEL }}
           GOOGLE_IMAGE_ASPECT_RATIO: ${{ vars.GOOGLE_IMAGE_ASPECT_RATIO }}
           CONTENT_LANGUAGE: ${{ vars.CONTENT_LANGUAGE }}
           CONTENT_TONE: ${{ vars.CONTENT_TONE }}
           USE_MULTI_AGENT: ${{ vars.USE_MULTI_AGENT }}
-          DAILY_IMPACT_RUN_HOUR: ${{ vars.DAILY_IMPACT_RUN_HOUR || '8' }}
+          DAILY_IMPACT_RUN_HOUR: ${{ vars.DAILY_IMPACT_RUN_HOUR || '8,9' }}
           QUALITY_GATE_REVISIONS: ${{ vars.QUALITY_GATE_REVISIONS }}
           SEARCH_RSS_ENABLED: ${{ vars.SEARCH_RSS_ENABLED }}
           SEARCH_RSS_MAX_RESULTS: ${{ vars.SEARCH_RSS_MAX_RESULTS }}
           SEARCH_RSS_MAX_PER_QUERY: ${{ vars.SEARCH_RSS_MAX_PER_QUERY }}
           MAX_EVIDENCE_SOURCES: ${{ vars.MAX_EVIDENCE_SOURCES }}
-          BLOG_DOMAIN: ${{ vars.BLOG_DOMAIN }}
+          BLOG_DOMAIN: ${{ vars.BLOG_DOMAIN || 'ship-write.com' }}
           POST_DRAFT: ${{ vars.POST_DRAFT }}
-          FALLBACK_CATEGORY: ${{ vars.FALLBACK_CATEGORY }}
+          FALLBACK_CATEGORY: ${{ vars.FALLBACK_CATEGORY || 'stocks' }}
           FALLBACK_TAGS: ${{ vars.FALLBACK_TAGS }}
           SCRAPE_DELAY_SEC: ${{ vars.SCRAPE_DELAY_SEC }}
           SCRAPE_MAX_RETRIES: ${{ vars.SCRAPE_MAX_RETRIES }}
@@ -117,6 +117,10 @@ jobs:
             export ENFORCE_LOCAL_RUN_HOUR=0
           fi
           python scripts/auto_blog.py --once --pipeline "${{ steps.pipeline.outputs.pipeline }}"
+          NEW_MDX=$(find ai_blog_v1_astro/src/content/blog -name "*.mdx" -newer ai_blog_v1_astro/.ai_state/published.json 2>/dev/null | wc -l || echo 0)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "${NEW_MDX}" -eq 0 ]; then
+            echo "WARNING: Pipeline ran but generated 0 new MDX files. Check logs for errors."
+          fi
 
       - name: Commit and push to Astro repo
         run: |
@@ -129,4 +133,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "Auto: publish blog updates"
+          git pull --rebase origin main
           git push
