@@ -4168,7 +4168,7 @@ def _build_frontmatter(
     tag_list = ", ".join(f'"{tag}"' for tag in tags)
     references_yaml = (
         "references:\n"
-        + "\n".join(f'  - "{url.replace(chr(34), r"\\\"")}"' for url in reference_urls)
+        + "\n".join('  - "' + url.replace('"', '\\"') + '"' for url in reference_urls)
         if reference_urls
         else "references: []"
     )
