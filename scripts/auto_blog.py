@@ -3657,6 +3657,19 @@ def _normalize_chart_specs(raw: object) -> list[dict]:
     return normalized
 
 
+def _is_chart_spec_meaningful(spec: dict) -> bool:
+    unit = str(spec.get("unit") or "").lower().strip()
+    title = str(spec.get("title") or "").lower().strip()
+    labels = [str(lb) for lb in (spec.get("labels") or [])]
+    if "signal score" in unit:
+        return False
+    if "macro signal emphasis" in title:
+        return False
+    if set(labels) == {"Inflation", "Rates", "Growth", "Risk"}:
+        return False
+    return True
+
+
 def _plan_inline_charts(
     config: AutomationConfig,
     writer: ClaudeClient,
@@ -3686,7 +3699,30 @@ def _plan_inline_charts(
         return []
     if not isinstance(data, dict):
         return []
-    return _normalize_chart_specs(data.get("charts"))
+    specs = [s for s in _normalize_chart_specs(data.get("charts")) if _is_chart_spec_meaningful(s)]
+    if specs:
+        return specs
+    logging.info("Chart plan yielded no meaningful specs — retrying with extended excerpt.")
+    try:
+        retry_prompt = _build_chart_plan_prompt(
+            keyword=keyword,
+            angle=angle,
+            summary=summary,
+            key_points=key_points,
+            body_excerpt=_truncate(_strip_markdown(body), 4000),
+        )
+        retry_response = writer.generate(
+            retry_prompt,
+            temperature=config.anthropic_temperature,
+            max_tokens=config.anthropic_max_tokens,
+        )
+        retry_data = _extract_json_block(retry_response)
+    except Exception as exc:
+        logging.warning("Chart planning retry failed: %s", exc)
+        return []
+    if not isinstance(retry_data, dict):
+        return []
+    return [s for s in _normalize_chart_specs(retry_data.get("charts")) if _is_chart_spec_meaningful(s)]
 
 
 def _fallback_daily_impact_chart_spec(
@@ -3729,80 +3765,136 @@ def _fallback_daily_impact_chart_spec(
 
 def _render_chart_svg(spec: dict) -> str:
     width = 1000
-    height = 560
-    left = 90
-    right = 50
-    top = 90
-    bottom = 130
+    height = 580
+    left = 110
+    right = 40
+    top = 100
+    bottom = 100
     plot_w = width - left - right
     plot_h = height - top - bottom
+
     labels = spec.get("labels") or []
     values = spec.get("values") or []
-    title = _xml_escape(spec.get("title") or "Market signal")
+    title = _xml_escape(spec.get("title") or "Market Signal")
     unit = _xml_escape(spec.get("unit") or "")
-    min_v = min(values)
+    chart_type = str(spec.get("chart_type") or "bar").strip().lower()
+    alt_text = _xml_escape(spec.get("alt_text") or spec.get("title") or "Chart")
+
+    if chart_type == "bar" and all(v >= 0 for v in values):
+        min_v = 0.0
+    else:
+        min_v = min(values)
     max_v = max(values)
-    span = max(max_v - min_v, 1e-9)
+    data_span = max_v - min_v if (max_v - min_v) > 0 else abs(max_v) + 1.0
+    display_max = max_v + data_span * 0.14
+    span = max(display_max - min_v, 1e-9)
 
-    def y_of(value: float) -> float:
-        return top + (max_v - value) / span * plot_h
+    x_axis_y = top + plot_h
 
-    svg_lines = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{_xml_escape(spec.get("alt_text") or spec.get("title") or "Chart")}">',
-        '<rect width="100%" height="100%" fill="#ffffff" />',
-        f'<text x="{left}" y="46" font-size="28" font-family="Arial, sans-serif" fill="#111827">{title}</text>',
-        f'<line x1="{left}" y1="{top + plot_h}" x2="{left + plot_w}" y2="{top + plot_h}" stroke="#9ca3af" stroke-width="2"/>',
-        f'<line x1="{left}" y1="{top}" x2="{left}" y2="{top + plot_h}" stroke="#9ca3af" stroke-width="2"/>',
+    def y_of(v: float) -> float:
+        return top + (display_max - v) / span * plot_h
+
+    _PALETTE = ["#1d4ed8", "#0891b2", "#059669", "#d97706", "#7c3aed", "#dc2626"]
+
+    def bar_color(idx: int, total: int) -> str:
+        if total == 2:
+            return "#1d4ed8" if idx == 0 else "#0891b2"
+        return _PALETTE[idx % len(_PALETTE)]
+
+    font = "'Segoe UI', system-ui, -apple-system, sans-serif"
+
+    def fmt_val(v: float) -> str:
+        if abs(v) >= 1000:
+            return f"{v:,.0f}"
+        if abs(v) >= 100:
+            return f"{v:.0f}"
+        if abs(v) >= 10:
+            return f"{v:.1f}"
+        s = f"{v:.2f}"
+        return s.rstrip("0").rstrip(".")
+
+    svg: list[str] = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{alt_text}">',
+        f'<rect width="100%" height="100%" fill="#f8fafc" rx="10"/>',
+        f'<text x="{left}" y="44" font-size="20" font-weight="700" font-family="{font}" fill="#0f172a">{title}</text>',
     ]
+
+    if unit:
+        svg.append(
+            f'<text x="{left}" y="68" font-size="13" font-family="{font}" fill="#64748b">{unit}</text>'
+        )
+
+    svg.extend([
+        f'<line x1="{left}" y1="{top}" x2="{left}" y2="{x_axis_y}" stroke="#cbd5e1" stroke-width="1.5"/>',
+        f'<line x1="{left}" y1="{x_axis_y}" x2="{left + plot_w}" y2="{x_axis_y}" stroke="#cbd5e1" stroke-width="1.5"/>',
+    ])
 
     ticks = 4
     for i in range(ticks + 1):
-        val = min_v + (span * i / ticks)
-        y = y_of(val)
-        svg_lines.append(
-            f'<line x1="{left}" y1="{y:.2f}" x2="{left + plot_w}" y2="{y:.2f}" stroke="#e5e7eb" stroke-width="1"/>'
-        )
-        label = f"{val:.2f}".rstrip("0").rstrip(".")
-        if unit:
-            label = f"{label} {unit}"
-        svg_lines.append(
-            f'<text x="{left - 12}" y="{y + 5:.2f}" text-anchor="end" font-size="13" font-family="Arial, sans-serif" fill="#6b7280">{_xml_escape(label)}</text>'
+        tick_val = min_v + (max_v - min_v) * i / ticks
+        ty = y_of(tick_val)
+        if abs(ty - x_axis_y) > 2:
+            svg.append(
+                f'<line x1="{left}" y1="{ty:.2f}" x2="{left + plot_w}" y2="{ty:.2f}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="5,4"/>'
+            )
+        tick_label = fmt_val(tick_val)
+        svg.append(
+            f'<text x="{left - 8}" y="{ty + 4:.2f}" text-anchor="end" font-size="12" font-family="{font}" fill="#94a3b8">{_xml_escape(tick_label)}</text>'
         )
 
     count = len(labels)
-    if spec.get("chart_type") == "bar":
+    if chart_type == "bar":
         slot = plot_w / count
-        bar_w = slot * 0.6
+        bar_w = min(slot * 0.55, 220.0)
+        gap = (slot - bar_w) / 2
+
         for idx, (label, value) in enumerate(zip(labels, values, strict=False)):
-            x = left + idx * slot + (slot - bar_w) / 2
-            y = y_of(value)
-            h = top + plot_h - y
-            svg_lines.append(
-                f'<rect x="{x:.2f}" y="{y:.2f}" width="{bar_w:.2f}" height="{h:.2f}" fill="#2563eb" rx="4"/>'
+            bx = left + idx * slot + gap
+            by = y_of(value)
+            bh = max(y_of(min_v) - by, 2.0)
+            color = bar_color(idx, count)
+
+            svg.append(
+                f'<rect x="{bx:.2f}" y="{by:.2f}" width="{bar_w:.2f}" height="{bh:.2f}" fill="{color}" rx="5" opacity="0.88"/>'
             )
-            svg_lines.append(
-                f'<text x="{x + bar_w / 2:.2f}" y="{top + plot_h + 28}" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#374151">{_xml_escape(label)}</text>'
+
+            val_text = fmt_val(value)
+            label_y = max(by - 9, top + 18)
+            svg.append(
+                f'<text x="{bx + bar_w / 2:.2f}" y="{label_y:.2f}" text-anchor="middle" font-size="13" font-weight="700" font-family="{font}" fill="{color}">{_xml_escape(val_text)}</text>'
+            )
+            svg.append(
+                f'<text x="{bx + bar_w / 2:.2f}" y="{x_axis_y + 26}" text-anchor="middle" font-size="13" font-family="{font}" fill="#475569">{_xml_escape(label)}</text>'
             )
     else:
-        step = plot_w / (count - 1)
-        points: list[str] = []
-        for idx, (label, value) in enumerate(zip(labels, values, strict=False)):
-            x = left + idx * step
-            y = y_of(value)
-            points.append(f"{x:.2f},{y:.2f}")
-            svg_lines.append(
-                f'<circle cx="{x:.2f}" cy="{y:.2f}" r="5" fill="#2563eb"/>'
-            )
-            svg_lines.append(
-                f'<text x="{x:.2f}" y="{top + plot_h + 28}" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#374151">{_xml_escape(label)}</text>'
-            )
-        points_attr = " ".join(points)
-        svg_lines.append(
-            f'<polyline fill="none" stroke="#2563eb" stroke-width="3" points="{points_attr}"/>'
-        )
+        step = plot_w / max(count - 1, 1)
+        pts: list[str] = []
+        dot_elements: list[str] = []
 
-    svg_lines.append("</svg>")
-    return "\n".join(svg_lines)
+        for idx, (label, value) in enumerate(zip(labels, values, strict=False)):
+            px = left + idx * step
+            py = y_of(value)
+            pts.append(f"{px:.2f},{py:.2f}")
+
+            val_text = fmt_val(value)
+            svg.append(
+                f'<text x="{px:.2f}" y="{py - 14:.2f}" text-anchor="middle" font-size="12" font-weight="700" font-family="{font}" fill="#1d4ed8">{_xml_escape(val_text)}</text>'
+            )
+            svg.append(
+                f'<text x="{px:.2f}" y="{x_axis_y + 26}" text-anchor="middle" font-size="13" font-family="{font}" fill="#475569">{_xml_escape(label)}</text>'
+            )
+            dot_elements.append(
+                f'<circle cx="{px:.2f}" cy="{py:.2f}" r="6" fill="#1d4ed8" stroke="#f8fafc" stroke-width="2"/>'
+            )
+
+        pts_str = " ".join(pts)
+        svg.append(
+            f'<polyline fill="none" stroke="#1d4ed8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="{pts_str}"/>'
+        )
+        svg.extend(dot_elements)
+
+    svg.append("</svg>")
+    return "\n".join(svg)
 
 
 _IMAGE_STYLE_DIRECTIVE_MARKERS = (
@@ -5587,15 +5679,7 @@ def _generate_post_for_topic(
             key_points=key_points,
             body=body,
         )
-        if not chart_specs:
-            chart_specs = [
-                _fallback_daily_impact_chart_spec(
-                    keyword=str(keyword),
-                    summary=summary,
-                    key_points=key_points,
-                    body=body,
-                )
-            ]
+
 
     meta_prompt = _build_meta_prompt(
         keyword=keyword,
