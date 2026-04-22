@@ -3831,31 +3831,77 @@ def _build_visual_markdown_block(*, alt_text: str, path: str, caption: str) -> s
     image_line = f"![{alt_text}]({path})"
     safe_caption = _ensure_ascii_text(caption.strip(), "")
     if not safe_caption:
-        return image_line
-    return f"{image_line}\n\n*{safe_caption}*"
+        return f"<figure>\n\n{image_line}\n\n</figure>"
+    return f"<figure>\n\n{image_line}\n\n<figcaption>{safe_caption}</figcaption>\n\n</figure>"
 
 
-def _insert_visual_blocks(body: str, visual_blocks: list[str]) -> str:
+def _caption_from_prompt(prompt: str) -> str:
+    cleaned = re.sub(
+        r"\b(generate|create|make|illustrate|show|depict|render|produce|design)\b",
+        "",
+        prompt,
+        flags=re.IGNORECASE,
+    )
+    cleaned = re.sub(r"\bno text\b.*", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\b(photorealistic|editorial.?style|minimal(ist)?|abstract)\b", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned).strip(" .,;:—")
+    if len(cleaned) > 90:
+        cleaned = cleaned[:87].rsplit(" ", 1)[0].rstrip(" .,;:") + "…"
+    return cleaned or ""
+
+
+def _insert_visual_blocks(body: str, visual_blocks: list[dict]) -> str:
     if not body or not visual_blocks:
         return body
-    blocks = [part for part in body.split("\n\n") if part is not None]
-    if not blocks:
+    paragraphs = [part for part in body.split("\n\n") if part is not None]
+    if not paragraphs:
         return body
-    h2_indices = [i for i, part in enumerate(blocks) if part.strip().startswith("## ")]
-    anchor_indices = h2_indices[1:] if len(h2_indices) > 1 else h2_indices
-    if not anchor_indices:
-        blocks.extend(visual_blocks)
-        return "\n\n".join(blocks)
+
+    heading_indices = [
+        i for i, part in enumerate(paragraphs)
+        if re.match(r"^#{2,3} ", part.strip())
+    ]
+
     placements: list[tuple[int, str]] = []
-    total = len(visual_blocks)
-    for idx, visual in enumerate(visual_blocks):
-        anchor_pos = int(((idx + 1) * len(anchor_indices)) / (total + 1))
-        if anchor_pos >= len(anchor_indices):
-            anchor_pos = len(anchor_indices) - 1
-        placements.append((anchor_indices[anchor_pos], visual))
-    for anchor, visual in sorted(placements, key=lambda item: item[0], reverse=True):
-        blocks.insert(anchor + 1, visual)
-    return "\n\n".join(blocks)
+    unmatched: list[str] = []
+
+    for item in visual_blocks:
+        block_str = item["block"] if isinstance(item, dict) else item
+        section_heading = (item.get("section_heading") or "").strip() if isinstance(item, dict) else ""
+
+        matched = False
+        if section_heading:
+            query = section_heading.lower()
+            for hi in heading_indices:
+                heading_text = re.sub(r"^#{1,4}\s+", "", paragraphs[hi].strip()).lower()
+                if query in heading_text or heading_text in query:
+                    insert_pos = hi + 1
+                    while insert_pos < len(paragraphs) and re.match(r"^#{1,4} ", paragraphs[insert_pos].strip()):
+                        insert_pos += 1
+                    placements.append((insert_pos, block_str))
+                    matched = True
+                    break
+
+        if not matched:
+            unmatched.append(block_str)
+
+    anchor_indices = heading_indices[1:] if len(heading_indices) > 1 else heading_indices
+    if not anchor_indices:
+        step = max(1, len(paragraphs) // (len(unmatched) + 1))
+        for idx, block_str in enumerate(unmatched):
+            placements.append((min((idx + 1) * step, len(paragraphs) - 1), block_str))
+    else:
+        total = len(unmatched)
+        for idx, block_str in enumerate(unmatched):
+            anchor_pos = int(((idx + 1) * len(anchor_indices)) / (total + 1))
+            if anchor_pos >= len(anchor_indices):
+                anchor_pos = len(anchor_indices) - 1
+            placements.append((anchor_indices[anchor_pos], block_str))
+
+    for insert_idx, block_str in sorted(placements, key=lambda x: x[0], reverse=True):
+        paragraphs.insert(insert_idx + 1, block_str)
+
+    return "\n\n".join(paragraphs)
 
 
 def _parse_aspect_ratio(value: str | None) -> tuple[int, int]:
@@ -4103,30 +4149,33 @@ def _materialize_inline_visuals(
     date_str: str,
     slug: str,
     chart_specs: list[dict],
-    inline_image_prompts: list[str],
-) -> list[str]:
+    inline_image_descriptors: list[dict],
+) -> list[dict]:
     asset_key = f"{date_str}-{slug}"
     asset_dir = config.hero_base_dir / asset_key
     asset_dir.mkdir(parents=True, exist_ok=True)
     base_url = f"/images/posts/{asset_key}"
-    visual_blocks: list[str] = []
+    result: list[dict] = []
 
     for idx, spec in enumerate(chart_specs[:MAX_INLINE_CHARTS], start=1):
         try:
             svg_path = asset_dir / f"chart-{idx}.svg"
             svg_path.write_text(_render_chart_svg(spec), encoding="utf-8")
-            visual_blocks.append(
-                _build_visual_markdown_block(
+            result.append({
+                "block": _build_visual_markdown_block(
                     alt_text=_ensure_ascii_text(str(spec.get("alt_text") or "Chart").strip(), "Chart"),
                     path=f"{base_url}/chart-{idx}.svg",
                     caption=str(spec.get("caption") or "").strip(),
-                )
-            )
+                ),
+                "section_heading": str(spec.get("section_heading") or "").strip(),
+            })
         except Exception as exc:
             logging.warning("Inline chart generation failed (%s): %s", idx, exc)
 
-    for idx, prompt in enumerate(inline_image_prompts[:MAX_GENERATED_INLINE_IMAGES], start=1):
-        safe_prompt = _ensure_ascii_text(prompt.strip(), "")
+    for idx, descriptor in enumerate(inline_image_descriptors[:MAX_GENERATED_INLINE_IMAGES], start=1):
+        if isinstance(descriptor, str):
+            descriptor = {"prompt": descriptor, "section_heading": ""}
+        safe_prompt = _ensure_ascii_text(str(descriptor.get("prompt") or "").strip(), "")
         if not safe_prompt:
             continue
         image_path = asset_dir / f"inline-{idx}.jpg"
@@ -4136,16 +4185,17 @@ def _materialize_inline_visuals(
                 generated = _generate_hero_gradient(image_path, config)
             if not generated:
                 continue
-            visual_blocks.append(
-                _build_visual_markdown_block(
+            result.append({
+                "block": _build_visual_markdown_block(
                     alt_text=_ensure_ascii_text(_extract_alt_from_image_prompt(safe_prompt), "Related illustration"),
                     path=f"{base_url}/inline-{idx}.jpg",
-                    caption="Generated supporting visual",
-                )
-            )
+                    caption=_caption_from_prompt(safe_prompt),
+                ),
+                "section_heading": str(descriptor.get("section_heading") or "").strip(),
+            })
         except Exception as exc:
             logging.warning("Inline image generation failed (%s): %s", idx, exc)
-    return visual_blocks[:MAX_INLINE_VISUALS]
+    return result[:MAX_INLINE_VISUALS]
 
 
 def _build_frontmatter(
@@ -4207,7 +4257,7 @@ def _write_post(
     image_prompt: str,
     reference_urls: list[str],
     chart_specs: list[dict] | None,
-    inline_image_prompts: list[str] | None,
+    inline_image_prompts: list[str] | list[dict] | None,
     slug_hint: str,
     date_str: str | None = None,
     force_draft: bool = False,
@@ -4234,13 +4284,19 @@ def _write_post(
         domain=config.blog_domain,
     )
 
+    raw_descriptors = inline_image_prompts or []
+    inline_image_descriptors = [
+        item if isinstance(item, dict) else {"prompt": item, "section_heading": ""}
+        for item in raw_descriptors
+    ]
+
     content = body.strip()
     visual_blocks = _materialize_inline_visuals(
         config,
         date_str=date_str,
         slug=slug,
         chart_specs=chart_specs or [],
-        inline_image_prompts=inline_image_prompts or [],
+        inline_image_descriptors=inline_image_descriptors,
     )
     if visual_blocks:
         content = _insert_visual_blocks(content, visual_blocks)
@@ -5349,7 +5405,7 @@ def _generate_article_multi_agent(
     key_points = _key_points_from_evidence(evidence)
     hero_hint = ""
     hero_alt = ""
-    inline_image_prompts: list[str] = []
+    inline_image_descriptors: list[dict] = []
     if isinstance(resources, dict):
         hero = resources.get("hero_image")
         if isinstance(hero, dict):
@@ -5360,7 +5416,10 @@ def _generate_article_multi_agent(
                 continue
             prompt = _ensure_ascii_text(str(item.get("prompt_or_query") or "").strip(), "")
             if prompt:
-                inline_image_prompts.append(prompt)
+                inline_image_descriptors.append({
+                    "prompt": prompt,
+                    "section_heading": str(item.get("section_heading") or "").strip(),
+                })
     image_prompt_hint = hero_hint or keyword
     reference_urls = [s.get("url") for s in structured_sources if _is_valid_url(s.get("url"))]
     for video in youtube_videos:
@@ -5374,7 +5433,7 @@ def _generate_article_multi_agent(
         "image_prompt_hint": image_prompt_hint,
         "hero_alt_hint": hero_alt,
         "reference_urls": reference_urls,
-        "inline_image_prompts": inline_image_prompts[:MAX_GENERATED_INLINE_IMAGES],
+        "inline_image_prompts": inline_image_descriptors[:MAX_GENERATED_INLINE_IMAGES],
     }
 
 
@@ -5606,18 +5665,21 @@ def _generate_post_for_topic(
         )
 
     inline_image_prompts = [
-        _ensure_ascii_text(prompt, "")
-        for prompt in inline_image_prompts
-        if _ensure_ascii_text(prompt, "")
+        item if isinstance(item, dict) else {"prompt": _ensure_ascii_text(item, ""), "section_heading": ""}
+        for item in inline_image_prompts
+        if _ensure_ascii_text(item if isinstance(item, str) else str(item.get("prompt") or ""), "")
     ]
 
     if _uses_market_impact_template(template_mode) and not inline_image_prompts:
         base_angle = _ensure_ascii_text(str(topic.get("angle") or "").strip(), "")
         inline_image_prompts = [
-            _ensure_ascii_text(
-                f"Editorial-style market illustration for {title}. Focus on {base_angle or keyword}. No text, no logos.",
-                "Market illustration without text",
-            )
+            {
+                "prompt": _ensure_ascii_text(
+                    f"Editorial-style market illustration for {title}. Focus on {base_angle or keyword}. No text, no logos.",
+                    "Market illustration without text",
+                ),
+                "section_heading": "",
+            }
         ]
 
     return _write_post(
