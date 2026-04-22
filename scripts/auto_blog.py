@@ -4295,6 +4295,7 @@ def _build_frontmatter(
     title: str,
     description: str,
     date_str: str,
+    pub_datetime_str: str,
     slug: str,
     category: list[str],
     tags: list[str],
@@ -4319,7 +4320,7 @@ def _build_frontmatter(
         "---\n"
         f'title: "{safe_title}"\n'
         f'description: "{safe_desc}"\n'
-        f"pubDate: {date_str}\n"
+        f"pubDate: {pub_datetime_str}\n"
         f"updatedDate: {date_str}\n"
         f'author: "Shipwrite Editorial Team"\n'
         f"category: [{category_list}]\n"
@@ -4354,7 +4355,12 @@ def _write_post(
     date_str: str | None = None,
     force_draft: bool = False,
 ) -> Path:
-    date_str = date_str or datetime.now(config.content_timezone).strftime("%Y-%m-%d")
+    now = datetime.now(config.content_timezone)
+    if not date_str:
+        date_str = now.strftime("%Y-%m-%d")
+        pub_datetime_str = now.isoformat(timespec="seconds")
+    else:
+        pub_datetime_str = date_str
     slug = _slugify(slug_hint) or f"topic-{int(time.time())}"
     post_path = config.content_dir / f"{date_str}-{slug}.mdx"
     if post_path.exists():
@@ -4367,6 +4373,7 @@ def _write_post(
         title=title,
         description=description,
         date_str=date_str,
+        pub_datetime_str=pub_datetime_str,
         slug=slug,
         category=category,
         tags=tags,
