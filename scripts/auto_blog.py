@@ -6068,7 +6068,7 @@ def _should_run_weekly_major_events_now(config: AutomationConfig) -> bool:
     now_local = datetime.now(config.content_timezone)
     return (
         now_local.weekday() == config.weekly_major_events_run_weekday
-        and now_local.hour == config.weekly_major_events_run_hour
+        and now_local.hour >= config.weekly_major_events_run_hour
     )
 
 
