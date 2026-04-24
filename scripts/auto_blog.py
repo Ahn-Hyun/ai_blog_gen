@@ -6058,7 +6058,7 @@ def _should_run_daily_impact_now(config: AutomationConfig) -> bool:
     raw = env.get("DAILY_IMPACT_RUN_HOUR", "8")
     allowed_hours = {_parse_int(h.strip(), 8) for h in raw.split(",")}
     now_local = datetime.now(config.content_timezone)
-    return now_local.hour in allowed_hours
+    return now_local.hour >= min(allowed_hours)
 
 
 def _should_run_weekly_major_events_now(config: AutomationConfig) -> bool:
