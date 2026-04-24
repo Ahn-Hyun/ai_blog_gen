@@ -6078,24 +6078,6 @@ def run_daily_impact(
     publish_date: date | None = None,
     force: bool = False,
 ) -> None:
-    if not force and not _should_run_daily_impact_now(config):
-        env = _resolve_env()
-        now_local = datetime.now(config.content_timezone)
-        run_hours_raw = env.get("DAILY_IMPACT_RUN_HOUR", "8")
-        allowed_hours = sorted({_parse_int(h.strip(), 8) for h in run_hours_raw.split(",")})
-        logging.info(
-            "Daily impact pipeline skipped due to local-hour guard (local_time=%s, timezone=%s, allowed_hours=%s).",
-            now_local.isoformat(timespec="seconds"),
-            config.content_timezone,
-            allowed_hours,
-        )
-        return
-    config = replace(
-        config,
-        content_language="English",
-        content_tone="analytical, evidence-driven, plainspoken",
-        youtube_search_enabled=False,
-    )
     resolved_publish_date = publish_date or datetime.now(config.content_timezone).date()
     window_start, window_end = _previous_day_window(
         config.content_timezone,
@@ -6106,11 +6088,34 @@ def run_daily_impact(
         window_end,
         publish_date=resolved_publish_date,
     )
+    now_local = datetime.now(config.content_timezone)
+    if not force and not _should_run_daily_impact_now(config):
+        env = _resolve_env()
+        run_hours_raw = env.get("DAILY_IMPACT_RUN_HOUR", "8")
+        allowed_hours = sorted({_parse_int(h.strip(), 8) for h in run_hours_raw.split(",")})
+        logging.info(
+            "Daily impact pipeline skipped due to local-hour guard (local_time=%s, timezone=%s, configured_run_hours=%s, effective_start_hour=%s, target_date=%s, publish_date=%s).",
+            now_local.isoformat(timespec="seconds"),
+            config.content_timezone,
+            allowed_hours,
+            min(allowed_hours),
+            window_labels["target_date"],
+            window_labels["publish_date"],
+        )
+        return
+    config = replace(
+        config,
+        content_language="English",
+        content_tone="analytical, evidence-driven, plainspoken",
+        youtube_search_enabled=False,
+    )
     state = _load_state()
     completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
     if window_labels["target_date"] in completed_runs:
         logging.info(
-            "Daily impact already completed (target_date=%s, publish_date=%s).",
+            "Daily impact already completed (local_time=%s, timezone=%s, target_date=%s, publish_date=%s).",
+            now_local.isoformat(timespec="seconds"),
+            config.content_timezone,
             window_labels["target_date"],
             window_labels["publish_date"],
         )
@@ -6221,21 +6226,6 @@ def run_weekly_major_events(
     publish_date: date | None = None,
     force: bool = False,
 ) -> None:
-    if not config.openai_api_key and not config.anthropic_api_key:
-        logging.warning(
-            "Weekly major-events pipeline skipped because neither OPENAI_API_KEY nor GEMINI_API_KEY is set."
-        )
-        return
-    if not force and not _should_run_weekly_major_events_now(config):
-        now_local = datetime.now(config.content_timezone)
-        logging.info(
-            "Weekly major-events pipeline skipped due to local schedule guard (local_time=%s, timezone=%s, run_weekday=%s, run_hour=%s).",
-            now_local.isoformat(timespec="seconds"),
-            config.content_timezone,
-            config.weekly_major_events_run_weekday,
-            config.weekly_major_events_run_hour,
-        )
-        return
     resolved_publish_date = publish_date or datetime.now(config.content_timezone).date()
     window_start, window_end = _previous_week_window(
         config.content_timezone,
@@ -6246,11 +6236,30 @@ def run_weekly_major_events(
         window_end,
         publish_date=resolved_publish_date,
     )
+    now_local = datetime.now(config.content_timezone)
+    if not config.openai_api_key and not config.anthropic_api_key:
+        logging.warning(
+            "Weekly major-events pipeline skipped because neither OPENAI_API_KEY nor GEMINI_API_KEY is set."
+        )
+        return
+    if not force and not _should_run_weekly_major_events_now(config):
+        logging.info(
+            "Weekly major-events pipeline skipped due to local schedule guard (local_time=%s, timezone=%s, run_weekday=%s, run_hour=%s, week_key=%s, publish_date=%s).",
+            now_local.isoformat(timespec="seconds"),
+            config.content_timezone,
+            config.weekly_major_events_run_weekday,
+            config.weekly_major_events_run_hour,
+            week_labels["week_key"],
+            week_labels["publish_date"],
+        )
+        return
     state = _load_state()
     completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
     if week_labels["week_key"] in completed_runs:
         logging.info(
-            "Weekly major-events pipeline already completed (week_key=%s, publish_date=%s).",
+            "Weekly major-events pipeline already completed (local_time=%s, timezone=%s, week_key=%s, publish_date=%s).",
+            now_local.isoformat(timespec="seconds"),
+            config.content_timezone,
             week_labels["week_key"],
             week_labels["publish_date"],
         )
