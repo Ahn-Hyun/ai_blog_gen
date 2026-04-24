@@ -6079,7 +6079,16 @@ def run_daily_impact(
     force: bool = False,
 ) -> None:
     if not force and not _should_run_daily_impact_now(config):
-        logging.info("Daily impact pipeline skipped due to local-hour guard.")
+        env = _resolve_env()
+        now_local = datetime.now(config.content_timezone)
+        run_hours_raw = env.get("DAILY_IMPACT_RUN_HOUR", "8")
+        allowed_hours = sorted({_parse_int(h.strip(), 8) for h in run_hours_raw.split(",")})
+        logging.info(
+            "Daily impact pipeline skipped due to local-hour guard (local_time=%s, timezone=%s, allowed_hours=%s).",
+            now_local.isoformat(timespec="seconds"),
+            config.content_timezone,
+            allowed_hours,
+        )
         return
     config = replace(
         config,
@@ -6100,7 +6109,11 @@ def run_daily_impact(
     state = _load_state()
     completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
     if window_labels["target_date"] in completed_runs:
-        logging.info("Daily impact already completed for %s", window_labels["target_date"])
+        logging.info(
+            "Daily impact already completed (target_date=%s, publish_date=%s).",
+            window_labels["target_date"],
+            window_labels["publish_date"],
+        )
         return
     writer = ClaudeClient(
         config.anthropic_api_key,
@@ -6214,7 +6227,14 @@ def run_weekly_major_events(
         )
         return
     if not force and not _should_run_weekly_major_events_now(config):
-        logging.info("Weekly major-events pipeline skipped due to local schedule guard.")
+        now_local = datetime.now(config.content_timezone)
+        logging.info(
+            "Weekly major-events pipeline skipped due to local schedule guard (local_time=%s, timezone=%s, run_weekday=%s, run_hour=%s).",
+            now_local.isoformat(timespec="seconds"),
+            config.content_timezone,
+            config.weekly_major_events_run_weekday,
+            config.weekly_major_events_run_hour,
+        )
         return
     resolved_publish_date = publish_date or datetime.now(config.content_timezone).date()
     window_start, window_end = _previous_week_window(
@@ -6229,7 +6249,11 @@ def run_weekly_major_events(
     state = _load_state()
     completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
     if week_labels["week_key"] in completed_runs:
-        logging.info("Weekly major-events pipeline already completed for %s", week_labels["week_key"])
+        logging.info(
+            "Weekly major-events pipeline already completed (week_key=%s, publish_date=%s).",
+            week_labels["week_key"],
+            week_labels["publish_date"],
+        )
         return
     config = replace(
         config,
