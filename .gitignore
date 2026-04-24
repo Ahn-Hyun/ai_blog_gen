@@ -1,2 +1,5 @@
 .env
 data/state/
+data/trends
+path
+AGENTS.md
