@@ -3201,8 +3201,40 @@ MDX file:
 
 Output the complete corrected MDX file (raw content starting with ---).
 No code fences, no explanations — just the fixed file content.
-""".strip()
+    """.strip()
     return _compose_prompt(system, user)
+
+
+def _normalize_repaired_mdx_frontmatter(mdx_content: str) -> str:
+    if not mdx_content.startswith("---\n"):
+        return mdx_content
+
+    match = re.match(r"^---\n(?P<frontmatter>[\s\S]*?)\n---(?P<rest>[\s\S]*)$", mdx_content)
+    if not match:
+        return mdx_content
+
+    normalized_lines: list[str] = []
+    for line in match.group("frontmatter").splitlines():
+        hero_image_match = re.match(
+            r'^heroImage\s*:\s*(?:(?P<quote>["\'])(?P<quoted>.*?)\1|(?P<bare>\S.*?))\s*$',
+            line.strip(),
+        )
+        if hero_image_match:
+            hero_image_value = hero_image_match.group("quoted") or hero_image_match.group("bare") or ""
+            normalized_lines.append("heroImage:")
+            normalized_lines.append(f"  src: {json.dumps(hero_image_value)}")
+            continue
+
+        category_match = re.match(
+            r'^category\s*:\s*["\']?(stocks|real-estate)["\']?\s*$',
+            line.strip(),
+        )
+        if category_match:
+            normalized_lines.append(f'category: ["{category_match.group(1)}"]')
+        else:
+            normalized_lines.append(line)
+
+    return "---\n" + "\n".join(normalized_lines) + "\n---" + match.group("rest")
 
 
 def _validate_and_repair_posts(
@@ -3302,6 +3334,7 @@ def _validate_and_repair_posts(
                 )
                 repaired = repaired.strip()
                 if repaired:
+                    repaired = _normalize_repaired_mdx_frontmatter(repaired)
                     target_path.write_text(repaired + "\n", encoding="utf-8")
                     logging.info(
                         "Repaired post: %s (round %d)", filename, round_num + 1
