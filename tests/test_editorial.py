@@ -257,6 +257,18 @@ class EditorialChecks(unittest.TestCase):
                 'url':'https://example.org/release', 'snippet':'A search preview, not a fetched page.'
             }], config), [])
 
+    def test_evidence_repair_must_still_pass_original_checks(self):
+        invalid = copy.deepcopy(self.evidence)
+        invalid['claims'][0]['evidence_quote'] = 'Invented quote'
+        for repaired, approved in [(self.evidence, True), (invalid, False)]:
+            with patch.object(Writer, 'generate', side_effect=[json.dumps(invalid), json.dumps(repaired)]) as call:
+                if approved:
+                    self.assertEqual(blog._build_evidence_from_sources(self.config, Writer(), self.sources), self.evidence)
+                else:
+                    with self.assertRaises(EditorialError):
+                        blog._build_evidence_from_sources(self.config, Writer(), self.sources)
+                self.assertEqual(call.call_count, 2)
+
 
 if __name__ == '__main__':
     unittest.main()

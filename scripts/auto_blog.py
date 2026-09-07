@@ -4869,7 +4869,21 @@ def _build_evidence_from_sources(
         data = None
     if not isinstance(data, dict):
         raise EditorialError("Evidence builder returned no structured evidence")
-    validate_evidence(data, sources)
+    try:
+        validate_evidence(data, sources)
+    except EditorialError as exc:
+        # One extraction repair; the same evidence checks still decide whether to proceed.
+        response = writer.generate(
+            prompt + "\nCorrect this rejected extraction. Use only verbatim source evidence; "
+            "omit unsupported claims rather than inventing a quote, number or scope.\n"
+            + json.dumps({"error": str(exc), "rejected_evidence": data}, ensure_ascii=False),
+            temperature=0,
+            max_tokens=config.anthropic_max_tokens,
+        )
+        data = _extract_json_block(response)
+        if not isinstance(data, dict):
+            raise EditorialError("Evidence repair returned no structured evidence")
+        validate_evidence(data, sources)
     return data
 
 
