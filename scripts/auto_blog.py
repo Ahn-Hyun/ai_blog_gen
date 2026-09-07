@@ -1344,6 +1344,8 @@ class ClaudeClient:
         for candidate in candidates:
             if not isinstance(candidate, dict):
                 continue
+            if candidate.get("finishReason") == "MAX_TOKENS":
+                raise EditorialError("Gemini output reached its token limit")
             content = candidate.get("content")
             if not isinstance(content, dict):
                 continue
@@ -5159,7 +5161,7 @@ def _write_sections(
     section_mdx_list: list[str] = []
     for section in sections_data:
         if not isinstance(section, dict):
-            continue
+            raise EditorialError("Outline contains a malformed section")
         heading = str(section.get("heading") or "").strip()
         goal = str(section.get("goal") or "").strip()
         refs = _ensure_list_of_strings(section.get("evidence_refs"))
@@ -5180,11 +5182,9 @@ def _write_sections(
             )
             section_body = response.strip()
         except Exception as exc:
-            logging.warning("Section writer failed (%s): %s — skipping section.", heading, exc)
-            continue
+            raise EditorialError(f"Section writer failed: {heading}") from exc
         if not section_body:
-            logging.warning("Section writer returned empty body for '%s' — skipping section.", heading)
-            continue
+            raise EditorialError(f"Section writer returned empty content: {heading}")
         section_mdx_list.append(section_body)
     if not section_mdx_list:
         return None
@@ -5544,7 +5544,7 @@ def _generate_post_for_topic(
     review_context: dict = {}
 
     template_mode = pipeline if _uses_market_impact_template(pipeline) else None
-    inline_image_prompts: list[str] = []
+    inline_image_prompts: list[str | dict] = []
     chart_specs: list[dict] = []
     if config.use_multi_agent:
         article = _generate_article_multi_agent(
@@ -5569,7 +5569,7 @@ def _generate_post_for_topic(
                 "",
             )
             reference_urls = list(article.get("reference_urls") or reference_urls)
-            inline_image_prompts = _ensure_list_of_strings(article.get("inline_image_prompts"))
+            inline_image_prompts = list(article.get("inline_image_prompts") or [])
 
     if not body:
         candidates = [
@@ -6147,8 +6147,7 @@ def run_daily_impact(
             rss_limit=max(config.search_rss_max_results * 2, 8),
         )
     if not discovery_sources:
-        logging.warning("Daily impact pipeline found no discovery sources for %s", window_labels["display_date"])
-        return
+        raise EditorialError("Daily impact discovery returned no sources; run remains retryable")
     events = _discover_daily_market_events(
         config,
         writer,
@@ -6156,8 +6155,7 @@ def run_daily_impact(
         window_label=window_labels["window_summary"],
     )
     if not events:
-        logging.warning("Daily impact pipeline could not derive market events.")
-        return
+        raise EditorialError("Daily impact discovery returned no usable events; run remains retryable")
     payload = {
         "pipeline": PIPELINE_DAILY_IMPACT,
         "window": window_labels,
@@ -6195,8 +6193,7 @@ def run_daily_impact(
         selected["publish_date"] = window_labels["publish_date"]
         topics.append(selected)
     if not topics:
-        logging.warning("Daily impact pipeline produced no publishable topics.")
-        return
+        raise EditorialError("Daily impact produced no publishable topics; run remains retryable")
     _process_topics(
         config,
         topics=topics,
@@ -6227,10 +6224,7 @@ def run_weekly_major_events(
     )
     now_local = datetime.now(config.content_timezone)
     if not config.openai_api_key and not config.anthropic_api_key:
-        logging.warning(
-            "Weekly major-events pipeline skipped because neither OPENAI_API_KEY nor GEMINI_API_KEY is set."
-        )
-        return
+        raise EditorialError("Weekly discovery has no configured model credentials")
     if not force and not _should_run_weekly_major_events_now(config):
         logging.info(
             "Weekly major-events pipeline skipped due to local schedule guard (local_time=%s, timezone=%s, run_weekday=%s, run_hour=%s, week_key=%s, publish_date=%s).",
@@ -6272,8 +6266,7 @@ def run_weekly_major_events(
         rss_limit=max(config.search_rss_max_results * 3, 12),
     )
     if not discovery_sources:
-        logging.warning("Weekly major-events pipeline found no discovery sources for %s", week_labels["display_range"])
-        return
+        raise EditorialError("Weekly discovery returned no sources; run remains retryable")
     prompt_instructions, prompt_input = _build_weekly_major_events_prompt(
         window_label=week_labels["display_range"],
         topics_per_lane=config.weekly_major_events_per_lane,
@@ -6316,8 +6309,7 @@ def run_weekly_major_events(
             logging.warning("Weekly major-events Gemini discovery failed: %s", exc)
             data = None
     if data is None:
-        logging.warning("Weekly major-events discovery failed: no usable response from any model.")
-        return
+        raise EditorialError("Weekly discovery returned no usable model response")
     topics = _normalize_weekly_major_topics(
         data.get("topics") if isinstance(data, dict) and isinstance(data.get("topics"), list) else [],
         week_labels=week_labels,
@@ -6329,8 +6321,7 @@ def run_weekly_major_events(
         },
     )
     if not topics:
-        logging.warning("Weekly major-events pipeline produced no publishable topics.")
-        return
+        raise EditorialError("Weekly discovery produced no publishable topics; run remains retryable")
     _save_trends_snapshot(
         {
             "pipeline": PIPELINE_WEEKLY_MAJOR_EVENTS,

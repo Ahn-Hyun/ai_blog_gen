@@ -23,6 +23,7 @@ concurrency:
 jobs:
   generate:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Checkout AI repo
         uses: actions/checkout@v4
@@ -131,10 +132,16 @@ jobs:
             export ENFORCE_LOCAL_RUN_HOUR=0
           fi
           python scripts/auto_blog.py --once --pipeline "${{ steps.pipeline.outputs.pipeline }}"
-          NEW_MDX=$(find ai_blog_v1_astro/src/content/blog -name "*.mdx" -newer ai_blog_v1_astro/.ai_state/published.json 2>/dev/null | wc -l || echo 0)
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "${NEW_MDX}" -eq 0 ]; then
-            echo "WARNING: Pipeline ran but generated 0 new MDX files. Check logs for errors."
-          fi
+          git -C ai_blog_v1_astro status --short -- src/content/blog .ai_state/published.json
+
+      - name: Preserve rejected articles
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-rejections
+          path: data/editorial-rejections/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Validate Astro build
         run: |

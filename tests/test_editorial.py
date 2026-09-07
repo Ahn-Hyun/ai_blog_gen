@@ -209,6 +209,32 @@ class EditorialChecks(unittest.TestCase):
             {'maxOutputTokens': 20, 'temperature': 0.6},
         )
 
+    def test_truncated_gemini_output_is_rejected(self):
+        with self.assertRaises(EditorialError):
+            blog.ClaudeClient._extract_text({'candidates': [{
+                'finishReason': 'MAX_TOKENS', 'content': {'parts': [{'text': 'Partial article'}]},
+            }]})
+
+    def test_section_failure_cannot_publish_partial_article(self):
+        config = SimpleNamespace(content_language='English', anthropic_temperature=0,
+                                 anthropic_max_tokens=1024)
+        for second in ['', TimeoutError()]:
+            with patch.object(Writer, 'generate', side_effect=['First section', second]):
+                with self.assertRaises(EditorialError):
+                    blog._write_sections(config, Writer(), outline={'sections': [
+                        {'heading': 'Context'}, {'heading': 'Risks'}]}, evidence={}, sources=[])
+
+    def test_empty_discovery_does_not_report_success(self):
+        config = blog._build_config()
+        for run in [blog.run_daily_impact, blog.run_weekly_major_events]:
+            with patch.object(blog, '_load_state', return_value={}), \
+                 patch.object(blog, '_save_state') as save, \
+                 patch.object(blog, '_gather_grounded_daily_discovery_sources', return_value=[]), \
+                 patch.object(blog, '_gather_raw_sources_for_queries', return_value=[]):
+                with self.assertRaises(EditorialError):
+                    run(config, force=True)
+                save.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()

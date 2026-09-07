@@ -66,7 +66,8 @@ def fingerprint(config):
              'evals/manifest.json', 'vendor/humanizer/SKILL.md']
     content = b''.join((ROOT / p).read_bytes() for p in paths)
     content += json.dumps({'writer': config.anthropic_model_content,
-                          'judge': config.openai_weekly_model, 'temperature': 0.2,
+                          'judge': config.openai_weekly_model,
+                          'reasoning_effort': config.openai_weekly_reasoning_effort, 'temperature': 0.2,
                           'max_tokens': 16384}).encode()
     return hashlib.sha256(content).hexdigest()[:16]
 
