@@ -191,6 +191,24 @@ class EditorialChecks(unittest.TestCase):
         self.assertEqual(calls[0]['model'], 'gpt-5.5')
         self.assertEqual(calls[0]['reasoning'], {'effort': 'high'})
 
+    def test_gemini_3_payload_omits_temperature(self):
+        seen = []
+        client = blog.ClaudeClient('key', 'gemini-3.8-flash', 1)
+
+        with patch.object(client, '_post', side_effect=lambda payload: seen.append(payload) or {
+            'candidates': [{'content': {'parts': [{'text': 'ok'}]}}],
+        }):
+            self.assertEqual(client.generate('x', temperature=0.6, max_tokens=20), 'ok')
+
+        self.assertEqual(seen[0]['generationConfig'], {'maxOutputTokens': 20})
+
+    def test_legacy_gemini_payload_keeps_temperature(self):
+        client = blog.ClaudeClient('key', 'gemini-2.5-flash', 1)
+        self.assertEqual(
+            client._generation_config(temperature=0.6, max_tokens=20),
+            {'maxOutputTokens': 20, 'temperature': 0.6},
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

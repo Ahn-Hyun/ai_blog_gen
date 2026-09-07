@@ -83,15 +83,15 @@ jobs:
           WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY: ${{ vars.WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY || '0' }}
           WEEKLY_MAJOR_EVENTS_RUN_HOUR: ${{ vars.WEEKLY_MAJOR_EVENTS_RUN_HOUR || '9' }}
           WEEKLY_MAJOR_EVENTS_PER_LANE: ${{ vars.WEEKLY_MAJOR_EVENTS_PER_LANE || '1' }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.1-pro-preview' }}
-          GEMINI_MODEL_CONTENT: ${{ vars.GEMINI_MODEL_CONTENT || 'gemini-3.1-pro-preview' }}
-          GEMINI_MODEL_META: ${{ vars.GEMINI_MODEL_META || 'gemini-3.1-pro-preview' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
+          GEMINI_MODEL_CONTENT: ${{ vars.GEMINI_MODEL_CONTENT || 'gemini-3.8-flash' }}
+          GEMINI_MODEL_META: ${{ vars.GEMINI_MODEL_META || 'gemini-3.8-flash' }}
           GEMINI_TEMPERATURE: ${{ vars.GEMINI_TEMPERATURE }}
           GEMINI_MAX_TOKENS: ${{ vars.GEMINI_MAX_TOKENS }}
           GEMINI_TIMEOUT_SEC: ${{ vars.GEMINI_TIMEOUT_SEC }}
           OPENAI_WEEKLY_MODEL: ${{ vars.OPENAI_WEEKLY_MODEL || 'gpt-5.5' }}
           OPENAI_WEEKLY_REASONING_EFFORT: ${{ vars.OPENAI_WEEKLY_REASONING_EFFORT || 'high' }}
-          GOOGLE_IMAGE_MODEL: ${{ vars.GOOGLE_IMAGE_MODEL || 'gemini-3.1-flash-image-preview' }}
+          GOOGLE_IMAGE_MODEL: ${{ vars.GOOGLE_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
           SEARCH_WEB_ENABLED: ${{ vars.SEARCH_WEB_ENABLED }}
           SEARCH_WEB_MAX_RESULTS: ${{ vars.SEARCH_WEB_MAX_RESULTS }}
           SEARCH_WEB_MAX_PER_QUERY: ${{ vars.SEARCH_WEB_MAX_PER_QUERY }}

@@ -67,7 +67,7 @@ DEFAULT_SCRAPE_TIMEOUT = 12
 DEFAULT_SCRAPE_DELAY_SEC = 1.0
 DEFAULT_SCRAPE_MAX_RETRIES = 2
 DEFAULT_SCRAPE_BACKOFF_SEC = 5.0
-DEFAULT_ANTHROPIC_MODEL = "gemini-3.1-pro-preview"
+DEFAULT_ANTHROPIC_MODEL = "gemini-3.8-flash"
 DEFAULT_ANTHROPIC_MODEL_CONTENT = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_ANTHROPIC_MODEL_META = DEFAULT_ANTHROPIC_MODEL
 DEFAULT_ANTHROPIC_TEMPERATURE = 0.6
@@ -100,7 +100,7 @@ DEFAULT_YOUTUBE_SEARCH_ENABLED = True
 DEFAULT_YOUTUBE_MAX_RESULTS = 4
 DEFAULT_YOUTUBE_MAX_PER_QUERY = 2
 DEFAULT_GOOGLE_IMAGE_ENABLED = True
-DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-2.5-flash-image"
+DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-3.1-flash-image"
 DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO = "16:9"
 DEFAULT_OPENAI_WEEKLY_MODEL = "gpt-5.5"
 DEFAULT_OPENAI_WEEKLY_REASONING_EFFORT = "high"
@@ -1294,6 +1294,12 @@ class ClaudeClient:
         self.timeout_sec = max(1, timeout_sec)
         self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
 
+    def _generation_config(self, *, temperature: float, max_tokens: int) -> dict:
+        config = {"maxOutputTokens": max_tokens}
+        if not self.model.startswith("gemini-3."):
+            config["temperature"] = temperature
+        return config
+
     def _post(self, payload: dict) -> dict:
         _backoff_base = 5.0
         _max_retries = 3
@@ -1365,10 +1371,10 @@ class ClaudeClient:
                     "parts": [{"text": prompt}],
                 }
             ],
-            "generationConfig": {
-                "temperature": temperature,
-                "maxOutputTokens": max_tokens,
-            },
+            "generationConfig": self._generation_config(
+                temperature=temperature,
+                max_tokens=max_tokens,
+            ),
         }
         data = self._post(payload)
         return self._extract_text(data)
@@ -1390,10 +1396,10 @@ class ClaudeClient:
                 }
             ],
             "tools": [{"google_search": {}}],
-            "generationConfig": {
-                "temperature": temperature,
-                "maxOutputTokens": max_tokens,
-            },
+            "generationConfig": self._generation_config(
+                temperature=temperature,
+                max_tokens=max_tokens,
+            ),
         }
         data = self._post(payload)
         return self._extract_text(data), data
@@ -1426,10 +1432,10 @@ class ClaudeClient:
                     ],
                 }
             ],
-            "generationConfig": {
-                "temperature": temperature,
-                "maxOutputTokens": max_tokens,
-            },
+            "generationConfig": self._generation_config(
+                temperature=temperature,
+                max_tokens=max_tokens,
+            ),
         }
         data = self._post(payload)
         return self._extract_text(data)
