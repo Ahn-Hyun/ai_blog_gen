@@ -235,6 +235,28 @@ class EditorialChecks(unittest.TestCase):
                     run(config, force=True)
                 save.assert_not_called()
 
+    def test_dated_rss_does_not_discard_direct_source_candidates(self):
+        from datetime import datetime, timezone
+        config = replace(blog._build_config(), search_web_enabled=True, tavily_api_key='test',
+                         search_rss_enabled=True)
+        direct = {'url': 'https://example.org/release', 'published_at': None}
+        dated = [{'url': f'https://news.google.com/article/{i}',
+                  'published_at': '2026-09-06T12:00:00Z'} for i in range(3)]
+        with patch.object(blog, '_search_web_tavily', return_value=[direct]), \
+             patch.object(blog, '_search_news_rss', return_value=dated):
+            found = blog._collect_candidates_for_queries(config, queries=['rates'], region='US',
+                language='English', window_start=datetime(2026,9,1,tzinfo=timezone.utc),
+                window_end=datetime(2026,9,7,tzinfo=timezone.utc))
+        self.assertEqual(found[:3], dated)
+        self.assertIn(direct, found)
+
+    def test_search_snippet_is_not_treated_as_fetched_evidence(self):
+        config = replace(blog._build_config(), tavily_api_key='test')
+        with patch.object(blog, '_extract_web_content_tavily', return_value=[]):
+            self.assertEqual(blog._fetch_sources_from_candidates([{
+                'url':'https://example.org/release', 'snippet':'A search preview, not a fetched page.'
+            }], config), [])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -151,6 +151,9 @@ def call_api(prompt, options, context):
                      'Return JSON: {"factual_pass":true,"factual_issues":[],"clarity":1,"naturalness":1,'
                      '"reader_value":1,"missing_information":[],"reason":"..."}. '
                      'Scores are integers 1-5, where 5 is best. Shortness alone is not a benefit. '
+                     'Check every paragraph for unsupported specifics such as equipment lists, fees, '
+                     'or budget definitions. General industry plausibility is not evidence. '
+                     'Flag missing citations beside source-specific figures and forecasts. '
                      'Do not infer which model or editing variant produced the article.',
         input_text=json.dumps({'article': body, 'question': case['question'], 'criteria': case['rubric'],
                                'source_packet': case['source']}, ensure_ascii=False))

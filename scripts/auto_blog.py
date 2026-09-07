@@ -2020,9 +2020,9 @@ def _collect_candidates_for_queries(
             for candidate in deduped
             if _is_within_window(str(candidate.get("published_at") or ""), window_start, window_end)
         ]
-        if len(in_window) >= min(3, len(deduped)):
-            return in_window
         if in_window:
+            # Dated RSS links can be unfetchable; retain direct URLs as research candidates.
+            # The discovery prompt still verifies the event's actual date against the window.
             merged = in_window[:]
             seen = {_normalize_url_for_dedupe(str(item.get("url") or "")) for item in in_window}
             for candidate in deduped:
@@ -2328,16 +2328,12 @@ def _fetch_sources_from_candidates(
             normalized = _normalize_url_for_dedupe(url)
             candidate = candidate_by_url.get(normalized, {})
             item = extracted_map.get(normalized)
-            fallback_text = str(candidate.get("snippet") or "").strip()
             if not item:
                 missing_extracts += 1
-                if not fallback_text:
-                    continue
+                continue
             content = str(item.get("content") or "").strip() if item else ""
             if not content:
                 empty_content += 1
-                content = fallback_text
-            if not content:
                 continue
             cleaned = _truncate(re.sub(r"\s+", " ", content), config.max_source_chars)
             if total_chars >= config.max_total_source_chars:
