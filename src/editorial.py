@@ -80,6 +80,7 @@ def humanizer_prompt(body: str) -> str:
 SHIPWRITE OVERRIDES (take precedence over the general skill):
 - This is factual financial reporting. Do not add personal reactions or experience.
 - Preserve all numbers verbatim, dates, units, named entities, exact quotes and link targets.
+- Keep every citation occurrence beside its claim, even when the same URL is repeated.
 - Preserve Markdown tables and code exactly. Preserve factual scope and uncertainty.
 - Keep all supported claims. Do not strengthen may/could into will or guarantees.
 - Keep attribution and necessary as-of dates, caveats and financial disclaimer.

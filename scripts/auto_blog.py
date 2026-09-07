@@ -4452,13 +4452,32 @@ def _write_post(
 
     final_mdx = frontmatter + "\n" + content + "\n"
     review_context["chart_specs"] = chart_specs or []
-    try:
-        _audit_final_article(config, writer, final_mdx + "\nChart data: " + json.dumps(chart_specs or []), review_context)
-    except EditorialError:
-        held_dir = ROOT_DIR / 'data/editorial-rejections'
-        held_dir.mkdir(parents=True, exist_ok=True)
-        (held_dir / post_path.name).write_text(final_mdx, encoding='utf-8')
-        raise
+    for attempt in range(2):
+        try:
+            _audit_final_article(config, writer, final_mdx + "\nChart data: " + json.dumps(chart_specs or []), review_context)
+            break
+        except EditorialError as exc:
+            held_dir = ROOT_DIR / 'data/editorial-rejections'
+            held_dir.mkdir(parents=True, exist_ok=True)
+            (held_dir / post_path.name).write_text(final_mdx, encoding='utf-8')
+            if attempt or not str(exc).startswith("Final source audit rejected article:"):
+                raise
+            logging.info("Repairing final source-audit issues once for %s", title)
+            prompt = _build_revision_prompt(full_mdx=content, keyword=title, issues_json=json.dumps({
+                "audit": str(exc), "sources": review_context["sources"],
+            }, ensure_ascii=False))
+            try:
+                corrected = str(writer.generate(prompt + "\nReturn the article BODY only, without frontmatter. "
+                    "Preserve image paths and chart data. Correct attribution, chronology and scope only from supplied sources. "
+                    "Remove unsupported assertions; put citations beside each source-specific figure.",
+                    temperature=0, max_tokens=config.anthropic_max_tokens) or "").strip()
+            except Exception as repair_error:
+                raise EditorialError("Final source correction unavailable") from repair_error
+            if not corrected or corrected.startswith("---"):
+                raise EditorialError("Final source correction returned invalid body")
+            review_context = {**review_context, "original_body": corrected}
+            content = _apply_final_review(config, writer, full_mdx=corrected, keyword=title)
+            final_mdx = frontmatter + "\n" + content + "\n"
     config.content_dir.mkdir(parents=True, exist_ok=True)
     post_path.write_text(final_mdx, encoding="utf-8")
 

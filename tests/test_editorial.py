@@ -277,6 +277,30 @@ class EditorialChecks(unittest.TestCase):
         self.assertEqual(result['claims'], self.evidence['claims'])
         validate_evidence(result, self.sources)
 
+    def test_final_source_correction_is_reaudited_before_publication(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config = replace(blog._build_config(), content_dir=root/'blog', hero_base_dir=root/'images')
+            checks = []
+            def audit(config, writer, article, context):
+                self.assertFalse(config.content_dir.exists())
+                checks.append(article)
+                if len(checks) == 1:
+                    raise EditorialError('Final source audit rejected article: missing citation')
+                self.assertIn('Corrected body', article)
+                self.assertEqual(context['original_body'], 'Corrected body')
+            with patch.object(blog, 'ROOT_DIR', root), \
+                 patch.object(blog, '_materialize_inline_visuals', return_value=[]), \
+                 patch.object(blog, '_audit_final_article', side_effect=audit), \
+                 patch.object(blog, '_apply_final_review', return_value='Corrected body'), \
+                 patch.object(blog, '_generate_hero_image'):
+                path = blog._write_post(config, title='Test', description='Test', category=['stocks'],
+                    tags=[], body='Initial body', hero_alt='Test', image_prompt='', reference_urls=[],
+                    chart_specs=[], inline_image_prompts=[], slug_hint='test', writer=Writer('Corrected body'),
+                    review_context={'sources':self.sources,'evidence':self.evidence})
+            self.assertEqual(len(checks), 2)
+            self.assertIn('Corrected body', path.read_text())
+
 
 if __name__ == '__main__':
     unittest.main()
