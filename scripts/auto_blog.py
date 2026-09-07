@@ -2301,7 +2301,7 @@ def _fetch_sources_from_candidates(
     missing_extracts = 0
     empty_content = 0
     index = 0
-    while index < len(normalized_candidates):
+    while index < len(normalized_candidates) and total_chars < config.max_total_source_chars:
         if limit is not None and len(sources) >= limit:
             break
         batch_urls: list[str] = []

@@ -70,6 +70,8 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
 
       - name: Generate posts
+        id: generation
+        continue-on-error: true
         env:
           ASTRO_ROOT: ${{ vars.ASTRO_ROOT || format('{0}/ai_blog_v1_astro', github.workspace) }}
           STATE_PATH: ${{ vars.STATE_PATH || format('{0}/ai_blog_v1_astro/.ai_state/published.json', github.workspace) }}
@@ -135,7 +137,7 @@ jobs:
           git -C ai_blog_v1_astro status --short -- src/content/blog .ai_state/published.json
 
       - name: Preserve rejected articles
-        if: failure()
+        if: steps.generation.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: editorial-rejections
@@ -151,14 +153,20 @@ jobs:
 
       - name: Commit and push to Astro repo
         run: |
+          python scripts/stage_publication.py ai_blog_v1_astro
           cd ai_blog_v1_astro
-          if [ -z "$(git status --porcelain)" ]; then
+          if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
           git commit -m "Auto: publish blog updates"
           git pull --rebase origin main
           git push
+
+      - name: Report held topics
+        if: steps.generation.outcome == 'failure'
+        run: |
+          echo "Approved posts were processed; held topics remain retryable. See generation logs and editorial-rejections." >> "$GITHUB_STEP_SUMMARY"
+          exit 1

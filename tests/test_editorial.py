@@ -2,6 +2,7 @@ import copy
 import json
 import sys
 import tempfile
+import subprocess
 import unittest
 from dataclasses import replace
 from pathlib import Path
@@ -11,6 +12,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import auto_blog as blog
 from editorial import EditorialError, check_edit, validate_evidence
+from stage_publication import stage_publication
 
 
 class Writer:
@@ -257,6 +259,17 @@ class EditorialChecks(unittest.TestCase):
                 'url':'https://example.org/release', 'snippet':'A search preview, not a fetched page.'
             }], config), [])
 
+    def test_extraction_stops_when_source_budget_is_full(self):
+        config = replace(blog._build_config(), tavily_api_key='test',
+                         max_source_chars=20, max_total_source_chars=20)
+        candidates = [{'url': f'https://example.org/{i}'} for i in range(10)]
+        with patch.object(blog, '_extract_web_content_tavily', return_value=[{
+            'url': candidates[0]['url'], 'content': 'Fetched source text. ' * 10,
+        }]) as extract:
+            sources = blog._fetch_sources_from_candidates(candidates, config)
+        self.assertEqual(len(sources), 1)
+        self.assertEqual(extract.call_count, 1)
+
     def test_evidence_repair_must_still_pass_original_checks(self):
         invalid = copy.deepcopy(self.evidence)
         invalid['claims'][0]['evidence_quote'] = 'Invented quote'
@@ -300,6 +313,27 @@ class EditorialChecks(unittest.TestCase):
                     review_context={'sources':self.sources,'evidence':self.evidence})
             self.assertEqual(len(checks), 2)
             self.assertIn('Corrected body', path.read_text())
+
+    def test_partial_publication_excludes_held_drafts_and_orphan_assets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            files = {
+                'src/content/blog/approved.mdx': '---\ndraft: false\n---\nApproved',
+                'src/content/blog/held.mdx': '---\ndraft: true\n---\nHeld',
+                'public/images/posts/approved/hero.jpg': 'approved image',
+                'public/images/posts/held/hero.jpg': 'held image',
+                'public/images/posts/orphan/hero.jpg': 'orphan image',
+                '.ai_state/published.json': '{}',
+            }
+            for name, content in files.items():
+                target = root/name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(content)
+            stage_publication(root)
+            staged = subprocess.check_output(['git','-C',str(root),'diff','--cached','--name-only'], text=True).splitlines()
+            self.assertEqual(set(staged), {'src/content/blog/approved.mdx',
+                'public/images/posts/approved/hero.jpg', '.ai_state/published.json'})
 
 
 if __name__ == '__main__':
