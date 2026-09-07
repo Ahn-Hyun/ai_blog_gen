@@ -115,7 +115,7 @@ def call_api(prompt, options, context):
     else:
         issues = []
         # An offline comparison still edits a held draft to measure the editor.
-        # Its rejection remains in the result; production stops at the failed gate.
+        # These strict offline diagnostics do not block production publication.
         try:
             extra = {} if variant == 'A' else {'sources': [case['source']]}
             checked = module._apply_quality_gate(config, writer, full_mdx=draft, keyword=case['question'], **extra)

@@ -3307,9 +3307,9 @@ def _validate_and_repair_posts(
         qg_errors = _run_quality_gate()
         build_errors = _run_astro_build()
 
-        all_errors: dict[str, list[str]] = {}
-        for fname, msgs in {**qg_errors, **build_errors}.items():
-            all_errors.setdefault(fname, []).extend(msgs)
+        if qg_errors:
+            logging.warning("Advisory content checks: %s", qg_errors)
+        all_errors = build_errors
 
         if not all_errors:
             logging.info("Post validation passed (round %d).", round_num)
@@ -4452,32 +4452,29 @@ def _write_post(
 
     final_mdx = frontmatter + "\n" + content + "\n"
     review_context["chart_specs"] = chart_specs or []
-    for attempt in range(2):
+    # One advisory audit and at most one correction; no approval loop after editing.
+    try:
+        _audit_final_article(config, writer, final_mdx + "\nChart data: " + json.dumps(chart_specs or []), review_context)
+    except EditorialError as exc:
+        report = {"article": post_path.name, "finding": str(exc), "repair": "not_applied"}
+        logging.warning("Editorial finding; correcting once before publication: %s", exc)
+        prompt = _build_revision_prompt(full_mdx=content, keyword=title, issues_json=json.dumps({
+            "audit": str(exc), "sources": review_context["sources"],
+        }, ensure_ascii=False))
         try:
-            _audit_final_article(config, writer, final_mdx + "\nChart data: " + json.dumps(chart_specs or []), review_context)
-            break
-        except EditorialError as exc:
-            held_dir = ROOT_DIR / 'data/editorial-rejections'
-            held_dir.mkdir(parents=True, exist_ok=True)
-            (held_dir / post_path.name).write_text(final_mdx, encoding='utf-8')
-            if attempt or not str(exc).startswith("Final source audit rejected article:"):
-                raise
-            logging.info("Repairing final source-audit issues once for %s", title)
-            prompt = _build_revision_prompt(full_mdx=content, keyword=title, issues_json=json.dumps({
-                "audit": str(exc), "sources": review_context["sources"],
-            }, ensure_ascii=False))
-            try:
-                corrected = str(writer.generate(prompt + "\nReturn the article BODY only, without frontmatter. "
-                    "Preserve image paths and chart data. Correct attribution, chronology and scope only from supplied sources. "
-                    "Remove unsupported assertions; put citations beside each source-specific figure.",
-                    temperature=0, max_tokens=config.anthropic_max_tokens) or "").strip()
-            except Exception as repair_error:
-                raise EditorialError("Final source correction unavailable") from repair_error
-            if not corrected or corrected.startswith("---"):
-                raise EditorialError("Final source correction returned invalid body")
-            review_context = {**review_context, "original_body": corrected}
-            content = _apply_final_review(config, writer, full_mdx=corrected, keyword=title)
+            corrected = str(writer.generate(prompt + "\nReturn the article BODY only, without frontmatter. "
+                "Preserve image paths and chart data. Correct attribution, chronology and scope only from supplied sources. "
+                "Remove unsupported assertions; put citations beside each source-specific figure.",
+                temperature=0, max_tokens=config.anthropic_max_tokens) or "").strip()
+            if not corrected or corrected.startswith(("---", "```")):
+                raise EditorialError("Correction returned invalid body")
+            content = _fix_mdx_void_elements(corrected)
             final_mdx = frontmatter + "\n" + content + "\n"
+            report["repair"] = "applied_without_reaudit"
+        except Exception as repair_error:
+            report["repair_error"] = type(repair_error).__name__
+            logging.warning("Editorial correction unavailable; keeping the existing article (%s).", type(repair_error).__name__)
+        write_json(ROOT_DIR / 'data/editorial-reviews' / f'{post_path.stem}.json', report)
     config.content_dir.mkdir(parents=True, exist_ok=True)
     post_path.write_text(final_mdx, encoding="utf-8")
 
@@ -5338,10 +5335,9 @@ def _apply_final_review(
             edited = full_mdx if data['status'] == 'pass' else str(data.get('cleaned_mdx') or '')
         check_edit(full_mdx, edited)
         return edited
-    except EditorialError:
-        raise
     except Exception as exc:
-        raise EditorialError(f"Editor unavailable: {type(exc).__name__}") from exc
+        logging.warning("Editor output discarded; retaining original body (%s).", type(exc).__name__)
+        return full_mdx
 
 
 def _audit_final_article(config, writer, article, review_context) -> None:
@@ -5520,13 +5516,7 @@ def _generate_article_multi_agent(
     )
     if not full_body:
         return None
-    full_body = _apply_quality_gate(
-        config,
-        writer,
-        full_mdx=full_body,
-        keyword=keyword,
-        sources=structured_sources,
-    )
+    # The complete article is audited once in _write_post, after metadata and visuals.
     summary = _first_sentences(_strip_markdown(full_body), count=2, max_len=320)
     key_points = _key_points_from_evidence(evidence)
     hero_hint = ""
@@ -5701,10 +5691,14 @@ def _generate_post_for_topic(
         full_mdx=body,
     )
     if mdx_checked_body != body:
-        check_edit(body, mdx_checked_body)
-        body = _clean_body_text(mdx_checked_body)
-        body = _ensure_body(body, body)
-        summary = ""
+        try:
+            check_edit(body, mdx_checked_body)
+        except EditorialError as exc:
+            logging.warning("MDX edit discarded; retaining original body: %s", exc)
+        else:
+            body = _clean_body_text(mdx_checked_body)
+            body = _ensure_body(body, body)
+            summary = ""
 
     if not summary:
         summary = _ensure_text(

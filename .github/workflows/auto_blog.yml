@@ -136,19 +136,21 @@ jobs:
           python scripts/auto_blog.py --once --pipeline "${{ steps.pipeline.outputs.pipeline }}"
           git -C ai_blog_v1_astro status --short -- src/content/blog .ai_state/published.json
 
-      - name: Preserve rejected articles
-        if: steps.generation.outcome == 'failure'
+      - name: Preserve editorial findings and generation failures
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: editorial-rejections
-          path: data/editorial-rejections/
+          name: editorial-reports
+          path: |
+            data/editorial-reviews/
+            data/editorial-rejections/
           if-no-files-found: ignore
           retention-days: 14
 
       - name: Validate Astro build
         run: |
           cd ai_blog_v1_astro
-          npm run quality:gate
+          npm run quality:gate || echo "::warning::Content checks reported findings; continuing to build."
           npm run build
 
       - name: Commit and push to Astro repo

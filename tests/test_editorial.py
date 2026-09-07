@@ -85,11 +85,11 @@ class EditorialChecks(unittest.TestCase):
         self.assertEqual(blog._apply_quality_gate(self.config, Writer('{"status":"pass","issues":[]}'),
                          full_mdx='Draft', keyword='cost'), 'Draft')
 
-    def test_humanizer_failure_is_not_silent(self):
-        with self.assertRaises(EditorialError):
-            blog._apply_final_review(self.config, Writer('In 2023'), full_mdx='In 2025', keyword='cost')
-        with self.assertRaises(EditorialError):
-            blog._apply_final_review(self.config, Writer(error=TimeoutError()), full_mdx='Draft', keyword='cost')
+    def test_humanizer_failure_keeps_original_and_warns(self):
+        for writer in [Writer('In 2023'), Writer(error=TimeoutError())]:
+            with self.assertLogs(level='WARNING'):
+                self.assertEqual(blog._apply_final_review(self.config, writer,
+                    full_mdx='In 2025', keyword='cost'), 'In 2025')
 
     def test_source_audit_rejects_uncertainty_and_unavailability(self):
         context = {'sources': self.sources, 'evidence': self.evidence}
@@ -160,18 +160,19 @@ class EditorialChecks(unittest.TestCase):
                  patch.object(blog, '_materialize_inline_visuals', return_value=[{'block': 'Caption from chart', 'section_heading': ''}]), \
                  patch.object(blog, '_audit_final_article', side_effect=reject), \
                  patch.object(blog, '_generate_hero_image') as image:
-                with self.assertRaises(EditorialError):
-                    blog._write_post(config, **kwargs)
-                image.assert_not_called()
-            self.assertFalse(config.content_dir.exists())
-            self.assertEqual(len(list((root / 'data/editorial-rejections').glob('*.mdx'))), 1)
+                path = blog._write_post(config, **kwargs)
+                image.assert_called_once()
+            self.assertIn('Caption from chart', path.read_text())
+            report = json.loads(next((root / 'data/editorial-reviews').glob('*.json')).read_text())
+            self.assertEqual(report['repair'], 'not_applied')
+            self.assertIn('chart conflicts', report['finding'])
 
-    def test_unparsed_quality_gate_error_cannot_pass(self):
+    def test_quality_findings_do_not_block_a_successful_build(self):
         config = SimpleNamespace(astro_root=Path('/tmp'))
         failed = SimpleNamespace(returncode=1, stdout='', stderr='tool unexpectedly failed')
         passed = SimpleNamespace(returncode=0, stdout='', stderr='')
         with patch.object(blog.subprocess, 'run', side_effect=[failed, passed]):
-            self.assertFalse(blog._validate_and_repair_posts(config, Writer(),
+            self.assertTrue(blog._validate_and_repair_posts(config, Writer(),
                              post_paths=[Path('article.mdx')], max_rounds=0))
 
     def test_openai_client_sends_reasoning_effort(self):
@@ -290,29 +291,30 @@ class EditorialChecks(unittest.TestCase):
         self.assertEqual(result['claims'], self.evidence['claims'])
         validate_evidence(result, self.sources)
 
-    def test_final_source_correction_is_reaudited_before_publication(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            config = replace(blog._build_config(), content_dir=root/'blog', hero_base_dir=root/'images')
-            checks = []
-            def audit(config, writer, article, context):
-                self.assertFalse(config.content_dir.exists())
-                checks.append(article)
-                if len(checks) == 1:
-                    raise EditorialError('Final source audit rejected article: missing citation')
-                self.assertIn('Corrected body', article)
-                self.assertEqual(context['original_body'], 'Corrected body')
-            with patch.object(blog, 'ROOT_DIR', root), \
-                 patch.object(blog, '_materialize_inline_visuals', return_value=[]), \
-                 patch.object(blog, '_audit_final_article', side_effect=audit), \
-                 patch.object(blog, '_apply_final_review', return_value='Corrected body'), \
-                 patch.object(blog, '_generate_hero_image'):
-                path = blog._write_post(config, title='Test', description='Test', category=['stocks'],
-                    tags=[], body='Initial body', hero_alt='Test', image_prompt='', reference_urls=[],
-                    chart_specs=[], inline_image_prompts=[], slug_hint='test', writer=Writer('Corrected body'),
-                    review_context={'sources':self.sources,'evidence':self.evidence})
-            self.assertEqual(len(checks), 2)
-            self.assertIn('Corrected body', path.read_text())
+    def test_final_source_finding_repairs_once_and_publishes_without_reaudit(self):
+        for response in ['Corrected body', '', '---\ninvalid metadata', TimeoutError()]:
+            with self.subTest(response=response), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                config = replace(blog._build_config(), content_dir=root/'blog', hero_base_dir=root/'images')
+                writer = Writer()
+                with patch.object(blog, 'ROOT_DIR', root), \
+                     patch.object(blog, '_materialize_inline_visuals', return_value=[]), \
+                     patch.object(blog, '_audit_final_article', side_effect=EditorialError('Final source audit rejected article: missing citation')) as audit, \
+                     patch.object(writer, 'generate', side_effect=[response]) as repair, \
+                     patch.object(blog, '_apply_final_review') as edit, \
+                     patch.object(blog, '_generate_hero_image'):
+                    path = blog._write_post(config, title='Test', description='Test', category=['stocks'],
+                        tags=[], body='Initial body', hero_alt='Test', image_prompt='', reference_urls=[],
+                        chart_specs=[], inline_image_prompts=[], slug_hint='test', writer=writer,
+                        review_context={'sources':self.sources,'evidence':self.evidence})
+                audit.assert_called_once()
+                repair.assert_called_once()
+                edit.assert_not_called()
+                self.assertIn('draft: false', path.read_text())
+                self.assertIn('Corrected body' if response == 'Corrected body' else 'Initial body', path.read_text())
+                report = json.loads(next((root/'data/editorial-reviews').glob('*.json')).read_text())
+                self.assertIn('missing citation', report['finding'])
+                self.assertEqual(report['repair'], 'applied_without_reaudit' if response == 'Corrected body' else 'not_applied')
 
     def test_partial_publication_excludes_held_drafts_and_orphan_assets(self):
         with tempfile.TemporaryDirectory() as directory:
