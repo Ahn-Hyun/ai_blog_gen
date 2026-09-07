@@ -102,7 +102,8 @@ DEFAULT_YOUTUBE_MAX_PER_QUERY = 2
 DEFAULT_GOOGLE_IMAGE_ENABLED = True
 DEFAULT_GOOGLE_IMAGE_MODEL = "gemini-2.5-flash-image"
 DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO = "16:9"
-DEFAULT_OPENAI_WEEKLY_MODEL = "gpt-5.4-2026-03-05"
+DEFAULT_OPENAI_WEEKLY_MODEL = "gpt-5.5"
+DEFAULT_OPENAI_WEEKLY_REASONING_EFFORT = "high"
 DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY = 0
 DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_HOUR = 9
 DEFAULT_WEEKLY_MAJOR_EVENTS_PER_LANE = 1
@@ -271,6 +272,7 @@ class AutomationConfig:
     gemini_api_key: str
     openai_api_key: str
     openai_weekly_model: str
+    openai_weekly_reasoning_effort: str
     anthropic_api_key: str
     anthropic_model: str
     anthropic_model_content: str
@@ -553,6 +555,10 @@ def _build_config() -> AutomationConfig:
         DEFAULT_GOOGLE_IMAGE_ASPECT_RATIO,
     ).strip()
     openai_weekly_model = env.get("OPENAI_WEEKLY_MODEL", DEFAULT_OPENAI_WEEKLY_MODEL).strip()
+    openai_weekly_reasoning_effort = env.get(
+        "OPENAI_WEEKLY_REASONING_EFFORT",
+        DEFAULT_OPENAI_WEEKLY_REASONING_EFFORT,
+    ).strip()
     weekly_major_events_run_weekday = _parse_int(
         env.get("WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY"),
         DEFAULT_WEEKLY_MAJOR_EVENTS_RUN_WEEKDAY,
@@ -605,6 +611,9 @@ def _build_config() -> AutomationConfig:
         gemini_api_key=gemini_api_key,
         openai_api_key=openai_api_key,
         openai_weekly_model=openai_weekly_model or DEFAULT_OPENAI_WEEKLY_MODEL,
+        openai_weekly_reasoning_effort=(
+            openai_weekly_reasoning_effort or DEFAULT_OPENAI_WEEKLY_REASONING_EFFORT
+        ),
         anthropic_api_key=anthropic_api_key,
         anthropic_model=anthropic_model,
         anthropic_model_content=anthropic_model_content,
@@ -1427,10 +1436,11 @@ class ClaudeClient:
 
 
 class OpenAIResponsesClient:
-    def __init__(self, api_key: str, model: str, timeout_sec: int) -> None:
+    def __init__(self, api_key: str, model: str, timeout_sec: int, reasoning_effort: str = "") -> None:
         self.api_key = api_key
         self.model = model
         self.timeout_sec = max(1, timeout_sec)
+        self.reasoning_effort = reasoning_effort.strip()
 
     def generate(self, *, instructions: str, input_text: str) -> str:
         if not self.api_key:
@@ -1438,11 +1448,14 @@ class OpenAIResponsesClient:
         if OpenAI is None:
             raise RuntimeError("openai package is not installed.")
         client = OpenAI(api_key=self.api_key, timeout=self.timeout_sec)
-        response = client.responses.create(
-            model=self.model,
-            instructions=instructions,
-            input=input_text,
-        )
+        params = {
+            "model": self.model,
+            "instructions": instructions,
+            "input": input_text,
+        }
+        if self.reasoning_effort:
+            params["reasoning"] = {"effort": self.reasoning_effort}
+        response = client.responses.create(**params)
         output_text = getattr(response, "output_text", "")
         text = str(output_text or "").strip()
         if not text:
@@ -6266,6 +6279,7 @@ def run_weekly_major_events(
             config.openai_api_key,
             config.openai_weekly_model,
             min(config.anthropic_timeout_sec, 120),
+            config.openai_weekly_reasoning_effort,
         )
         try:
             response = weekly_writer.generate(

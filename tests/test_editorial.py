@@ -172,6 +172,25 @@ class EditorialChecks(unittest.TestCase):
             self.assertFalse(blog._validate_and_repair_posts(config, Writer(),
                              post_paths=[Path('article.mdx')], max_rounds=0))
 
+    def test_openai_client_sends_reasoning_effort(self):
+        calls = []
+
+        class Responses:
+            def create(self, **kwargs):
+                calls.append(kwargs)
+                return SimpleNamespace(output_text='{"ok": true}')
+
+        class Client:
+            def __init__(self, **kwargs):
+                self.responses = Responses()
+
+        with patch.object(blog, 'OpenAI', Client):
+            client = blog.OpenAIResponsesClient('key', 'gpt-5.5', 10, 'high')
+            self.assertEqual(client.generate(instructions='i', input_text='x'), '{"ok": true}')
+
+        self.assertEqual(calls[0]['model'], 'gpt-5.5')
+        self.assertEqual(calls[0]['reasoning'], {'effort': 'high'})
+
 
 if __name__ == '__main__':
     unittest.main()

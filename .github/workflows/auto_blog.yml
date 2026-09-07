@@ -89,7 +89,8 @@ jobs:
           GEMINI_TEMPERATURE: ${{ vars.GEMINI_TEMPERATURE }}
           GEMINI_MAX_TOKENS: ${{ vars.GEMINI_MAX_TOKENS }}
           GEMINI_TIMEOUT_SEC: ${{ vars.GEMINI_TIMEOUT_SEC }}
-          OPENAI_WEEKLY_MODEL: ${{ vars.OPENAI_WEEKLY_MODEL || 'gpt-5.4-2026-03-05' }}
+          OPENAI_WEEKLY_MODEL: ${{ vars.OPENAI_WEEKLY_MODEL || 'gpt-5.5' }}
+          OPENAI_WEEKLY_REASONING_EFFORT: ${{ vars.OPENAI_WEEKLY_REASONING_EFFORT || 'high' }}
           GOOGLE_IMAGE_MODEL: ${{ vars.GOOGLE_IMAGE_MODEL || 'gemini-3.1-flash-image-preview' }}
           SEARCH_WEB_ENABLED: ${{ vars.SEARCH_WEB_ENABLED }}
           SEARCH_WEB_MAX_RESULTS: ${{ vars.SEARCH_WEB_MAX_RESULTS }}
