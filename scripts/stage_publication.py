@@ -15,7 +15,8 @@ def stage_publication(root: Path) -> None:
         post = root / name
         if post.suffix != '.mdx' or not post.is_file():
             continue
-        if not re.search(r'^draft: false$', post.read_text(), re.M):
+        header = re.match(r'\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)', post.read_text(), re.S)
+        if not header or not re.search(r'^draft: false$', header.group(1), re.M):
             continue
         git('add', '--', name)
         assets = Path('public/images/posts') / post.stem

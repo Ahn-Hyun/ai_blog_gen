@@ -320,7 +320,7 @@ class EditorialChecks(unittest.TestCase):
             subprocess.run(['git', 'init', '-q', str(root)], check=True)
             files = {
                 'src/content/blog/approved.mdx': '---\ndraft: false\n---\nApproved',
-                'src/content/blog/held.mdx': '---\ndraft: true\n---\nHeld',
+                'src/content/blog/held.mdx': '---\ndraft: true\n---\nHeld\ndraft: false\n',
                 'public/images/posts/approved/hero.jpg': 'approved image',
                 'public/images/posts/held/hero.jpg': 'held image',
                 'public/images/posts/orphan/hero.jpg': 'orphan image',
