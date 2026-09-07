@@ -1,0 +1,258 @@
+{
+  "note": "One exploratory generation per case, fixed evidence/outline; independent judge scores reused on audit-only replay; not traffic or human preference measurements. Later revision-prompt/cosmetic-blocker fixes and temperature=0 audit are separately tested by production-stage smoke.",
+  "results": [
+    {
+      "case": "mortgage",
+      "variant": "A",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 3407,
+      "draft_sha256": "ed81896a922f1c0f0e23a460ab2f72fa893569edc722b5c566cd2891d0380640",
+      "source_sha256": "bdef39001261359cafd6e2a7273356cdff6a4d576daab843a235ec31a88ef460",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": false,
+        "factual_issues": [
+          "The article repeatedly presents claims as directly supported by the Boston Fed discussion that are not established in the evidence packet, such as the statement that 'the adjusted coupon spread' can 'entirely offset' a Fed rate cut and that investors 'preemptively price in higher prepayment risks' so anticipated Fed easing can keep current mortgage rates elevated. The packet supports that expectations about interest rates, rate volatility, and refinancing costs explain about 80% of coupon-spread variation since 2006, but not these stronger causal or predictive claims.",
+          "It states that the May 2026 Boston Fed discussion reported a 10-year Treasury yield of roughly 4.5 percent. The evidence packet's editorial notes mention approximately 6.5% mortgage rate and 4.5% Treasury yield as referring to that discussion, but the key excerpt itself only explicitly confirms the 6.5% mortgage rate. Because the assignment says to evaluate only against the supplied evidence packet, this is somewhat supported but still overemphasized as a central reported datum without direct quotation from the excerpt.",
+          "The article claims the Boston Fed data 'definitively proves' that the transmission mechanism is heavily filtered through investor risk appetite, securitization costs, and behavioral uncertainties. 'Definitively proves' overstates what the packet supports; the packet provides an explanatory discussion and historical decomposition, not definitive proof of all the broader structural conclusions stated.",
+          "The downside scenario says rates could stay elevated 'well above 6.5 percent' and raises the possibility that 'secondary market liquidity freezes entirely.' These forward-looking assertions are speculative and not grounded in the supplied evidence packet."
+        ],
+        "clarity": 4,
+        "naturalness": 4,
+        "reader_value": 4,
+        "missing_information": [
+          "A tighter distinction between what the May 2026 Boston Fed discussion explicitly states and what is the article's own scenario analysis or interpretation.",
+          "A more direct, concise answer to the reader question near the top: mortgage rates can stay high after a Fed cut because mortgage pricing depends on long-term Treasury yields plus an adjusted coupon spread driven by expectations about rates, volatility, and refinancing costs, not just the fed funds rate.",
+          "Clearer attribution that the piece is explaining May 2026 historical/source data rather than giving a current market quote or forecast."
+        ],
+        "reason": "The article satisfies several key criteria: it dates the cited discussion to May 2026, distinguishes the adjusted coupon spread from the raw mortgage spread, avoids asserting a guaranteed yield floor, avoids guaranteeing any refinancing outcome, and generally answers the reader's question. However, it goes beyond the evidence packet in multiple places by making stronger causal, predictive, and 'definitive' claims than the supplied source supports. As a result, it should not receive a full factual pass."
+      },
+      "publication_checks_pass": false,
+      "issues": [
+        "Quality gate rejected article: {\"status\": \"revise\", \"issues\": [{\"type\": \"factual_risk\", \"detail\": \"In the second paragraph, the phrase 'The prior day's insights from the Boston Fed' introduces a temporal inaccuracy. The referenced report was published in May 2026, making 'prior day' incorrect and confusing for a piece evaluated in September 2026.\", \"fix_hint\": \"Remove 'The prior day's' and simply refer to 'The insights from the Boston Fed' or 'The May 2026 insights'.\"}]}",
+        "Final source audit rejected article: {\"status\": \"reject\", \"issues\": [\"The article refers to the May 2026 Boston Fed discussion as 'The prior day's insights', which is a temporal inaccuracy given the audit date of September 7, 2026.\"]}"
+      ],
+      "initial_issues": [],
+      "output_regenerated": false
+    },
+    {
+      "case": "mortgage",
+      "variant": "B",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 452,
+      "draft_sha256": "aec383aee53c6124583d9e786033a5c3b1e7278b4a8f88007849fe0e9b2d21a0",
+      "source_sha256": "bdef39001261359cafd6e2a7273356cdff6a4d576daab843a235ec31a88ef460",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 5,
+        "naturalness": 5,
+        "reader_value": 5,
+        "missing_information": [],
+        "reason": "The article aligns with the evidence packet. It correctly dates the cited mortgage-rate figure to May 2026, distinguishes the adjusted coupon spread from the raw mortgage spread, and states that expectations about interest rates, volatility, and refinancing costs explain roughly 80 percent of the variation since 2006. It also avoids claiming a guaranteed refinancing outcome or a fixed future yield floor, instead framing refinancing as a possibility and noting that historical data does not set a floor. The piece clearly answers the reader’s question by explaining that investor risk pricing, especially prepayment/refinancing risk and volatility premiums, can keep mortgage rates elevated even after a Fed rate cut."
+      },
+      "publication_checks_pass": false,
+      "issues": [
+        "Quality gate rejected article: {\"status\": \"revise\", \"issues\": [{\"type\": \"structure\", \"detail\": \"The heading '### Conclusion' is generic. The checklist requires that any headings used must be specific.\", \"fix_hint\": \"Replace '### Conclusion' with a descriptive heading that reflects the final paragraph's specific takeaway, such as '### Why Central Bank Cuts Do Not Guarantee Lower Mortgage Rates'.\"}]}"
+      ],
+      "initial_issues": [
+        "Quality gate failed or did not approve the article"
+      ],
+      "output_regenerated": false
+    },
+    {
+      "case": "mortgage",
+      "variant": "C",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 345,
+      "draft_sha256": "aec383aee53c6124583d9e786033a5c3b1e7278b4a8f88007849fe0e9b2d21a0",
+      "source_sha256": "bdef39001261359cafd6e2a7273356cdff6a4d576daab843a235ec31a88ef460",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 4,
+        "naturalness": 4,
+        "reader_value": 4,
+        "missing_information": [],
+        "reason": "The article answers the reader’s question by explaining that mortgage rates can remain high if investor risk premiums and the coupon spread stay elevated even after a Fed cut. It correctly dates the cited mortgage-rate figure to May 2026, distinguishes the adjusted coupon spread from the raw mortgage spread, and avoids claiming any guaranteed floor for yields or guaranteed refinancing behavior. The discussion of prepayment/refinancing risk and volatility is consistent with the evidence packet. Minor limitation: it adds some descriptive detail beyond the packet, but nothing clearly contradicts the supplied evidence."
+      },
+      "publication_checks_pass": true,
+      "issues": [],
+      "initial_issues": [
+        "Quality gate failed or did not approve the article"
+      ],
+      "output_regenerated": false
+    },
+    {
+      "case": "data-centers",
+      "variant": "A",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 1788,
+      "draft_sha256": "ff10258d547efa49e72fe7048b9976b177896843cc318df8676909f57e930f47",
+      "source_sha256": "b48f88246af14de97f2e2252590b9e3d0f8da1e8c096fe86f8451099e4a69756",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 5,
+        "naturalness": 4,
+        "reader_value": 5,
+        "missing_information": [],
+        "reason": "The article aligns with the supplied evidence packet. It correctly assigns $10.7 million per MW to 2025, presents $11.3 million per MW as a 2026 forecast rather than a realized figure, distinguishes shell-and-core costs from tenant technology fit-out, and treats the $25 million per MW AI fit-out number as an upper-end boundary rather than an average. It also accurately reflects the evidence that grid-connection waits in primary markets exceed four years on average, that global figures should not be treated as specific US project costs, and that demand does not guarantee investor cash flows or REIT returns. The piece is clear, well-structured, and useful for readers because it directly answers what the cost-per-megawatt metric leaves out."
+      },
+      "publication_checks_pass": false,
+      "issues": [
+        "Quality gate rejected article: {\"status\": \"revise\", \"issues\": [{\"type\": \"factual_risk\", \"detail\": \"The opening paragraph states 'The prior day's data indicates...', but the provided metadata explicitly notes that the exact publication date is unknown ('2026 outlook; exact date unknown'). Inventing a specific release timeframe is unsupported.\", \"fix_hint\": \"Remove the reference to 'The prior day's data' and refer generally to the recent release of the 2026 outlook metrics.\"}, {\"type\": \"missing_citation\", \"detail\": \"The FAQ section attributes factual claims to JLL Research but fails to use the required inline Markdown citation format [Source Name](URL).\", \"fix_hint\": \"Apply the inline Markdown link to 'JLL Research' in the FAQ section to ensure all factual claims maintain proper citation formatting.\"}]}",
+        "Final source audit rejected article: {\"status\": \"reject\", \"issues\": [\"The article invents the timeframe 'The prior day's data', whereas the source explicitly states the exact publication date is unknown.\", \"The article introduces unsupported factual details by defining 'shell-and-core' as strictly covering 'the physical building envelope, foundational cooling systems, and primary electrical infrastructure', which is not in the source.\", \"The article makes unsupported claims that AI fit-outs require 'advanced liquid cooling and high-density infrastructure', which is not mentioned in the provided source material.\"]}"
+      ],
+      "initial_issues": [
+        "Final source audit rejected article: {\"status\": \"reject\", \"issues\": [\"The article invents the temporal claim 'The prior day's data', which is unsupported as the source's exact publication date is unknown.\", \"The important factual claim that grid-connection waits in primary markets exceed four years on average lacks an inline source link.\"]}"
+      ],
+      "output_regenerated": false
+    },
+    {
+      "case": "data-centers",
+      "variant": "B",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 389,
+      "draft_sha256": "50de46ac1634bbafccc8392a7b980fe852b910ccff2a5043429bc8ae00329634",
+      "source_sha256": "b48f88246af14de97f2e2252590b9e3d0f8da1e8c096fe86f8451099e4a69756",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 5,
+        "naturalness": 4,
+        "reader_value": 5,
+        "missing_information": [],
+        "reason": "The article aligns with the evidence packet. It correctly assigns $10.7 million per MW to 2025, identifies that figure as shell-and-core rather than total project cost, labels $11.3 million per MW in 2026 as a forecast, and treats the $25 million per MW tenant technology fit-out as an upper-bound AI figure rather than an average. It also accurately includes the excluded localized variables and grid-connection delays, and avoids implying guaranteed REIT returns. The writing is clear and useful, though somewhat repetitive and formal in phrasing."
+      },
+      "publication_checks_pass": false,
+      "issues": [
+        "Quality gate rejected article: {\"status\": \"revise\", \"issues\": [{\"type\": \"missing_citation\", \"detail\": \"Specific factual claims in paragraphs 4 and 6 (tenant technology fit-outs costing up to $25 million per MW, and grid-connection waits exceeding four years on average) lack inline Markdown citations.\", \"fix_hint\": \"Add the inline Markdown citation [JLL Research](https://www.jll.com/en-us/insights/market-outlook/data-center-outlook) next to the $25 million fit-out cost and the four-year grid-connection wait statistics to ensure all factual claims are properly attributed.\"}]}"
+      ],
+      "initial_issues": [
+        "Quality gate failed or did not approve the article"
+      ],
+      "output_regenerated": false
+    },
+    {
+      "case": "data-centers",
+      "variant": "C",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 300,
+      "draft_sha256": "50de46ac1634bbafccc8392a7b980fe852b910ccff2a5043429bc8ae00329634",
+      "source_sha256": "b48f88246af14de97f2e2252590b9e3d0f8da1e8c096fe86f8451099e4a69756",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 5,
+        "naturalness": 5,
+        "reader_value": 5,
+        "missing_information": [],
+        "reason": "The article aligns with the evidence packet. It correctly assigns $10.7 million per MW to 2025, identifies it as shell-and-core rather than total project cost, and labels $11.3 million per MW in 2026 as a forecast. It accurately presents tenant technology fit-out for AI as potentially up to $25 million per MW and explicitly treats that as an upper bound, not an average. It also correctly notes that global averages omit local U.S. project variables and that grid-connection waits can exceed four years on average in primary markets. The article avoids implying that AI demand guarantees REIT returns. The response is clear, natural, and directly answers what the per-megawatt cost leaves out of a data center budget."
+      },
+      "publication_checks_pass": false,
+      "issues": [
+        "Quality gate rejected article: {\"status\": \"revise\", \"issues\": [{\"type\": \"missing_citation\", \"detail\": \"Specific factual claims regarding tenant technology fit-outs costing up to $25 million per MW and grid-connection waits exceeding four years on average lack inline Markdown citations.\", \"fix_hint\": \"Add the inline Markdown citation [JLL Research](https://www.jll.com/en-us/insights/market-outlook/data-center-outlook) immediately following the $25 million fit-out cost and the four-year grid connection wait statistics.\"}]}"
+      ],
+      "initial_issues": [
+        "Quality gate failed or did not approve the article"
+      ],
+      "output_regenerated": false
+    },
+    {
+      "case": "fed-tech",
+      "variant": "A",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 2511,
+      "draft_sha256": "8fe7d1a67981caa0ded60df428607fcf573e3ece4017e871f7f48399ac5ad516",
+      "source_sha256": "854e2e1c096e23da1341cef4bb9cac49c8cac6a726078efec2dd44673b2e1471",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 4,
+        "naturalness": 4,
+        "reader_value": 4,
+        "missing_information": [],
+        "reason": "The article stays aligned with the evidence packet. It correctly distinguishes Paulson’s remarks as her personal views rather than FOMC policy, preserves the possibility of further tightening, and does not claim a guaranteed rate ceiling or guaranteed tech returns. It also appropriately frames valuation impacts as analytical/conditional rather than as measured outcomes from the speech itself. Some interpretive language goes beyond the packet, but it is consistently presented as scenario analysis or editorial explanation rather than fact."
+      },
+      "publication_checks_pass": false,
+      "issues": [
+        "Quality gate rejected article: {\"status\": \"revise\", \"issues\": [{\"type\": \"missing_citation\", \"detail\": \"Direct quotes and specific factual claims from the source are missing inline citations. This includes the direct quote 'mildly restrictive and appropriate' in 'The Event: Conditional Policy Framing' and 'Base Case' sections, as well as the factual claim about market expectations shifting toward steady rates in the 'Alignment Does Not Equal Guarantee' section.\", \"fix_hint\": \"Add the inline Markdown citation [Federal Reserve Bank of Philadelphia](https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference) immediately following these direct quotes and specific factual claims to ensure all source material is properly supported.\"}]}"
+      ],
+      "initial_issues": [],
+      "output_regenerated": false
+    },
+    {
+      "case": "fed-tech",
+      "variant": "B",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 291,
+      "draft_sha256": "e9a20e38a7962dab305b989a72fbb08d7a5b6aec6f376102e7b3438acd9a31c2",
+      "source_sha256": "854e2e1c096e23da1341cef4bb9cac49c8cac6a726078efec2dd44673b2e1471",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 5,
+        "naturalness": 4,
+        "reader_value": 4,
+        "missing_information": [],
+        "reason": "The article matches the evidence packet and directly satisfies the criteria. It clearly distinguishes Paulson's personal, conditional views from official FOMC policy, preserves the possibility of further tightening, and avoids claiming a guaranteed rate ceiling or guaranteed tech-stock gains. Statements about tech-stock sensitivity to rates are presented as general editorial context rather than as sourced market evidence, which is consistent with the packet's note that valuation discussion is conditional explanation, not measured reaction. Minor issue: it cites the Federal Reserve Bank of Philadelphia while the packet attributes the speech to Anna Paulson; this is not a factual conflict in the packet, just slightly awkward sourcing language."
+      },
+      "publication_checks_pass": true,
+      "issues": [],
+      "initial_issues": [
+        "Quality gate failed or did not approve the article"
+      ],
+      "output_regenerated": false
+    },
+    {
+      "case": "fed-tech",
+      "variant": "C",
+      "run_id": "073697bc5aa65d28",
+      "replay_of": "a96a7ee1a516e123",
+      "words": 163,
+      "draft_sha256": "e9a20e38a7962dab305b989a72fbb08d7a5b6aec6f376102e7b3438acd9a31c2",
+      "source_sha256": "854e2e1c096e23da1341cef4bb9cac49c8cac6a726078efec2dd44673b2e1471",
+      "writer_model": "gemini-3.1-pro-preview",
+      "judge_model": "gpt-5.4-2026-03-05",
+      "judge": {
+        "factual_pass": true,
+        "factual_issues": [],
+        "clarity": 4,
+        "naturalness": 4,
+        "reader_value": 4,
+        "missing_information": [],
+        "reason": "The article aligns with the evidence packet. It correctly distinguishes Paulson's remarks as her own views rather than an FOMC commitment, and it preserves the possibility of further tightening rather than implying a rate ceiling. It does not guarantee tech-stock returns. The valuation sensitivity of tech stocks is presented as general editorial analysis, which the packet allows as conditional explanation rather than measured reaction. The piece is clear and useful, though it adds interpretation beyond the quoted source."
+      },
+      "publication_checks_pass": true,
+      "issues": [],
+      "initial_issues": [
+        "Quality gate failed or did not approve the article"
+      ],
+      "output_regenerated": false
+    }
+  ]
+}

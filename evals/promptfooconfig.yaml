@@ -1,0 +1,27 @@
+description: Shipwrite English — fixed sources and outline, paired B/C drafts
+prompts:
+  - "{{case_id}}"
+providers:
+  - id: file://provider.py
+    label: A — previous writing and editing
+    config:
+      variant: A
+  - id: file://provider.py
+    label: B — reader-focused writing and legacy editing
+    config:
+      variant: B
+  - id: file://provider.py
+    label: C — same B draft with Humanizer editing
+    config:
+      variant: C
+defaultTest:
+  assert:
+    - type: python
+      value: file://provider.py:get_assert
+tests:
+  - vars:
+      case_id: mortgage
+  - vars:
+      case_id: data-centers
+  - vars:
+      case_id: fed-tech

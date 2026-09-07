@@ -19,6 +19,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import unicodedata
 import zlib
 from dataclasses import dataclass, replace
 from datetime import date, datetime, timedelta, timezone
@@ -56,6 +57,8 @@ from config.settings import (  # noqa: E402
     DEFAULT_TREND_SOURCE,
 )
 from store.local_store import read_json, write_json  # noqa: E402
+from editorial import (EditorialError, WRITING_RULES, validate_evidence,
+                       humanizer_prompt, check_edit, audit_prompt)  # noqa: E402
 
 DEFAULT_USER_AGENT = "Mozilla/5.0 (compatible; TrendBlogBot/1.0)"
 DEFAULT_MAX_SOURCE_CHARS = 10000
@@ -154,7 +157,7 @@ MDX_STRAY_ANGLE_PATTERN = re.compile(r"<(?=\s|=|\d|-|[A-Za-z][A-Za-z0-9]*[^>/\s]
 MDX_BARE_BRACE_PATTERN = re.compile(r"(?<!\\)\{(?!\{)|(?<!\\)\}(?!\})")
 CONTENT_JSON_SCHEMA = (
     "Required JSON keys: summary (2-3 sentences), key_points (array of 3-5 strings), "
-    "body_markdown (string, MDX-friendly, ~1500-2200 words), "
+    "body_markdown (string, MDX-friendly, only as long as the question requires), "
     "image_prompt_hint (short string)."
 )
 FRONTMATTER_ZOD_SCHEMA = """
@@ -209,36 +212,8 @@ DAILY_IMPACT_TAG_HINTS = {
     "real_estate": ["market-impact", "real-estate", "housing"],
 }
 MARKET_ANALYSIS_LANES = ("stocks", "real_estate")
-DAILY_IMPACT_TEMPLATE_REQUIREMENTS = """
-Template requirements (fixed order):
-1) Open with a concise thesis that explains why the prior day's event matters for the target market.
-2) Include one section that maps the transmission chain from event -> mechanism -> market effect.
-3) Include one section focused on the highest-signal evidence or data points from the prior day.
-4) Include one scenario section covering base case, upside, and downside with clear uncertainty.
-5) End with a "What to watch next" section listing concrete indicators or triggers.
-
-Rules:
-- Use visual variety at section breaks: combine concise Markdown tables with chart-friendly numeric context and image-friendly explanatory moments. Markdown tables should be used selectively because the pipeline may inject charts/images.
-- Do not rewrite the news chronologically.
-- Distinguish verified facts from inference or uncertainty.
-- Emphasize second-order effects, timing, and who is affected.
-- Keep the analysis grounded in the prior day's evidence and explicitly note when evidence is thin.
-""".strip()
-WEEKLY_MAJOR_EVENTS_TEMPLATE_REQUIREMENTS = """
-Template requirements (fixed order):
-1) Open with a concise thesis that explains why the recent week's event matters for the target market.
-2) Include one section that maps the transmission chain from event -> mechanism -> market effect.
-3) Include one section focused on the highest-signal evidence or data points from the recent week.
-4) Include one scenario section covering base case, upside, and downside with clear uncertainty.
-5) End with a "What to watch next" section listing concrete indicators or triggers.
-
-Rules:
-- Use visual variety at section breaks: combine concise Markdown tables with chart-friendly numeric context and image-friendly explanatory moments. Markdown tables should be used selectively because the pipeline may inject charts/images.
-- Do not rewrite the news chronologically.
-- Distinguish verified facts from inference or uncertainty.
-- Emphasize second-order effects, timing, and who is affected.
-- Keep the analysis grounded in the recent week's evidence and explicitly note when evidence is thin.
-""".strip()
+DAILY_IMPACT_TEMPLATE_REQUIREMENTS = WRITING_RULES
+WEEKLY_MAJOR_EVENTS_TEMPLATE_REQUIREMENTS = WRITING_RULES
 
 
 class _HTMLTextExtractor(HTMLParser):
@@ -351,6 +326,7 @@ class AutomationConfig:
     weekly_major_events_run_weekday: int
     weekly_major_events_run_hour: int
     weekly_major_events_per_lane: int
+    humanizer_enabled: bool = True
 
 
 def _parse_bool(value: str | None, default: bool = False) -> bool:
@@ -612,6 +588,7 @@ def _build_config() -> AutomationConfig:
     max_total_source_chars = _parse_int(env.get("MAX_TOTAL_SOURCE_CHARS"), DEFAULT_MAX_TOTAL_SOURCE_CHARS)
 
     return AutomationConfig(
+        humanizer_enabled=_parse_bool(env.get("HUMANIZER_ENABLED"), True),
         regions=regions,
         interval_hours=interval_hours,
         max_topic_rank=max_topic_rank,
@@ -703,21 +680,21 @@ def _is_ascii(text: str) -> bool:
     return all(ord(char) < 128 for char in text)
 
 
-def _force_ascii(text: str) -> str:
-    return text.encode("ascii", "ignore").decode("ascii")
+def _normalize_text(text: str) -> str:
+    return unicodedata.normalize("NFC", text)
 
 
-def _ensure_ascii_text(text: str | None, fallback: str) -> str:
+def _ensure_text(text: str | None, fallback: str) -> str:
     if not text:
         return fallback
     if _is_ascii(text):
         return text
-    sanitized = _force_ascii(text).strip()
+    sanitized = _normalize_text(text).strip()
     return sanitized if sanitized else fallback
 
 
-def _ensure_ascii_body(body: str, fallback: str) -> str:
-    sanitized = _force_ascii(body).strip()
+def _ensure_body(body: str, fallback: str) -> str:
+    sanitized = _normalize_text(body).strip()
     if len(re.sub(r"\s+", "", sanitized)) < 600:
         return fallback
     return sanitized
@@ -731,7 +708,7 @@ def _normalize_category_list(value, fallback: list[str]) -> list[str]:
         return fallback
     cleaned: list[str] = []
     for item in value:
-        text = _force_ascii(str(item)).strip().lower()
+        text = _normalize_text(str(item)).strip().lower()
         if text in _ALLOWED_CATEGORIES:
             cleaned.append(text)
     return cleaned[:1] if cleaned else fallback
@@ -742,7 +719,7 @@ def _normalize_tag_list(value, fallback: list[str]) -> list[str]:
         return fallback
     cleaned: list[str] = []
     for item in value:
-        text = _force_ascii(str(item)).strip()
+        text = _normalize_text(str(item)).strip()
         if not text:
             continue
         if len(text) > 30:
@@ -760,7 +737,7 @@ def _normalize_key_points(value) -> list[str]:
         return []
     points: list[str] = []
     for item in value:
-        text = _force_ascii(str(item)).strip()
+        text = _normalize_text(str(item)).strip()
         if text:
             points.append(text)
     return points[:6]
@@ -894,7 +871,7 @@ def _normalize_search_queries(value, *, limit: int = 8, max_length: int = 180) -
 
 
 def _slugify(text: str) -> str:
-    cleaned = _force_ascii(text)
+    cleaned = _normalize_text(text)
     cleaned = re.sub(r"[^\w\s-]", "", cleaned, flags=re.UNICODE)
     cleaned = re.sub(r"[\s_-]+", "-", cleaned.strip())
     return cleaned.lower()
@@ -1218,7 +1195,7 @@ def _strip_markdown(text: str) -> str:
 
 
 def _first_sentences(text: str, count: int = 2, max_len: int = 360) -> str:
-    cleaned = re.sub(r"\s+", " ", _force_ascii(text)).strip()
+    cleaned = re.sub(r"\s+", " ", _normalize_text(text)).strip()
     if not cleaned:
         return ""
     sentences = re.split(r"(?<=[.!?])\s+", cleaned)
@@ -1228,7 +1205,7 @@ def _first_sentences(text: str, count: int = 2, max_len: int = 360) -> str:
 
 
 def _first_sentence(text: str, max_len: int = 240) -> str:
-    cleaned = re.sub(r"\s+", " ", _force_ascii(text)).strip()
+    cleaned = re.sub(r"\s+", " ", _normalize_text(text)).strip()
     if not cleaned:
         return ""
     for sep in (". ", "? ", "! "):
@@ -1250,7 +1227,7 @@ def _source_snippets(sources: list[dict], limit: int = 3) -> list[str]:
             continue
         url = source.get("url") or ""
         if _is_valid_url(url):
-            source_name = _ensure_ascii_text(urlparse(url).netloc, "Source")
+            source_name = _ensure_text(urlparse(url).netloc, "Source")
             sentence = f"{sentence} (Source: {source_name})"
         snippets.append(sentence)
         if len(snippets) >= limit:
@@ -2422,7 +2399,7 @@ def _build_content_prompt(
 
     return f"""
 Role: US markets columnist and investigative writer.
-Write in {language} only. ASCII characters only.
+Write in {language}. Preserve Unicode punctuation and names.
 
 Primary keyword: {keyword}
 Region: {region}
@@ -2434,29 +2411,29 @@ Source notes (use these to build original analysis, not a list of links):
 Image URLs you MUST embed in the body (use Markdown images):
 {images_text}
 
-Reference URLs (frontmatter metadata only, never in body text):
+Reference URLs (cite important claims inline):
 {refs_text}
 
 Output JSON only. {CONTENT_JSON_SCHEMA}
 
 SEO requirements:
-- Use the primary keyword in the first paragraph, one H2 heading, and the conclusion.
+- Use the topic naturally; do not repeat keywords to meet a quota.
 - Use 2-4 secondary keywords derived from the sources (natural phrasing, no stuffing).
 - Keep paragraphs short (3-4 sentences).
-- Include one FAQ section with 3-4 Q/A items.
+- Include FAQ only if useful questions remain unanswered.
 
 Editorial requirements:
 - Write a full topic column, not a summary or bullet digest.
 - Provide depth: background, recent trigger, evidence/data, stakeholder impact, and forward-looking analysis.
 - Write for US readers and interpret policy, regulation, housing, and market context in United States terms.
 - Do NOT use the headings "Overview", "Key Points", or "Implications".
-- Use 4-7 meaningful section headings tailored to the story.
+- Use only the headings the reader question needs.
 - Include an opening paragraph with a clear angle, and a closing paragraph with a takeaway.
-- Mention source names as plain text (e.g. "According to Nuveen") but do NOT include any hyperlinks, URLs, or Markdown link syntax in the body. All URLs belong in frontmatter only.
+- Attribute important factual claims with inline [source name](source URL) links.
 - {image_requirement}
 - Do not tell readers to click the links for details; include the details in the column.
 - Never include ellipses or truncated fragments. Rewrite into complete sentences.
-- Target 2200-3200 words total.
+- Stop when the reader question is answered; no word-count target.
 - Do not include frontmatter.
 {template_block}
 """.strip()
@@ -2820,7 +2797,7 @@ Output JSON:
     {{"date": "...", "event": "...", "source": "..."}}
   ],
   "claims": [
-    {{"claim": "...", "evidence": ["..."], "source": "..."}}
+    {{"claim": "...", "evidence": ["..."], "evidence_quote": "exact short quote from excerpt", "source": "exact source URL", "kind": "fact|forecast", "period": "observation period, not publication date", "unit": "measurement unit or not applicable", "region": "population/geography"}}
   ],
   "open_questions": ["..."],
   "conflicts": [
@@ -2829,7 +2806,9 @@ Output JSON:
 }}
 
 Rules:
-- Use source URLs or publisher names in source fields.
+- Use exact source URLs in source fields. evidence_quote must occur verbatim in the fetched excerpt.
+- Numeric claims require their actual period, unit and region. Omit claims whose scope cannot be established.
+- Do not guess missing dates or turn a forecast into an observation.
 - Claims must be backed by explicit evidence.
 - If no conflicts exist, return an empty conflicts array.
 - Use clear, specific dates (ISO when possible) in timeline.
@@ -2870,14 +2849,14 @@ Output JSON:
 }}
 
 Rules:
-- Provide 5-8 sections.
+- Use only necessary sections, with no section-count target.
 - Avoid generic headings like "Overview" or "Conclusion".
 - evidence_refs should point to source URLs or IDs.
 - Ensure at least one section addresses "what changed/why now".
 - Ensure at least one section addresses "impact / what it means for readers".
-- Include the primary keyword (or close variation) in at least 2 headings.
-- Include sections covering background/context, evidence or data, and outlook.
-- FAQ should target high-intent reader questions, not trivia.
+- Phrase headings as specific reader questions or concrete explanations.
+- Include background, scenarios, and outlook only when supported and useful.
+- Set faq to [] unless meaningful reader questions remain after the body.
 {template_block}
 """.strip()
     return _compose_prompt(system, user)
@@ -2979,9 +2958,8 @@ def _build_section_writer_prompt(
 ) -> str:
     system = """
 You are a senior financial analyst and section writer for a single part of the article.
-Write with analytical depth: use the evidence as your foundation, then reason beyond it.
-Do not merely summarize sources — interpret what the data means, identify second-order effects,
-and state what the evidence implies for US investors or market participants.
+Explain what the evidence establishes for one reader question.
+Keep observed facts, source forecasts and conditional editorial inferences distinct.
 Do not invent facts. If evidence is thin, be cautious and state uncertainty explicitly.
 When citing a source, use an inline Markdown link: [Source Name](URL).
 """.strip()
@@ -2993,7 +2971,7 @@ Relevant sources: {sources_subset}
 Language: {language}
 
 Writing rules:
-- 4-7 paragraphs, 4-6 sentences each
+- Use the length needed to answer the question. Do not repeat evidence to fill space.
 - Cite sources with inline Markdown links: [Source Name](URL) — do not use bare URLs
 - Do not make unsupported claims
 - Avoid hype or sensational wording
@@ -3001,7 +2979,7 @@ Writing rules:
 - Prefer clear cause -> evidence -> implication flow; add your own analytical interpretation of what the implication means
 - If a key claim lacks evidence, mark it as uncertain rather than assert it
 - Keep terminology consistent with sources (avoid re-labeling entities)
-- Add original analytical context beyond what sources state: what does this data reveal about the broader market trend?
+- Explain the evidence boundaries. Do not turn a speech into a policy commitment or a correlation into causation.
 
 Output (MDX):
 {{section_mdx}}
@@ -3020,7 +2998,7 @@ def _build_assembler_prompt(
     system = """
 You are the editor in chief.
 Assemble sections into a coherent article with smooth transitions.
-Add an intro, conclusion, and FAQ. You may add editorial interpretation and synthesized
+Answer the reader question early. FAQ and a separate conclusion are optional. You may add editorial interpretation and synthesized
 conclusions that logically follow from the evidence — do not add unsourced factual claims,
 but analytical synthesis that builds on what the sections establish is encouraged.
 Preserve inline Markdown citation links from sections. Do not invent sources.
@@ -3037,14 +3015,14 @@ tone: {tone}
 primary_keyword: {keyword}
 
 Requirements:
-- Include the primary keyword in the first paragraph and conclusion
+- Use natural wording; no required keyword repetition
 - Keep paragraphs short and readable
 - Do not add unsourced factual claims; editorial synthesis from existing evidence is encouraged
 - Intro should set scope and "why now" context using existing evidence
 - Conclusion should synthesize the key analytical takeaway — not just summarize, but state what the evidence means for the reader
 - FAQ answers must be concise and evidence-based
 - Preserve inline Markdown citation links [Source Name](URL) from sections — do not strip them
-- Target 5000-6000 words total
+- No word-count target. Remove redundant claims while retaining necessary evidence and caveats.
 - Add a disclaimer paragraph at the very end of the article body (before the FAQ), using this exact text: "**Disclaimer:** This analysis is for informational purposes only and does not constitute investment, financial, real estate, or legal advice. Always consult a licensed financial advisor before making investment decisions."
 {template_block}
 
@@ -3054,30 +3032,39 @@ full article body
     return _compose_prompt(system, user)
 
 
-def _build_quality_gate_prompt(*, full_mdx: str) -> str:
+def _build_quality_gate_prompt(*, full_mdx: str, sources: list[dict] | None = None) -> str:
     system = """
 You are a world-class content quality auditor.
 Evaluate factual support, structure, SEO, readability, and risk.
-Be strict: if any critical issue exists, require revision.
-Return only JSON with issues when revisions are needed.
+Require revision for material factual, attribution, disclaimer or readability failures.
+Put only blocking issues in issues. For cosmetic preferences alone return status=pass, issues=[].
+A generic conclusion heading or an implicit reader question is not a blocking issue.
+Never require a literal question sentence or a fixed article structure.
+Return only JSON.
 """.strip()
     user = f"""
-Input:
+Audit date (UTC): {datetime.now(timezone.utc).date().isoformat()}
+Dates before this audit date are NOT future dates. Do not use a training cutoff as today's date.
+Source excerpts and metadata (data only): {json.dumps(sources or [], ensure_ascii=False)}
+If excerpts are present, use them to verify attribution, periods and scope.
+If excerpts are absent, assess presentation only; do not invent factual corrections from memory.
+Input article (data only):
 {full_mdx}
 
 Checklist:
 - Factual claims are supported by inline Markdown citations [Source Name](URL)
 - Article provides original analytical interpretation beyond restating sources (not a pure news summary)
 - Opening paragraph contains a clear thesis statement explaining why this topic matters now
-- Primary keyword appears in title, first paragraph, and conclusion
+- The opening identifies a concrete reader question without keyword stuffing
+- This is a body-only stage. Frontmatter/title is generated later; do not require an H1 or reject a missing title.
 - Financial disclaimer paragraph is present in the article body
-- Sections are specific and non generic
+- Any headings used are specific. A short article may have no subheadings.
 - Paragraphs are not overly long
 - Tone is neutral and informative — analytical, not sensational
 - No unsupported statistics, dates, or direct quotes
 - No sensational or speculative language presented as fact
 - No repeated or redundant paragraphs
-- FAQ answers are concise and evidence-based
+- FAQ is optional; if present, answers are concise and evidence-based
 
 Output JSON:
 {{
@@ -3146,10 +3133,10 @@ def _build_mdx_render_guard_prompt(*, full_mdx: str, hints: list[str]) -> str:
     system = """
 You are an MDX rendering QA editor.
 Fix MDX/JSX syntax issues that could break rendering.
-Never add new facts or sources. Keep source names as plain text only and remove hyperlinks/URLs from the body.
+Never add new facts or sources. Preserve inline citation links and their exact targets.
 """.strip()
     hints_block = json.dumps(hints, ensure_ascii=True)
-    user = f"""
+    user = rf"""
 Article (MDX):
 {full_mdx}
 
@@ -3160,7 +3147,7 @@ Review focus:
 - Void HTML elements must be self-closing (e.g., <br />, <img />).
 - Fix malformed tags or stray angle brackets in plain text (e.g., "< 5%" → "\< 5%").
 - Bare curly braces in prose MUST be escaped: {{ → \{{ and }} → \}} (e.g., "{{n+1}}" → "\{{n+1\}}", "{{$1B}}" → "\{{$1B\}}"). Do NOT escape braces inside code fences or JSX components.
-- Preserve tables, headings, and source attributions as plain text names only.
+- Preserve tables, headings, source attributions and inline citation links.
 
 Decision:
 - status=pass if clean
@@ -3178,7 +3165,7 @@ Output JSON only:
 Rules:
 - If status is pass, cleaned_mdx must be an empty string.
 - If status is fix, cleaned_mdx must contain the full revised article.
-- Use valid JSON and escape newlines as \\n.
+- Use valid JSON and escape newlines as \n.
 """.strip()
     return _compose_prompt(system, user)
 
@@ -3264,6 +3251,9 @@ def _validate_and_repair_posts(
             if m:
                 fname, reason = m.group(1).strip(), m.group(2).strip()
                 errors.setdefault(fname, []).append(f"quality:gate: {reason}")
+        if not errors:
+            for post_path in post_paths:
+                errors.setdefault(post_path.name, []).append("quality:gate failed without a parseable diagnostic")
         return errors
 
     def _run_astro_build() -> dict[str, list[str]]:
@@ -3349,7 +3339,7 @@ def _build_revision_prompt(*, full_mdx: str, issues_json: str, keyword: str) -> 
     system = """
 You are a senior editor revising an article to address quality issues.
 You must fix the issues without adding new facts or sources.
-Preserve existing source attributions as plain text names and only adjust wording or structure.
+Preserve inline Markdown citations and exact targets. Add missing inline citations only from the supplied source excerpts.
 """.strip()
     user = f"""
 Article:
@@ -3360,9 +3350,9 @@ Issues JSON:
 
 Rules:
 - Do not add new claims or sources.
-- Keep the primary keyword "{keyword}" in the first paragraph and conclusion.
+- Answer the reader question "{keyword}" naturally, without keyword repetition.
 - Keep paragraphs short and avoid redundancy.
-- Mention source names as plain text only; do not include hyperlinks, URLs, or Markdown link syntax in the body.
+- Cite factual claims with [source name](exact supplied URL). Do not remove existing citation links.
 
 Output (MDX):
 revised article body
@@ -3484,10 +3474,10 @@ def _describe_image_urls(
             data = None
         if not isinstance(data, dict):
             continue
-        description = _ensure_ascii_text(str(data.get("description") or "").strip(), "")
-        alt_text = _ensure_ascii_text(str(data.get("alt_text") or "").strip(), "")
+        description = _ensure_text(str(data.get("description") or "").strip(), "")
+        alt_text = _ensure_text(str(data.get("alt_text") or "").strip(), "")
         keywords = [
-            _ensure_ascii_text(keyword, "")
+            _ensure_text(keyword, "")
             for keyword in _ensure_list_of_strings(data.get("keywords"))
         ]
         keywords = [keyword for keyword in keywords if keyword]
@@ -3605,7 +3595,7 @@ def _insert_images_by_relevance(body: str, image_infos: list[dict]) -> str:
     if not placements:
         return body
     for index, info in sorted(placements, key=lambda item: item[0], reverse=True):
-        alt_text = _ensure_ascii_text(
+        alt_text = _ensure_text(
             str(info.get("alt_text") or info.get("description") or "Related image"),
             "Related image",
         )
@@ -3622,7 +3612,7 @@ def _ensure_images_in_body(body: str, image_urls: list[str], alt_text: str) -> s
         return body
     existing_set = {url for url in existing if isinstance(url, str)}
     add_urls = [url for url in image_urls if url not in existing_set]
-    safe_alt = _ensure_ascii_text(alt_text, "Related image")
+    safe_alt = _ensure_text(alt_text, "Related image")
     blocks = [f"![{safe_alt}]({url})" for url in add_urls[:needed]]
     parts = body.split("\n\n")
     text_indices = [index for index, part in enumerate(parts) if _is_text_block(part)]
@@ -3655,7 +3645,7 @@ def _normalize_chart_specs(raw: object) -> list[dict]:
         if chart_type not in {"bar", "line"}:
             continue
         labels = [
-            _ensure_ascii_text(str(label).strip(), "")
+            _ensure_text(str(label).strip(), "")
             for label in (item.get("labels") or [])
             if str(label).strip()
         ]
@@ -3673,16 +3663,16 @@ def _normalize_chart_specs(raw: object) -> list[dict]:
             continue
         normalized.append(
             {
-                "title": _ensure_ascii_text(str(item.get("title") or "Market signal").strip(), "Market signal"),
+                "title": _ensure_text(str(item.get("title") or "Market signal").strip(), "Market signal"),
                 "chart_type": chart_type,
                 "labels": labels,
                 "values": values,
-                "unit": _ensure_ascii_text(str(item.get("unit") or "").strip(), ""),
-                "alt_text": _ensure_ascii_text(
+                "unit": _ensure_text(str(item.get("unit") or "").strip(), ""),
+                "alt_text": _ensure_text(
                     str(item.get("alt_text") or item.get("title") or "Chart").strip(),
                     "Chart",
                 ),
-                "caption": _ensure_ascii_text(str(item.get("caption") or "").strip(), ""),
+                "caption": _ensure_text(str(item.get("caption") or "").strip(), ""),
             }
         )
         if len(normalized) >= MAX_INLINE_CHARTS:
@@ -3783,12 +3773,12 @@ def _fallback_daily_impact_chart_spec(
         labels.append(label)
         values.append(round(float(score), 2))
     return {
-        "title": _ensure_ascii_text(f"{keyword} macro signal emphasis", "Macro signal emphasis"),
+        "title": _ensure_text(f"{keyword} macro signal emphasis", "Macro signal emphasis"),
         "chart_type": "bar",
         "labels": labels,
         "values": values,
         "unit": "signal score",
-        "alt_text": _ensure_ascii_text(
+        "alt_text": _ensure_text(
             f"Heuristic macro signal emphasis chart for {keyword}",
             "Heuristic macro signal emphasis chart",
         ),
@@ -3954,7 +3944,7 @@ def _extract_alt_from_image_prompt(prompt: str) -> str:
 
 def _build_visual_markdown_block(*, alt_text: str, path: str, caption: str) -> str:
     image_line = f"![{alt_text}]({path})"
-    safe_caption = _ensure_ascii_text(caption.strip(), "")
+    safe_caption = _ensure_text(caption.strip(), "")
     if not safe_caption:
         return f"<figure>\n\n{image_line}\n\n</figure>"
     return f"<figure>\n\n{image_line}\n\n<figcaption>{safe_caption}</figcaption>\n\n</figure>"
@@ -4192,7 +4182,7 @@ def _generate_hero_image_google(prompt: str, output_path: Path, config: Automati
     if not api_key:
         return False
     model = config.google_image_model or DEFAULT_GOOGLE_IMAGE_MODEL
-    safe_prompt = _force_ascii(prompt).strip() or "Abstract tech illustration"
+    safe_prompt = _normalize_text(prompt).strip() or "Abstract tech illustration"
     payload = {
         "contents": [{"parts": [{"text": safe_prompt}]}],
         "generationConfig": {
@@ -4288,7 +4278,7 @@ def _materialize_inline_visuals(
             svg_path.write_text(_render_chart_svg(spec), encoding="utf-8")
             result.append({
                 "block": _build_visual_markdown_block(
-                    alt_text=_ensure_ascii_text(str(spec.get("alt_text") or "Chart").strip(), "Chart"),
+                    alt_text=_ensure_text(str(spec.get("alt_text") or "Chart").strip(), "Chart"),
                     path=f"{base_url}/chart-{idx}.svg",
                     caption=str(spec.get("caption") or "").strip(),
                 ),
@@ -4300,21 +4290,22 @@ def _materialize_inline_visuals(
     for idx, descriptor in enumerate(inline_image_descriptors[:MAX_GENERATED_INLINE_IMAGES], start=1):
         if isinstance(descriptor, str):
             descriptor = {"prompt": descriptor, "section_heading": ""}
-        safe_prompt = _ensure_ascii_text(str(descriptor.get("prompt") or "").strip(), "")
+        safe_prompt = _ensure_text(str(descriptor.get("prompt") or "").strip(), "")
         if not safe_prompt:
             continue
         image_path = asset_dir / f"inline-{idx}.jpg"
         try:
             generated = _generate_hero_image_google(safe_prompt, image_path, config)
+            ai_generated = generated
             if not generated:
                 generated = _generate_hero_gradient(image_path, config)
             if not generated:
                 continue
             result.append({
                 "block": _build_visual_markdown_block(
-                    alt_text=_ensure_ascii_text(_extract_alt_from_image_prompt(safe_prompt), "Related illustration"),
+                    alt_text="Conceptual illustration" if ai_generated else "Decorative gradient",
                     path=f"{base_url}/inline-{idx}.jpg",
-                    caption=_caption_from_prompt(safe_prompt),
+                    caption="AI-generated conceptual illustration." if ai_generated else "Decorative illustration.",
                 ),
                 "section_heading": str(descriptor.get("section_heading") or "").strip(),
             })
@@ -4387,6 +4378,8 @@ def _write_post(
     slug_hint: str,
     date_str: str | None = None,
     force_draft: bool = False,
+    writer: ClaudeClient,
+    review_context: dict,
 ) -> Path:
     now = datetime.now(config.content_timezone)
     if not date_str:
@@ -4433,8 +4426,17 @@ def _write_post(
     if visual_blocks:
         content = _insert_visual_blocks(content, visual_blocks)
 
+    final_mdx = frontmatter + "\n" + content + "\n"
+    review_context["chart_specs"] = chart_specs or []
+    try:
+        _audit_final_article(config, writer, final_mdx + "\nChart data: " + json.dumps(chart_specs or []), review_context)
+    except EditorialError:
+        held_dir = ROOT_DIR / 'data/editorial-rejections'
+        held_dir.mkdir(parents=True, exist_ok=True)
+        (held_dir / post_path.name).write_text(final_mdx, encoding='utf-8')
+        raise
     config.content_dir.mkdir(parents=True, exist_ok=True)
-    post_path.write_text(frontmatter + "\n" + content + "\n", encoding="utf-8")
+    post_path.write_text(final_mdx, encoding="utf-8")
 
     hero_path = config.hero_base_dir / f"{date_str}-{slug}" / "hero.jpg"
     _generate_hero_image(image_prompt or title, hero_path, config)
@@ -4451,7 +4453,7 @@ def _build_fallback_body(
     links = [source.get("url") for source in sources if source.get("url")]
     title_snippet = ", ".join(titles[:3])
     link_snippet = [
-        _ensure_ascii_text(urlparse(str(link)).netloc, "Source") for link in links[:3] if _is_valid_url(str(link))
+        _ensure_text(urlparse(str(link)).netloc, "Source") for link in links[:3] if _is_valid_url(str(link))
     ]
     detail_snippets = _source_snippets(sources, limit=3)
     detail_text = " ".join(detail_snippets)
@@ -4788,12 +4790,13 @@ def _extract_structured_sources(
         logging.warning("Web researcher failed: %s", exc)
         data = None
     sources = []
+    raw_by_url = {str(raw.get("url")): raw for raw in raw_sources}
     if isinstance(data, dict) and isinstance(data.get("sources"), list):
         for item in data.get("sources"):
             if not isinstance(item, dict):
                 continue
             url = str(item.get("url") or "").strip()
-            if not _is_valid_url(url):
+            if not _is_valid_url(url) or url not in raw_by_url:
                 continue
             sources.append(
                 {
@@ -4801,6 +4804,8 @@ def _extract_structured_sources(
                     "url": url,
                     "publisher": str(item.get("publisher") or "").strip() or urlparse(url).netloc,
                     "published_at": str(item.get("published_at") or "unknown").strip(),
+                    "excerpt": str(raw_by_url[url].get("text") or ""),
+                    "retrieved_at": datetime.now(timezone.utc).isoformat(),
                     "key_facts": _ensure_list_of_strings(item.get("key_facts")),
                     "direct_quotes": _ensure_list_of_strings(item.get("direct_quotes")),
                 }
@@ -4819,6 +4824,8 @@ def _extract_structured_sources(
                 "url": url,
                 "publisher": str(raw.get("publisher") or "").strip() or urlparse(url).netloc,
                 "published_at": str(raw.get("published_at") or "unknown").strip(),
+                "excerpt": str(raw.get("text") or ""),
+                "retrieved_at": datetime.now(timezone.utc).isoformat(),
                 "key_facts": [first_fact] if first_fact else [],
                 "direct_quotes": [],
             }
@@ -4843,9 +4850,10 @@ def _build_evidence_from_sources(
     except Exception as exc:
         logging.warning("Evidence builder failed: %s", exc)
         data = None
-    if isinstance(data, dict):
-        return data
-    return {"timeline": [], "claims": [], "open_questions": [], "conflicts": []}
+    if not isinstance(data, dict):
+        raise EditorialError("Evidence builder returned no structured evidence")
+    validate_evidence(data, sources)
+    return data
 
 
 def _discover_daily_market_events(
@@ -5000,85 +5008,7 @@ def _build_outline(
         data = None
     if isinstance(data, dict) and isinstance(data.get("sections"), list):
         return data
-    fallback_sections = [
-        {
-            "heading": f"Why {keyword} is rising now",
-            "goal": "Explain the recent trigger and why the topic matters now.",
-            "evidence_refs": [],
-        },
-        {
-            "heading": f"Key facts shaping {keyword}",
-            "goal": "Summarize verified facts and data points.",
-            "evidence_refs": [],
-        },
-        {
-            "heading": f"What {keyword} means for readers",
-            "goal": "Translate the evidence into reader impact and implications.",
-            "evidence_refs": [],
-        },
-        {
-            "heading": f"What to watch next for {keyword}",
-            "goal": "Highlight open questions and forward-looking signals.",
-            "evidence_refs": [],
-        },
-    ]
-    if template_mode == PIPELINE_DAILY_IMPACT:
-        fallback_sections = [
-            {
-                "heading": f"Why the prior day matters for {keyword}",
-                "goal": "State the thesis, the event, and why this matters now.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"How the event flows into {keyword}",
-                "goal": "Map the transmission mechanism from event to market effect.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"The strongest evidence behind the {keyword} view",
-                "goal": "Highlight the most important data points, claims, and caveats.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"Scenarios and risk signals for {keyword}",
-                "goal": "Lay out base, upside, downside, and uncertainty.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"What to watch next for {keyword}",
-                "goal": "List concrete signals, releases, or thresholds to monitor next.",
-                "evidence_refs": [],
-            },
-        ]
-    elif template_mode == PIPELINE_WEEKLY_MAJOR_EVENTS:
-        fallback_sections = [
-            {
-                "heading": f"Why this week matters for {keyword}",
-                "goal": "State the thesis, the event, and why this matters over the coming weeks.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"How the event flows into {keyword}",
-                "goal": "Map the transmission mechanism from event to market effect.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"The strongest evidence behind the {keyword} view",
-                "goal": "Highlight the most important data points, claims, and caveats.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"Scenarios and risk signals for {keyword}",
-                "goal": "Lay out base, upside, downside, and uncertainty.",
-                "evidence_refs": [],
-            },
-            {
-                "heading": f"What to watch next for {keyword}",
-                "goal": "List concrete signals, releases, or thresholds to monitor next.",
-                "evidence_refs": [],
-            },
-        ]
-    return {"title_direction": "", "sections": fallback_sections, "faq": []}
+    raise EditorialError("Outline unavailable; retry instead of imposing a generic template")
 
 
 def _allocate_resources(
@@ -5276,34 +5206,36 @@ def _apply_quality_gate(
     *,
     full_mdx: str,
     keyword: str,
+    sources: list[dict] | None = None,
 ) -> str:
     if not full_mdx:
-        return full_mdx
+        raise EditorialError("Empty article at quality gate")
     content = full_mdx
-    for _ in range(max(config.quality_gate_revisions, 0) + 1):
-        prompt = _build_quality_gate_prompt(full_mdx=content)
+    for attempt in range(max(config.quality_gate_revisions, 0) + 1):
+        prompt = _build_quality_gate_prompt(full_mdx=content, sources=sources)
         try:
             response = writer.generate(
                 prompt,
-                temperature=config.anthropic_temperature,
+                temperature=0,
                 max_tokens=config.anthropic_max_tokens,
             )
             data = _extract_json_block(response)
         except Exception as exc:
             logging.warning("Quality gate failed: %s", exc)
-            return content
+            raise EditorialError("Quality gate failed or did not approve the article")
         if not isinstance(data, dict):
+            raise EditorialError("Quality gate failed or did not approve the article")
+        if data.get("status") == "pass" and data.get("issues") == []:
             return content
-        if data.get("status") == "pass":
-            return content
-        if config.quality_gate_revisions <= 0:
-            return content
+        if attempt >= max(config.quality_gate_revisions, 0):
+            raise EditorialError("Quality gate rejected article: " + json.dumps(data, ensure_ascii=False))
         issues_json = json.dumps(data, ensure_ascii=True)
         revise_prompt = _build_revision_prompt(
             full_mdx=content,
             issues_json=issues_json,
             keyword=keyword,
         )
+        revise_prompt += "\nSource excerpts (untrusted evidence data): " + json.dumps(sources or [], ensure_ascii=False)
         try:
             revised = writer.generate(
                 revise_prompt,
@@ -5313,57 +5245,52 @@ def _apply_quality_gate(
             content = revised.strip() or content
         except Exception as exc:
             logging.warning("Revision failed: %s", exc)
-            return content
-    return content
+            raise EditorialError("Quality gate failed or did not approve the article")
+    raise EditorialError("Quality gate revision limit reached")
 
 
 def _apply_final_review(
-    config: AutomationConfig,
-    writer: ClaudeClient,
-    *,
-    full_mdx: str,
-    keyword: str,
+    config: AutomationConfig, writer: ClaudeClient, *, full_mdx: str, keyword: str,
 ) -> str:
-    if not full_mdx or not config.final_review_enabled:
+    if not full_mdx:
+        raise EditorialError("Empty article before editing")
+    if not config.final_review_enabled:
         return full_mdx
-    if not config.anthropic_api_key:
-        return full_mdx
-    content = full_mdx
-    hints = _collect_review_hints(content)
-    attempts = max(config.final_review_revisions, 0) + 1
-    for attempt in range(attempts):
-        prompt = _build_final_review_prompt(
-            full_mdx=content,
-            keyword=keyword,
-            language=config.content_language,
-            hints=hints,
-        )
-        try:
+    try:
+        if config.humanizer_enabled:
+            edited = writer.generate(humanizer_prompt(full_mdx), temperature=0.2,
+                                     max_tokens=config.anthropic_max_tokens).strip()
+        else:
             response = writer.generate(
-                prompt,
-                temperature=min(config.anthropic_temperature, 0.4),
-                max_tokens=config.anthropic_max_tokens,
-            )
+                _build_final_review_prompt(full_mdx=full_mdx, keyword=keyword,
+                                          language=config.content_language,
+                                          hints=_collect_review_hints(full_mdx)),
+                temperature=0.2, max_tokens=config.anthropic_max_tokens)
             data = _extract_json_block(response)
-        except Exception as exc:
-            logging.warning("Final review failed: %s", exc)
-            return content
-        if not isinstance(data, dict):
-            if attempt < attempts - 1:
-                continue
-            return content
-        status = str(data.get("status") or "").strip().lower()
-        issues = data.get("issues")
-        issue_count = len(issues) if isinstance(issues, list) else 0
-        logging.info("Final review status: %s (issues=%s)", status, issue_count)
-        if status == "pass":
-            return content
-        cleaned = str(data.get("cleaned_mdx") or "").strip()
-        if status in {"fix", "regenerate"} and cleaned:
-            return cleaned
-        if attempt >= attempts - 1:
-            return content
-    return content
+            if not isinstance(data, dict) or data.get("status") not in {"pass", "fix"}:
+                raise EditorialError("Legacy editor did not approve the article")
+            edited = full_mdx if data['status'] == 'pass' else str(data.get('cleaned_mdx') or '')
+        check_edit(full_mdx, edited)
+        return edited
+    except EditorialError:
+        raise
+    except Exception as exc:
+        raise EditorialError(f"Editor unavailable: {type(exc).__name__}") from exc
+
+
+def _audit_final_article(config, writer, article, review_context) -> None:
+    sources = review_context.get('sources', [])
+    evidence = review_context.get('evidence', {})
+    validate_evidence(evidence, sources)
+    try:
+        response = writer.generate(
+            audit_prompt(article, sources, evidence, review_context.get('original_body', '')),
+            temperature=0, max_tokens=min(config.anthropic_max_tokens, 4096))
+        result = _extract_json_block(response)
+    except Exception as exc:
+        raise EditorialError(f"Source audit unavailable: {type(exc).__name__}") from exc
+    if not isinstance(result, dict) or result.get('status') != 'pass' or result.get('issues') != []:
+        raise EditorialError('Final source audit rejected article: ' + json.dumps(result, ensure_ascii=False))
 
 
 def _apply_mdx_render_guard(
@@ -5532,6 +5459,7 @@ def _generate_article_multi_agent(
         writer,
         full_mdx=full_body,
         keyword=keyword,
+        sources=structured_sources,
     )
     summary = _first_sentences(_strip_markdown(full_body), count=2, max_len=320)
     key_points = _key_points_from_evidence(evidence)
@@ -5546,7 +5474,7 @@ def _generate_article_multi_agent(
         for item in resources.get("inline_images") or []:
             if not isinstance(item, dict):
                 continue
-            prompt = _ensure_ascii_text(str(item.get("prompt_or_query") or "").strip(), "")
+            prompt = _ensure_text(str(item.get("prompt_or_query") or "").strip(), "")
             if prompt:
                 inline_image_descriptors.append({
                     "prompt": prompt,
@@ -5560,6 +5488,7 @@ def _generate_article_multi_agent(
             reference_urls.append(url)
     return {
         "body": full_body,
+        "review_context": {"sources": structured_sources, "evidence": evidence},
         "summary": summary,
         "key_points": key_points,
         "image_prompt_hint": image_prompt_hint,
@@ -5584,7 +5513,7 @@ def _generate_post_for_topic(
 
     image_urls = _extract_image_urls(topic)
     urls = _extract_urls(topic)
-    alt_text = _ensure_ascii_text(f"{keyword} related image", "Related image")
+    alt_text = _ensure_text(f"{keyword} related image", "Related image")
     image_infos = _describe_image_urls(config, writer, image_urls)
     fallback_body = ""
     summary = ""
@@ -5593,6 +5522,7 @@ def _generate_post_for_topic(
     body = ""
     hero_alt_hint = ""
     reference_urls = list(urls)
+    review_context: dict = {}
 
     template_mode = pipeline if _uses_market_impact_template(pipeline) else None
     inline_image_prompts: list[str] = []
@@ -5604,15 +5534,18 @@ def _generate_post_for_topic(
             topic=topic,
             pipeline=pipeline,
         )
+        if not article:
+            raise EditorialError("Multi-stage writer failed; fallback is not publishable")
         if article:
+            review_context = article["review_context"]
             body = str(article.get("body") or "").strip()
-            summary = _ensure_ascii_text(str(article.get("summary") or "").strip(), "")
+            summary = _ensure_text(str(article.get("summary") or "").strip(), "")
             key_points = _normalize_key_points(article.get("key_points"))
-            image_prompt_hint = _ensure_ascii_text(
+            image_prompt_hint = _ensure_text(
                 str(article.get("image_prompt_hint") or keyword).strip(),
                 keyword,
             )
-            hero_alt_hint = _ensure_ascii_text(
+            hero_alt_hint = _ensure_text(
                 str(article.get("hero_alt_hint") or "").strip(),
                 "",
             )
@@ -5632,6 +5565,8 @@ def _generate_post_for_topic(
             if _is_valid_url(url)
         ]
         sources = _fetch_sources_from_candidates(candidates, config, max_sources=None)
+        structured = _extract_structured_sources(config, writer, raw_sources=sources, queries=[], priority_sources=[])
+        review_context = {"sources": structured, "evidence": _build_evidence_from_sources(config, writer, structured)}
 
         content_prompt = _build_content_prompt(
             keyword=keyword,
@@ -5660,13 +5595,13 @@ def _generate_post_for_topic(
         fallback_body = _build_fallback_body(keyword, sources, image_urls, alt_text)
 
         if content_data:
-            summary = _ensure_ascii_text(
+            summary = _ensure_text(
                 str(content_data.get("summary") or "").strip(),
                 "",
             )
             key_points = _normalize_key_points(content_data.get("key_points"))
             body = str(content_data.get("body_markdown") or "").strip()
-            image_prompt_hint = _ensure_ascii_text(
+            image_prompt_hint = _ensure_text(
                 str(content_data.get("image_prompt_hint") or keyword).strip(),
                 keyword,
             )
@@ -5674,15 +5609,16 @@ def _generate_post_for_topic(
     _used_fallback_body = not body
     if _used_fallback_body:
         logging.warning(
-            "All LLM content stages failed for '%s'. Publishing as draft using fallback body.", keyword
+            "All LLM content stages failed for '%s'. Holding article.", keyword
         )
-        body = fallback_body
+        raise EditorialError("All content writers failed; fallback is not publishable")
 
     if image_infos:
         body = _insert_images_by_relevance(body, image_infos)
     body = _ensure_images_in_body(body, image_urls, alt_text)
     body = _clean_body_text(body)
-    body = _ensure_ascii_body(body, fallback_body or body)
+    body = _ensure_body(body, fallback_body or body)
+    review_context["original_body"] = body
     reviewed_body = _apply_final_review(
         config,
         writer,
@@ -5691,7 +5627,7 @@ def _generate_post_for_topic(
     )
     if reviewed_body != body:
         body = _clean_body_text(reviewed_body)
-        body = _ensure_ascii_body(body, body)
+        body = _ensure_body(body, body)
         summary = ""
     mdx_checked_body = _apply_mdx_render_guard(
         config,
@@ -5699,12 +5635,13 @@ def _generate_post_for_topic(
         full_mdx=body,
     )
     if mdx_checked_body != body:
+        check_edit(body, mdx_checked_body)
         body = _clean_body_text(mdx_checked_body)
-        body = _ensure_ascii_body(body, body)
+        body = _ensure_body(body, body)
         summary = ""
 
     if not summary:
-        summary = _ensure_ascii_text(
+        summary = _ensure_text(
             _first_sentences(_strip_markdown(body), count=2, max_len=200),
             "Trend summary of the topic.",
         )
@@ -5741,20 +5678,20 @@ def _generate_post_for_topic(
         logging.warning("Frontmatter LLM failed for %s: %s", keyword, exc)
         meta_data = None
 
-    fallback_category = _ensure_ascii_text(config.fallback_category, "stocks")
+    fallback_category = _ensure_text(config.fallback_category, "stocks")
     fallback_tags = [
-        _ensure_ascii_text(tag, "topic") for tag in config.fallback_tags if tag
+        _ensure_text(tag, "topic") for tag in config.fallback_tags if tag
     ] or ["topic"]
     if forced_tags:
         fallback_tags = list(dict.fromkeys([*forced_tags, *fallback_tags]))
     fallback_tags = fallback_tags[:3]
 
     if meta_data:
-        title = _ensure_ascii_text(
+        title = _ensure_text(
             str(meta_data.get("title") or keyword).strip(),
             "Trend summary",
         )
-        description = _ensure_ascii_text(
+        description = _ensure_text(
             str(meta_data.get("description") or summary).strip(),
             "Key updates and context around the topic.",
         )
@@ -5763,11 +5700,11 @@ def _generate_post_for_topic(
             [fallback_category],
         )
         tags_list = _normalize_tag_list(meta_data.get("tags"), fallback_tags)
-        hero_alt = _ensure_ascii_text(
+        hero_alt = _ensure_text(
             str(meta_data.get("hero_alt") or hero_alt_hint or title).strip(),
             hero_alt_hint or title,
         )
-        image_prompt = _ensure_ascii_text(
+        image_prompt = _ensure_text(
             str(meta_data.get("image_prompt") or image_prompt_hint).strip(),
             image_prompt_hint,
         )
@@ -5775,30 +5712,30 @@ def _generate_post_for_topic(
         default_title = f"{keyword} trend summary"
         if forced_category:
             default_title = f"{keyword}: what it means for {forced_category}"
-        title = _ensure_ascii_text(default_title, "Trend summary")
-        description = _ensure_ascii_text(
+        title = _ensure_text(default_title, "Trend summary")
+        description = _ensure_text(
             summary or f"Key updates and context around {keyword}.",
             "Key updates and context around the topic.",
         )
         category_list = [forced_category] if forced_category else [fallback_category]
         tags_list = fallback_tags
-        hero_alt = _ensure_ascii_text(f"{keyword} hero image", "Hero image")
-        image_prompt = _ensure_ascii_text(
+        hero_alt = _ensure_text(f"{keyword} hero image", "Hero image")
+        image_prompt = _ensure_text(
             image_prompt_hint or f"{keyword} concept illustration",
             "Concept illustration",
         )
 
     inline_image_prompts = [
-        item if isinstance(item, dict) else {"prompt": _ensure_ascii_text(item, ""), "section_heading": ""}
+        item if isinstance(item, dict) else {"prompt": _ensure_text(item, ""), "section_heading": ""}
         for item in inline_image_prompts
-        if _ensure_ascii_text(item if isinstance(item, str) else str(item.get("prompt") or ""), "")
+        if _ensure_text(item if isinstance(item, str) else str(item.get("prompt") or ""), "")
     ]
 
     if _uses_market_impact_template(template_mode) and not inline_image_prompts:
-        base_angle = _ensure_ascii_text(str(topic.get("angle") or "").strip(), "")
+        base_angle = _ensure_text(str(topic.get("angle") or "").strip(), "")
         inline_image_prompts = [
             {
-                "prompt": _ensure_ascii_text(
+                "prompt": _ensure_text(
                     f"Editorial-style market illustration for {title}. Focus on {base_angle or keyword}. No text, no logos.",
                     "Market illustration without text",
                 ),
@@ -5821,6 +5758,8 @@ def _generate_post_for_topic(
         slug_hint=title,
         date_str=str(topic.get("publish_date") or "").strip() or None,
         force_draft=_used_fallback_body,
+        writer=writer,
+        review_context=review_context,
     )
 
 
@@ -6239,18 +6178,16 @@ def run_daily_impact(
     if not topics:
         logging.warning("Daily impact pipeline produced no publishable topics.")
         return
-    try:
-        _process_topics(
-            config,
-            topics=topics,
-            pipeline=PIPELINE_DAILY_IMPACT,
-        )
-    finally:
-        state = _load_state()
-        completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
-        completed_runs.add(window_labels["target_date"])
-        state["daily_impact_runs"] = sorted(completed_runs)
-        _save_state(state)
+    _process_topics(
+        config,
+        topics=topics,
+        pipeline=PIPELINE_DAILY_IMPACT,
+    )
+    state = _load_state()
+    completed_runs = set(_ensure_list_of_strings(state.get("daily_impact_runs")))
+    completed_runs.add(window_labels["target_date"])
+    state["daily_impact_runs"] = sorted(completed_runs)
+    _save_state(state)
 
 
 def run_weekly_major_events(
@@ -6384,18 +6321,16 @@ def run_weekly_major_events(
         },
         content_timezone=config.content_timezone,
     )
-    try:
-        _process_topics(
-            config,
-            topics=topics,
-            pipeline=PIPELINE_WEEKLY_MAJOR_EVENTS,
-        )
-    finally:
-        state = _load_state()
-        completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
-        completed_runs.add(week_labels["week_key"])
-        state["weekly_major_runs"] = sorted(completed_runs)
-        _save_state(state)
+    _process_topics(
+        config,
+        topics=topics,
+        pipeline=PIPELINE_WEEKLY_MAJOR_EVENTS,
+    )
+    state = _load_state()
+    completed_runs = set(_ensure_list_of_strings(state.get("weekly_major_runs")))
+    completed_runs.add(week_labels["week_key"])
+    state["weekly_major_runs"] = sorted(completed_runs)
+    _save_state(state)
 
 
 def _process_topics(
@@ -6423,6 +6358,8 @@ def _process_topics(
         config.anthropic_timeout_sec,
     )
     generated_paths: list[Path] = []
+    pending: list[tuple[str, Path]] = []
+    failed = False
     for topic in topics:
         keyword = topic.get("keyword")
         if not keyword:
@@ -6441,29 +6378,40 @@ def _process_topics(
         if topic_key in used:
             logging.info("Skip already processed topic: %s", topic_key)
             continue
-        post_path = _generate_post_for_topic(
-            config,
-            writer,
-            meta_writer,
-            topic,
-            pipeline=pipeline,
-        )
-        if post_path:
-            used.add(topic_key)
-            slugs.add(post_path.stem)
-            state["topics"] = sorted(used)
-            state["slugs"] = sorted(slugs)
-            _save_state(state)
+        try:
+            post_path = _generate_post_for_topic(config, writer, meta_writer, topic, pipeline=pipeline)
+            if not post_path:
+                raise EditorialError("No article was generated")
+            if re.search(r'^draft: true$', post_path.read_text(), re.M):
+                raise EditorialError("Draft saved; topic remains retryable")
             generated_paths.append(post_path)
-            logging.info("Post created: %s", post_path)
+            pending.append((topic_key, post_path))
+        except EditorialError as exc:
+            failed = True
+            rejected_dir = ROOT_DIR / 'data/editorial-rejections'
+            rejected_dir.mkdir(parents=True, exist_ok=True)
+            write_json(rejected_dir / f'{_slugify(topic_key)}.json',
+                       {'topic': topic_key, 'reason': str(exc), 'status': 'rejected'})
+            logging.error("Article held: %s", exc)
 
+    if generated_paths:
+        try:
+            valid = _validate_and_repair_posts(config, writer, post_paths=generated_paths, max_rounds=0)
+        except Exception:
+            valid = False
+        if not valid:
+            for post_path in generated_paths:
+                text = post_path.read_text()
+                post_path.write_text(re.sub(r'^draft: false$', 'draft: true', text, count=1, flags=re.M))
+            raise EditorialError("Final build failed; generated articles retained as drafts")
+    for topic_key, post_path in pending:
+        used.add(topic_key)
+        slugs.add(post_path.stem)
     state["topics"] = sorted(used)
     state["slugs"] = sorted(slugs)
     _save_state(state)
-
-    if generated_paths:
-        logging.info("Running post-generation validation on %d post(s).", len(generated_paths))
-        _validate_and_repair_posts(config, writer, post_paths=generated_paths)
+    if failed:
+        raise EditorialError("One or more topics were held; run is retryable")
 
 
 def run_pipeline(

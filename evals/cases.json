@@ -1,0 +1,264 @@
+[
+  {
+    "id": "mortgage",
+    "question": "Why can mortgage rates stay high after a Fed rate cut?",
+    "as_of": "2026-05-21",
+    "url": "https://www.bostonfed.org/publications/current-policy-perspectives/2026/why-mortgage-rates-exceed-treasury-yields.aspx",
+    "publisher": "Federal Reserve Bank of Boston",
+    "published_at": "2026-05-19",
+    "excerpt": "The 30-year fixed mortgage rate is currently about 6.5 percent. Expectations about interest rates, rate volatility and refinancing costs explain about 80 percent of the variation in the coupon spread since 2006.",
+    "notes": "Editorial notes checked against the source on 2026-09-07: The article is dated May 19, 2026. Its approximately 6.5% mortgage rate and 4.5% Treasury yield refer to that discussion, not May 2024. Coupon spread adjusts for cash-flow differences, credit insurance and intermediation; it is not the raw difference between primary mortgage rates and 10-year Treasury yields. Borrowers may refinance when rates fall, affecting MBS investors. No fixed floor for future Treasury yields is established. This is an explanation of historical data, not a current quote or personal borrowing recommendation.",
+    "claims": [
+      {
+        "claim": "The May 2026 discussion reports a mortgage rate of about 6.5 percent.",
+        "evidence_quote": "The 30-year fixed mortgage rate is currently about 6.5 percent.",
+        "period": "2026-05",
+        "unit": "annual percent",
+        "region": "US",
+        "kind": "fact",
+        "source": "https://www.bostonfed.org/publications/current-policy-perspectives/2026/why-mortgage-rates-exceed-treasury-yields.aspx",
+        "evidence": [
+          "The 30-year fixed mortgage rate is currently about 6.5 percent."
+        ]
+      }
+    ],
+    "headings": [
+      "What the Fed controls and what a mortgage prices",
+      "Why the definition of the spread matters"
+    ],
+    "rubric": "Must date the cited data to May 2026, distinguish adjusted coupon spread from raw mortgage spread, avoid a guaranteed yield floor or refinancing outcome, and answer the reader question.",
+    "source": {
+      "url": "https://www.bostonfed.org/publications/current-policy-perspectives/2026/why-mortgage-rates-exceed-treasury-yields.aspx",
+      "title": "Why can mortgage rates stay high after a Fed rate cut?",
+      "publisher": "Federal Reserve Bank of Boston",
+      "published_at": "2026-05-19",
+      "retrieved_at": "2026-09-07",
+      "excerpt": "The 30-year fixed mortgage rate is currently about 6.5 percent. Expectations about interest rates, rate volatility and refinancing costs explain about 80 percent of the variation in the coupon spread since 2006.",
+      "key_facts": [
+        "The May 2026 discussion reports a mortgage rate of about 6.5 percent."
+      ],
+      "editorial_notes": "Editorial notes checked against the source on 2026-09-07: The article is dated May 19, 2026. Its approximately 6.5% mortgage rate and 4.5% Treasury yield refer to that discussion, not May 2024. Coupon spread adjusts for cash-flow differences, credit insurance and intermediation; it is not the raw difference between primary mortgage rates and 10-year Treasury yields. Borrowers may refinance when rates fall, affecting MBS investors. No fixed floor for future Treasury yields is established. This is an explanation of historical data, not a current quote or personal borrowing recommendation."
+    },
+    "evidence": {
+      "claims": [
+        {
+          "claim": "The May 2026 discussion reports a mortgage rate of about 6.5 percent.",
+          "evidence_quote": "The 30-year fixed mortgage rate is currently about 6.5 percent.",
+          "period": "2026-05",
+          "unit": "annual percent",
+          "region": "US",
+          "kind": "fact",
+          "source": "https://www.bostonfed.org/publications/current-policy-perspectives/2026/why-mortgage-rates-exceed-treasury-yields.aspx",
+          "evidence": [
+            "The 30-year fixed mortgage rate is currently about 6.5 percent."
+          ]
+        }
+      ],
+      "timeline": [],
+      "open_questions": [],
+      "conflicts": []
+    },
+    "outline": {
+      "sections": [
+        {
+          "heading": "What the Fed controls and what a mortgage prices",
+          "goal": "Why can mortgage rates stay high after a Fed rate cut? Must date the cited data to May 2026, distinguish adjusted coupon spread from raw mortgage spread, avoid a guaranteed yield floor or refinancing outcome, and answer the reader question.",
+          "evidence_refs": [
+            "https://www.bostonfed.org/publications/current-policy-perspectives/2026/why-mortgage-rates-exceed-treasury-yields.aspx"
+          ]
+        },
+        {
+          "heading": "Why the definition of the spread matters",
+          "goal": "Why can mortgage rates stay high after a Fed rate cut? Must date the cited data to May 2026, distinguish adjusted coupon spread from raw mortgage spread, avoid a guaranteed yield floor or refinancing outcome, and answer the reader question.",
+          "evidence_refs": [
+            "https://www.bostonfed.org/publications/current-policy-perspectives/2026/why-mortgage-rates-exceed-treasury-yields.aspx"
+          ]
+        }
+      ],
+      "faq": []
+    }
+  },
+  {
+    "id": "data-centers",
+    "question": "What does the cost per megawatt leave out of a data center budget?",
+    "as_of": "2026-05-24",
+    "url": "https://www.jll.com/en-us/insights/market-outlook/data-center-outlook",
+    "publisher": "JLL Research",
+    "published_at": "2026 outlook; exact date unknown",
+    "excerpt": "Between 2020 and 2025, the average global data center construction cost increased from $7.7 to $10.7 million per MW.",
+    "notes": "Editorial notes checked against JLL on 2026-09-07: These figures cover building shell and core, not tenant technology fit-out. JLL forecasts average global construction cost of $11.3 million per MW in 2026. Tenant technology fit-out for AI can cost as much as $25 million per MW; that is an upper-end figure, not an average. Grid-connection waits in primary markets exceed four years on average. A building-cost measure must not be labeled the total AI project budget. Demand does not guarantee investor cash flows. Global data is not automatically the cost of a specific US project.",
+    "claims": [
+      {
+        "claim": "Average global shell-and-core construction cost rose from $7.7 million per MW in 2020 to $10.7 million per MW in 2025.",
+        "evidence_quote": "Between 2020 and 2025, the average global data center construction cost increased from $7.7 to $10.7 million per MW.",
+        "period": "2020–2025",
+        "unit": "USD million per MW, shell and core",
+        "region": "Global",
+        "kind": "fact",
+        "source": "https://www.jll.com/en-us/insights/market-outlook/data-center-outlook",
+        "evidence": [
+          "Between 2020 and 2025, the average global data center construction cost increased from $7.7 to $10.7 million per MW."
+        ]
+      }
+    ],
+    "headings": [
+      "What the construction number includes",
+      "How to compare budgets without mixing scopes"
+    ],
+    "rubric": "Must assign $10.7 million to 2025, distinguish shell-and-core from tenant fit-out, label 2026 cost as forecast, avoid treating upper bound as average or promising REIT returns.",
+    "source": {
+      "url": "https://www.jll.com/en-us/insights/market-outlook/data-center-outlook",
+      "title": "What does the cost per megawatt leave out of a data center budget?",
+      "publisher": "JLL Research",
+      "published_at": "2026 outlook; exact date unknown",
+      "retrieved_at": "2026-09-07",
+      "excerpt": "Between 2020 and 2025, the average global data center construction cost increased from $7.7 to $10.7 million per MW.",
+      "key_facts": [
+        "Average global shell-and-core construction cost rose from $7.7 million per MW in 2020 to $10.7 million per MW in 2025."
+      ],
+      "editorial_notes": "Editorial notes checked against JLL on 2026-09-07: These figures cover building shell and core, not tenant technology fit-out. JLL forecasts average global construction cost of $11.3 million per MW in 2026. Tenant technology fit-out for AI can cost as much as $25 million per MW; that is an upper-end figure, not an average. Grid-connection waits in primary markets exceed four years on average. A building-cost measure must not be labeled the total AI project budget. Demand does not guarantee investor cash flows. Global data is not automatically the cost of a specific US project."
+    },
+    "evidence": {
+      "claims": [
+        {
+          "claim": "Average global shell-and-core construction cost rose from $7.7 million per MW in 2020 to $10.7 million per MW in 2025.",
+          "evidence_quote": "Between 2020 and 2025, the average global data center construction cost increased from $7.7 to $10.7 million per MW.",
+          "period": "2020–2025",
+          "unit": "USD million per MW, shell and core",
+          "region": "Global",
+          "kind": "fact",
+          "source": "https://www.jll.com/en-us/insights/market-outlook/data-center-outlook",
+          "evidence": [
+            "Between 2020 and 2025, the average global data center construction cost increased from $7.7 to $10.7 million per MW."
+          ]
+        }
+      ],
+      "timeline": [],
+      "open_questions": [],
+      "conflicts": []
+    },
+    "outline": {
+      "sections": [
+        {
+          "heading": "What the construction number includes",
+          "goal": "What does the cost per megawatt leave out of a data center budget? Must assign $10.7 million to 2025, distinguish shell-and-core from tenant fit-out, label 2026 cost as forecast, avoid treating upper bound as average or promising REIT returns.",
+          "evidence_refs": [
+            "https://www.jll.com/en-us/insights/market-outlook/data-center-outlook"
+          ]
+        },
+        {
+          "heading": "How to compare budgets without mixing scopes",
+          "goal": "What does the cost per megawatt leave out of a data center budget? Must assign $10.7 million to 2025, distinguish shell-and-core from tenant fit-out, label 2026 cost as forecast, avoid treating upper bound as average or promising REIT returns.",
+          "evidence_refs": [
+            "https://www.jll.com/en-us/insights/market-outlook/data-center-outlook"
+          ]
+        }
+      ],
+      "faq": []
+    }
+  },
+  {
+    "id": "fed-tech",
+    "question": "Did Paulson's May 2026 speech remove interest-rate risk for tech stocks?",
+    "as_of": "2026-05-25",
+    "url": "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference",
+    "publisher": "Federal Reserve Bank of Philadelphia",
+    "published_at": "2026-05-19",
+    "excerpt": "these are my own views and not necessarily those of my colleagues on the Federal Open Market Committee (FOMC). monetary policy might need to be tightened",
+    "notes": "Editorial notes checked against the speech on 2026-09-07: Anna Paulson described current policy as mildly restrictive and appropriate. Persistent inflation expectations could require tighter policy. She said market expectations had moved toward steady rates or modest tightening, broadly consistent with her thinking. Her personal views are not an FOMC commitment. The speech does not establish a maximum future policy rate, observed tech-stock outperformance, or prevented household wealth losses. Any discussion of valuation effects is a conditional editorial explanation, not a measured market reaction.",
+    "claims": [
+      {
+        "claim": "Paulson presented personal views, not a commitment by the FOMC.",
+        "evidence_quote": "these are my own views and not necessarily those of my colleagues on the Federal Open Market Committee (FOMC).",
+        "period": "2026-05-19",
+        "unit": "not applicable",
+        "region": "US",
+        "kind": "fact",
+        "source": "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference",
+        "evidence": [
+          "these are my own views and not necessarily those of my colleagues on the Federal Open Market Committee (FOMC)."
+        ]
+      },
+      {
+        "claim": "The speech allowed for tighter policy rather than guaranteeing a rate ceiling.",
+        "evidence_quote": "monetary policy might need to be tightened",
+        "period": "2026-05-19",
+        "unit": "not applicable",
+        "region": "US",
+        "kind": "fact",
+        "source": "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference",
+        "evidence": [
+          "monetary policy might need to be tightened"
+        ]
+      }
+    ],
+    "headings": [
+      "What the speech actually committed to",
+      "What a tech investor can and cannot infer"
+    ],
+    "rubric": "Must distinguish one official's conditional views from FOMC policy, retain possible tightening, and avoid claims that tech returns or a rate ceiling are guaranteed.",
+    "source": {
+      "url": "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference",
+      "title": "Did Paulson's May 2026 speech remove interest-rate risk for tech stocks?",
+      "publisher": "Federal Reserve Bank of Philadelphia",
+      "published_at": "2026-05-19",
+      "retrieved_at": "2026-09-07",
+      "excerpt": "these are my own views and not necessarily those of my colleagues on the Federal Open Market Committee (FOMC). monetary policy might need to be tightened",
+      "key_facts": [
+        "Paulson presented personal views, not a commitment by the FOMC.",
+        "The speech allowed for tighter policy rather than guaranteeing a rate ceiling."
+      ],
+      "editorial_notes": "Editorial notes checked against the speech on 2026-09-07: Anna Paulson described current policy as mildly restrictive and appropriate. Persistent inflation expectations could require tighter policy. She said market expectations had moved toward steady rates or modest tightening, broadly consistent with her thinking. Her personal views are not an FOMC commitment. The speech does not establish a maximum future policy rate, observed tech-stock outperformance, or prevented household wealth losses. Any discussion of valuation effects is a conditional editorial explanation, not a measured market reaction."
+    },
+    "evidence": {
+      "claims": [
+        {
+          "claim": "Paulson presented personal views, not a commitment by the FOMC.",
+          "evidence_quote": "these are my own views and not necessarily those of my colleagues on the Federal Open Market Committee (FOMC).",
+          "period": "2026-05-19",
+          "unit": "not applicable",
+          "region": "US",
+          "kind": "fact",
+          "source": "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference",
+          "evidence": [
+            "these are my own views and not necessarily those of my colleagues on the Federal Open Market Committee (FOMC)."
+          ]
+        },
+        {
+          "claim": "The speech allowed for tighter policy rather than guaranteeing a rate ceiling.",
+          "evidence_quote": "monetary policy might need to be tightened",
+          "period": "2026-05-19",
+          "unit": "not applicable",
+          "region": "US",
+          "kind": "fact",
+          "source": "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference",
+          "evidence": [
+            "monetary policy might need to be tightened"
+          ]
+        }
+      ],
+      "timeline": [],
+      "open_questions": [],
+      "conflicts": []
+    },
+    "outline": {
+      "sections": [
+        {
+          "heading": "What the speech actually committed to",
+          "goal": "Did Paulson's May 2026 speech remove interest-rate risk for tech stocks? Must distinguish one official's conditional views from FOMC policy, retain possible tightening, and avoid claims that tech returns or a rate ceiling are guaranteed.",
+          "evidence_refs": [
+            "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference"
+          ]
+        },
+        {
+          "heading": "What a tech investor can and cannot infer",
+          "goal": "Did Paulson's May 2026 speech remove interest-rate risk for tech stocks? Must distinguish one official's conditional views from FOMC policy, retain possible tightening, and avoid claims that tech returns or a rate ceiling are guaranteed.",
+          "evidence_refs": [
+            "https://www.philadelphiafed.org/the-economy/monetary-policy/260519-2026-financial-markets-conference"
+          ]
+        }
+      ],
+      "faq": []
+    }
+  }
+]

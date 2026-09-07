@@ -1,0 +1,9 @@
+{
+  "name": "shipwrite-editorial-evals",
+  "private": true,
+  "scripts": {
+    "test": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v",
+    "eval": "PROMPTFOO_DISABLE_TELEMETRY=1 PROMPTFOO_PYTHON=.venv/bin/python promptfoo eval -c evals/promptfooconfig.yaml --no-cache --max-concurrency 3 -o evals/results/promptfoo.json"
+  },
+  "devDependencies": {"promptfoo": "0.122.2"}
+}

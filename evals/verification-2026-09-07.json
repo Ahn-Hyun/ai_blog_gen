@@ -1,0 +1,85 @@
+{
+  "run_id": "a26f763160c6d4ed",
+  "stages": [
+    "recorded citation issues revised and checked",
+    "quality pass after at most one revision",
+    "humanizer and preservation pass",
+    "final source audit pass"
+  ],
+  "source": "frozen data-centers evidence",
+  "new_retrieval": false,
+  "published": false,
+  "pass": true,
+  "calls": [
+    {
+      "seconds": 17.75,
+      "usage": {
+        "promptTokenCount": 1217,
+        "candidatesTokenCount": 647,
+        "totalTokenCount": 3883,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 1217
+          }
+        ],
+        "thoughtsTokenCount": 2019,
+        "serviceTier": "standard"
+      }
+    },
+    {
+      "seconds": 9.21,
+      "usage": {
+        "promptTokenCount": 1413,
+        "candidatesTokenCount": 17,
+        "totalTokenCount": 2497,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 1413
+          }
+        ],
+        "thoughtsTokenCount": 1067,
+        "serviceTier": "standard"
+      }
+    },
+    {
+      "seconds": 26.07,
+      "usage": {
+        "promptTokenCount": 7353,
+        "candidatesTokenCount": 501,
+        "totalTokenCount": 10931,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 7353
+          }
+        ],
+        "thoughtsTokenCount": 3077,
+        "serviceTier": "standard"
+      }
+    },
+    {
+      "seconds": 8.41,
+      "usage": {
+        "promptTokenCount": 1992,
+        "candidatesTokenCount": 13,
+        "totalTokenCount": 2915,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 1992
+          }
+        ],
+        "thoughtsTokenCount": 910,
+        "serviceTier": "standard"
+      }
+    }
+  ],
+  "files": {
+    "scripts/auto_blog.py": "89d73b887cc75a6f8d01218ad548bc3fcb2256810459d9c7fd29b395ec4fd814",
+    "src/editorial.py": "9448071c37a5998156188d5478e15b7087bb885158241ae08d900c7c084bd822",
+    "evals/provider.py": "ae54873472e7cb8616a388e414acb3144db648c05d64bbc5942badb018d8a3d3"
+  },
+  "citation_placement_checked_after_humanizer": true
+}

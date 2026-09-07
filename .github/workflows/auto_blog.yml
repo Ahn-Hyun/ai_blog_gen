@@ -65,6 +65,9 @@ jobs:
           fi
           echo "pipeline=daily-impact" >> "$GITHUB_OUTPUT"
 
+      - name: Check editorial regressions
+        run: PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
+
       - name: Generate posts
         env:
           ASTRO_ROOT: ${{ vars.ASTRO_ROOT || format('{0}/ai_blog_v1_astro', github.workspace) }}
@@ -116,7 +119,8 @@ jobs:
           SCRAPE_DELAY_SEC: ${{ vars.SCRAPE_DELAY_SEC }}
           SCRAPE_MAX_RETRIES: ${{ vars.SCRAPE_MAX_RETRIES }}
           SCRAPE_BACKOFF_SEC: ${{ vars.SCRAPE_BACKOFF_SEC }}
-          FINAL_REVIEW_ENABLED: ${{ vars.FINAL_REVIEW_ENABLED }}
+          HUMANIZER_ENABLED: ${{ vars.HUMANIZER_ENABLED || 'true' }}
+          FINAL_REVIEW_ENABLED: ${{ vars.FINAL_REVIEW_ENABLED || 'true' }}
           FINAL_REVIEW_REVISIONS: ${{ vars.FINAL_REVIEW_REVISIONS }}
           CONTENT_TIMEZONE: ${{ vars.CONTENT_TIMEZONE || 'America/New_York' }}
         run: |

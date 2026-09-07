@@ -1,0 +1,17 @@
+{
+  "baseline_commit": "bd868b40976b2854ec10e073f89a9dd44ba26ba3",
+  "articles": [
+    {
+      "file": "2026-05-21-elevated-10-year-yields-keep-fixed-mortgage-rates-high.mdx",
+      "sha256": "3be1a75e1f33b7e2ef02256c23dae36308ea0fa3d9649941c6246ca0db7cdc18"
+    },
+    {
+      "file": "2026-05-24-the-impact-of-ai-on-data-centers-and-commercial-real-estate.mdx",
+      "sha256": "91a70cd237b4272c204effea610b0a61f706b6650f66931c7444f79cf2f9eee5"
+    },
+    {
+      "file": "2026-05-25-how-recent-fed-policy-shifts-influence-tech-stock-valuations.mdx",
+      "sha256": "acd59cdf5438ee2cae7da038e5ea73aa9e9f930c534010ca50b1ee6b1a5fde12"
+    }
+  ]
+}

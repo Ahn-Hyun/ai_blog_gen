@@ -1,2 +1,2 @@
 trendspyg
-openai
+openai==3.8.0
