@@ -1,0 +1,54 @@
+name: Search Console Editorial Backlog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 15 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: search-console-backlog
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: github.event_name == 'workflow_dispatch' || vars.GSC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: Ahn-Hyun/ai-blog-V1
+          token: ${{ secrets.ASTRO_REPO_TOKEN }}
+          ref: main
+          path: ai_blog_v1_astro
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Google authentication library
+        run: python -m pip install 'google-auth[requests]>=2,<3' 'cryptography>=38'
+
+      - name: Check report regressions
+        run: python -m unittest discover -s tests -p 'test_search_console.py' -v
+
+      - name: Collect search performance and build edit queue
+        env:
+          GSC_CREDENTIALS_JSON: ${{ secrets.GSC_CREDENTIALS_JSON }}
+          GSC_REPORT_KEY: ${{ secrets.GSC_REPORT_KEY }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL || 'sc-domain:ship-write.com' }}
+          ASTRO_ROOT: ai_blog_v1_astro
+        run: python scripts/search_console_backlog.py
+
+      - name: Keep search evidence and editorial queue
+        uses: actions/upload-artifact@v4
+        with:
+          name: search-console-editorial-backlog
+          path: data/search-console/**/report.enc
+          if-no-files-found: error
+          retention-days: 90

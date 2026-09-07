@@ -1,2 +1,4 @@
 trendspyg
 openai==3.8.0
+google-auth[requests]>=2,<3
+cryptography>=38

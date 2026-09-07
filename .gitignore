@@ -9,4 +9,5 @@ node_modules/
 .promptfoo/
 evals/results/
 data/editorial-rejections/
+data/search-console/
 .venv/
