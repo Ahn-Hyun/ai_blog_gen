@@ -2989,7 +2989,12 @@ Language: {language}
 
 Writing rules:
 - Use the length needed to answer the question. Do not repeat evidence to fill space.
+- State facts only from the validated claims in Evidence/facts. Source excerpts provide context,
+  not permission to introduce extra statistics, component lists or unstated mechanisms.
+- Preserve each claim's period, unit, region and population exactly. A sector total is not a subsector total.
+- Earlier commentary cannot be described as a reaction to a later event. Separate background from subsequent reactions.
 - Cite sources with inline Markdown links: [Source Name](URL) — do not use bare URLs
+- Every paragraph with a source-specific number, forecast or measured delay needs its own source link.
 - Do not make unsupported claims
 - Avoid hype or sensational wording
 - Do not add a heading; the assembler will add it
@@ -3039,6 +3044,8 @@ Requirements:
 - Conclusion should synthesize the key analytical takeaway — not just summarize, but state what the evidence means for the reader
 - FAQ answers must be concise and evidence-based
 - Preserve inline Markdown citation links [Source Name](URL) from sections — do not strip them
+- Preserve measurement scope and chronology verbatim in meaning. Do not turn a sector total into a subgroup total,
+  or imply an earlier source reacted to a later event. Keep citations in each paragraph reporting source-specific figures.
 - No word-count target. Remove redundant claims while retaining necessary evidence and caveats.
 - Add a disclaimer paragraph at the very end of the article body (before the FAQ), using this exact text: "**Disclaimer:** This analysis is for informational purposes only and does not constitute investment, financial, real estate, or legal advice. Always consult a licensed financial advisor before making investment decisions."
 {template_block}
@@ -4883,6 +4890,17 @@ def _build_evidence_from_sources(
         data = _extract_json_block(response)
         if not isinstance(data, dict):
             raise EditorialError("Evidence repair returned no structured evidence")
+        supported = []
+        for claim in data.get("claims") or []:
+            try:
+                validate_evidence({"claims": [claim]}, sources)
+            except EditorialError as rejected:
+                logging.warning("Omitting unsupported extracted claim: %s", rejected)
+            else:
+                supported.append(claim)
+        # A bad extraction must not contaminate the facts retained for writing.
+        data = {"claims": supported, "timeline": [], "conflicts": [],
+                "open_questions": ["Use only the retained supported claims; narrow the article if evidence is limited."]}
         validate_evidence(data, sources)
     return data
 

@@ -263,11 +263,19 @@ class EditorialChecks(unittest.TestCase):
         for repaired, approved in [(self.evidence, True), (invalid, False)]:
             with patch.object(Writer, 'generate', side_effect=[json.dumps(invalid), json.dumps(repaired)]) as call:
                 if approved:
-                    self.assertEqual(blog._build_evidence_from_sources(self.config, Writer(), self.sources), self.evidence)
+                    self.assertEqual(blog._build_evidence_from_sources(self.config, Writer(), self.sources)['claims'], self.evidence['claims'])
                 else:
                     with self.assertRaises(EditorialError):
                         blog._build_evidence_from_sources(self.config, Writer(), self.sources)
                 self.assertEqual(call.call_count, 2)
+
+    def test_unsupported_claim_is_omitted_without_weakening_evidence_checks(self):
+        mixed = copy.deepcopy(self.evidence)
+        mixed['claims'].append({**mixed['claims'][0], 'evidence_quote': 'Not in the source'})
+        with patch.object(Writer, 'generate', return_value=json.dumps(mixed)):
+            result = blog._build_evidence_from_sources(self.config, Writer(), self.sources)
+        self.assertEqual(result['claims'], self.evidence['claims'])
+        validate_evidence(result, self.sources)
 
 
 if __name__ == '__main__':
